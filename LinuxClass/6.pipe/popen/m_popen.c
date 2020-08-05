@@ -23,6 +23,7 @@ FILE *m_popen(const char *cmd, const char *type) {
         if ((childpid = (pid_t *)calloc(max, sizeof(pid_t))) == NULL) 
         return NULL;
     }
+
     if(pipe(pfd) < 0) {
         return NULL;
     }
@@ -30,6 +31,7 @@ FILE *m_popen(const char *cmd, const char *type) {
     if((pid = fork()) < 0) {
         return NULL;
     }
+
     if (pid == 0) {
         if (type[0] == 'r') {
             close(pfd[0]);
@@ -54,11 +56,11 @@ FILE *m_popen(const char *cmd, const char *type) {
 
     if(type[0] == 'r') {
         close(pfd[1]);
-        if((fp = fdopen(pdf[0], type)) == NULL) 
+        if((fp = fdopen(pfd[0], type)) == NULL) 
             return NULL;
     } else {
-        close(pdf[0]);
-        if((fp = fdopen(pdf[1], type)) == NULL) 
+        close(pfd[0]);
+        if((fp = fdopen(pfd[1], type)) == NULL) 
             return NULL;
     }
     childpid[fileno(fp)] = pid;

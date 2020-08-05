@@ -9,7 +9,7 @@
 #include "m_popen.h"
 
 int main () {
-    FILE * fp;
+    FILE *fp;
     char buff[1024] = {0};
     if ((fp = m_popen("ls /etc", "r")) == NULL) {
         perror("m_popen()");

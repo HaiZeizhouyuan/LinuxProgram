@@ -7,7 +7,7 @@
 
 #ifndef _M_POPEN_H
 #define _M_POPEN_H
-FILE m_popen(const char *cmd, const char *type);
+FILE *m_popen(const char *cmd, const char *type);
 int m_pclose(FILE *fp);
 
 #endif
