@@ -29,6 +29,8 @@
 #include <errno.h>
 #include <pthread.h>
 #include <signal.h>
+#include <common.h>
+#include <sys/socket.h>
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 
