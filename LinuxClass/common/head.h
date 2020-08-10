@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "color.h"
+#include "common.h"
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
@@ -31,6 +32,8 @@
 #include <signal.h>
 #include <common.h>
 #include <sys/socket.h>
+#include <sys/epoll.h>
+#include <arpa/inet.h>
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

@@ -17,14 +17,15 @@ int main(void) {
 
     /* Watch stdin (fd 0) to see when it has input. */
     
-    FD_ZERO(&rfds);
-    FD_SET(0, &rfds);
+    FD_ZERO(&rfds);//清空文件描述符集　void FD_ZERO(fd_set *set);
+    FD_SET(0, &rfds);//把标准输入文件的异常信息注册到文件描述符集中
     
-    /* Wait up to five seconds. */
+    /* Wait up to five seconds.*/
+    //设置等待时间，等待５秒
     
     tv.tv_sec = 5;//秒
     tv.tv_usec = 0;//微秒
-    retval = select(1, &rfds, NULL, NULL, &tv);
+    retval = select(1, &rfds, NULL, NULL, &tv); 
     
     /* Don't rely on the value of tv now! */
     
@@ -34,8 +35,10 @@ int main(void) {
         printf("Data is available now.\n");
         char buffer[1024];
         ssize_t re, we;
-        re = read(0, buffer, strlen(buffer));
-        we = write(0, buffer, strlen(buffer));
+        while ((re = read(0, buffer, strlen(buffer))) > 0) {
+            printf("%s", buffer);
+        }
+        printf("\n");
     /* FD_ISSET(0, &rfds) will be true. */   
     } else {
         printf("No data within five seconds.\n");

@@ -34,7 +34,7 @@ int main (int argc, char **argv) {
 
     ssize_t nread, nwrite;
     char buff[MAX_BUFF + 5] = {0};
-    while ((nread = read(fd_in, buff, MAX_BUFF) > 0)) {
+    while ((nread = read(fd_in, buff, MAX_BUFF))> 0) {
         DBG(GREEN"<Debug> "NONE" nread = %ld\n strlen(buff) = %ld", nread, strlen(buff));
         if ((nwrite = write(fd_out, buff, strlen(buff))) != nread){
             perror("write()");
