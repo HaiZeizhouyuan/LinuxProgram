@@ -58,7 +58,10 @@ int socket_create(int port) {
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) { //int socket(int domain, int type, int protocal);
         return -1;
     }
-
+    int val = 1;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR,(const char*)&val, sizeof(int)) < 0) {
+        return -1;
+    }
     struct sockaddr_in server;//创建表单名server;
     server.sin_family = AF_INET;
     server.sin_port = htons(port);//本地字节序转换成网络字节序的短整形

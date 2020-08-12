@@ -9,16 +9,8 @@
 void *do_chat(void *arg) {
     int fd;
     fd = *(int *)arg;
-   /* struct User user;
-    char ip[20] = {0};
-    //DBG(PINK"<Dbug>"NONE);
-    struct sockaddr_in client;
-    bzero(&client, sizeof(client));
-    socklen_t len = sizeof(client);
-    getpeername(fd, (struct sockaddr *)&client, &len);
-    strcpy(ip, inet_ntoa(client.sin_addr));
-    get_info("../x.测评记录/names", &user, ip);
-    DBG(PINK"<Dbug>"NONE "name = %s, ip = %s!\n", user.name, inet_ntoa(client.sin_addr.s_addr) );*/
+    //解锁
+    //int *fd = (int *)arg;
     while (1) {
         ssize_t nrecv;
         char buffer[512] = {0};
@@ -26,7 +18,7 @@ void *do_chat(void *arg) {
             close(fd);
             return NULL;
         }
-        printf("Recv : %s\n", buffer);
+        printf("CLI : %s\n", buffer);
         send(fd, buffer, strlen(buffer), 0);
     }
 }
@@ -45,12 +37,16 @@ int main (int argc, char *argv[]) {
     while (1) {
         int newfd;
         pthread_t tid;
+        //加锁
         if ((newfd = accept(listener,NULL, NULL)) < 0) {
             perror("accept()");
             exit(1);
         }
         pthread_create(&tid, NULL, do_chat, (void *)&newfd);
+        usleep(50);
     }
 
     return 0;
 }
+
+

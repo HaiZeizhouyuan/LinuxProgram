@@ -24,4 +24,5 @@ int make_block(int fd);
 extern char conf_value_ans[512];
 int socket_create(int port);//创建端口port
 int socket_connect(char *ip, int port);//客户端连接
+void get_info(char *pathname, struct User *user, const char *ip);
 #endif
