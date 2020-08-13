@@ -1,8 +1,8 @@
 /*************************************************************************
-	> File Name: 3.one_thread_reator.c
+	> File Name: test_io.c
 	> Author: zhouyuan
 	> Mail: 
-	> Created Time: 2020年08月12日 星期三 16时10分21秒
+	> Created Time: 2020年08月13日 星期四 12时33分33秒
  ************************************************************************/
 
 #include "head.h"
@@ -11,14 +11,13 @@
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        fprintf(stderr, "Usage %s port!\n", argv[0]);
+        fprintf(stderr, "Usage : %s port!\n", argv[0]);
         exit(1);
     }
-
     int server_listen, sockfd, port, epollfd;
     int fd[MAXUSER] = {0};
     port = atoi(argv[1]);
-    if ((server_listen = socket_create(port)) < 0) {//创建服务端
+    if ((server_listen = socket_create(port)) < 0) {
         perror("socket_create()");
         exit(1);
     }
@@ -29,33 +28,32 @@ int main(int argc, char **argv) {
     }
 
     struct epoll_event ev, events[MAX];
+
     ev.data.fd = server_listen;
     ev.events = EPOLLIN;
 
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, server_listen, &ev) < 0) {
-        perror("epol_ctl()");
+        perror("epoll_ctl()");
         exit(1);
     }
 
     while (1) {
         int nfds = epoll_wait(epollfd, events, MAX, -1);
         if (nfds < 0) {
-            perror("epoll_wait()");
+            perror("epoll_wait");
             exit(1);
         }
-
         for (int i = 0; i < nfds; ++i) {
-            if (events[i].data.fd == server_listen && ( events[i].events & EPOLLIN)) {
+        if (events[i].data.fd == server_listen  && (events[i].events & EPOLLIN)) {
                 if ((sockfd = accept(server_listen, NULL, NULL)) < 0) {
                     perror("accept()");
                     exit(1);
                 }
                 fd[sockfd] = sockfd;
-                //setnonblocking(fd[sockfd]);
                 ev.events = EPOLLIN;
                 ev.data.fd = sockfd;
                 if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &ev) < 0) {
-                    perror("epol_ctl()");
+                    perror("epoll_ctl()");
                     exit(1);
                 }
             } else {
@@ -64,9 +62,10 @@ int main(int argc, char **argv) {
                     recv(events[i].data.fd, buff, sizeof(buff), 0);
                     printf("recv : %s\n", buff);
                 }
+
             }
         }
     }
 
-	return 0;
+    return 0;
 }

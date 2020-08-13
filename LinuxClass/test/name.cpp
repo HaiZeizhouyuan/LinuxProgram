@@ -15,13 +15,13 @@ int main () {
     int val = rand() % num;
     switch(val) {
         case 0:
-            printf("A\n");
+            printf("z\n");
             break;
         case 1:
-            printf("B\n");
+            printf("y\n");
             break;
         case 2:
-            printf("C\n");
+            printf("t\n");
             break;
     }
     return 0;

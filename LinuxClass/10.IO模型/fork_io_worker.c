@@ -13,10 +13,11 @@ void worker(int fd, struct User *user) {
         if ((recv(fd, buff, sizeof(buff), 0)) <= 0) {
             break;
         }
-        printf("%s : %s\n", user->real_name, buff);
+        printf("CLI : %s\n",  buff);
     }
     close(fd);
-    DBG("%s Logout!\n", user->real_name);
+    printf("byebye");
+    DBG("%s Logout!\n");
 }
 
 int main(int argc, char **argv) {

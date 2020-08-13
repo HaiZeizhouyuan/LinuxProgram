@@ -1,5 +1,5 @@
 /*************************************************************************
-	> File Name: 3.one_thread_reator.c
+	> File Name: 3.one_thread_reator_1.c
 	> Author: zhouyuan
 	> Mail: 
 	> Created Time: 2020年08月12日 星期三 16时10分21秒
@@ -51,7 +51,6 @@ int main(int argc, char **argv) {
                     exit(1);
                 }
                 fd[sockfd] = sockfd;
-                //setnonblocking(fd[sockfd]);
                 ev.events = EPOLLIN;
                 ev.data.fd = sockfd;
                 if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &ev) < 0) {
@@ -61,12 +60,18 @@ int main(int argc, char **argv) {
             } else {
                 if (events[i].events & EPOLLIN) {
                     char buff[512] = {0};
-                    recv(events[i].data.fd, buff, sizeof(buff), 0);
+                    if (recv(events[i].data.fd, buff, sizeof(buff), 0) <= 0) {
+                        ev.events = EPOLLIN;
+                        ev.data.fd = events[i].data.fd;
+                        epoll_ctl(events[i].data.fd, EPOLL_CTL_DEL, sockfd, &ev);
+                        close(events[i].data.fd);
+                        printf("Bye Bye\n");
+                        break;
+                    }
                     printf("recv : %s\n", buff);
                 }
             }
         }
     }
-
 	return 0;
 }
