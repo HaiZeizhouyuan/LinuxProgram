@@ -12,7 +12,7 @@
 #define BLACK "\e[0;30m" //深黑 
 #define L_BLACK "\e[1;30m" //亮黑，偏灰褐 
 #define RED "\e[0;31m" //深红，暗红 
-#define L_RED  "\e[1;31m" //鲜红 
+#define L_RED "\e[1;31m" //鲜红 
 #define GREEN "\e[0;32m" //深绿，暗绿 
 #define L_GREEN "\e[1;32m"//鲜绿
 #define BROWN "\e[0;33m" //深黄，暗黄

@@ -30,7 +30,7 @@ int main (int argc, char *argv[]) {
     }
     int listener, port;//listener端口，
     port = atoi(argv[1]);
-    if ((listener = socket_create(port)) < 0) {//建立客户端
+    if ((listener = socket_create(port)) < 0) {//建立服务端
         perror("socket_create()");
         exit(1);
     }

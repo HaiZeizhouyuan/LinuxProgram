@@ -60,8 +60,15 @@ int main(int argc, char **argv) {
             } else {
                 if (events[i].events & EPOLLIN) {
                     char buff[512] = {0};
-                    if (recv(events[i].data.fd, buff, sizeof(buff), 0) <= 0) {
-                        ev.events = EPOLLIN;
+                    ssize_t rev;
+                    rev = recv(events[i].data.fd, buff,sizeof(buff), 0);
+
+                    if (rev < 0) {
+                        perror("recv()");
+                        exit(1);
+                    }
+                    if (rev == 0) {
+                       ev.events = EPOLLIN;
                         ev.data.fd = events[i].data.fd;
                         epoll_ctl(events[i].data.fd, EPOLL_CTL_DEL, sockfd, &ev);
                         close(events[i].data.fd);

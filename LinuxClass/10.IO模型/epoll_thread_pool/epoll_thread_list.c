@@ -1,13 +1,17 @@
 /*************************************************************************
-	> File Name: 3.one_thread_reator.c
+	> File Name: 3.epoll_thread_list.c
 	> Author: zhouyuan
 	> Mail: 
 	> Created Time: 2020年08月12日 星期三 16时10分21秒
  ************************************************************************/
 
-#include "head.h"
-#define MAX 10
+#include "work_list.h"
+#define MAXEVENTS 10
 #define MAXUSER 1024
+#define QUEUESIZE 50
+#define THREAD_NUM 10
+
+int epollfd;
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -15,7 +19,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    int server_listen, sockfd, port, epollfd;
+    int server_listen, sockfd, port;
     int fd[MAXUSER] = {0};
     port = atoi(argv[1]);
     if ((server_listen = socket_create(port)) < 0) {//创建服务端
@@ -28,7 +32,8 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    struct epoll_event ev, events[MAX];
+    struct epoll_event ev, events[MAXEVENTS];
+    
     ev.data.fd = server_listen;
     ev.events = EPOLLIN;
 
@@ -37,13 +42,20 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
+    pthread_t *tid = (pthread_t *)calloc(THREAD_NUM, sizeof(pthread_t));
+    Task_Queue taskQueue;
+    task_queue_init(&taskQueue, QUEUESIZE);
+    for (int i = 0; i < THREAD_NUM; i++) {
+        pthread_create(&tid[i], NULL, thread_run, (void *)&taskQueue);
+    }
+
     while (1) {
         int nfds = epoll_wait(epollfd, events, MAX, -1);
         if (nfds < 0) {
             perror("epoll_wait()");
             exit(1);
         }
-
+        DBG(YELLOW"<Dbug>"NONE" : After wait nfds = %d\n", nfds);
         for (int i = 0; i < nfds; ++i) {
             if (events[i].data.fd == server_listen && ( events[i].events & EPOLLIN)) {
                 if ((sockfd = accept(server_listen, NULL, NULL)) < 0) {
@@ -51,31 +63,18 @@ int main(int argc, char **argv) {
                     exit(1);
                 }
                 fd[sockfd] = sockfd;
-                //setnonblocking(fd[sockfd]);
-                ev.events = EPOLLIN | EPOLLRDHUP;
+                ev.events = EPOLLIN;
                 ev.data.fd = sockfd;
                 if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &ev) < 0) {
                     perror("epol_ctl()");
                     exit(1);
                 }
             } else {
-                if (events[i].events & EPOLLIN) {
-                    if (events[i].events & EPOLLRDHUP){
-                        epoll_ctl(epollfd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
-                        DBG("events[i].data.fd = %d\n", events[i].data.fd);
-                        close (events[i].data.fd);
-                        printf("Logout!\n");
-                        break;
-                    }
-                    char buff[512] = {0};
-                    recv(events[i].data.fd, buff, sizeof(buff), 0);
-                    printf("recv : %s\n", buff);
+                if (events[i].events & EPOLLIN) {                
+                    task_queue_push(&taskQueue, events[i].data.fd);
                 }
-                sleep(1);
             }
         }
     }
-    
-
 	return 0;
 }

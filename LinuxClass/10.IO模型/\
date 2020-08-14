@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
                 }
                 fd[sockfd] = sockfd;
                 //setnonblocking(fd[sockfd]);
-                ev.events = EPOLLIN | EPOLLRDHUP;
+                ev.events = EPOLLIN;
                 ev.data.fd = sockfd;
                 if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &ev) < 0) {
                     perror("epol_ctl()");
@@ -60,22 +60,21 @@ int main(int argc, char **argv) {
                 }
             } else {
                 if (events[i].events & EPOLLIN) {
-                    if (events[i].events & EPOLLRDHUP){
-                        epoll_ctl(epollfd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
-                        DBG("events[i].data.fd = %d\n", events[i].data.fd);
-                        close (events[i].data.fd);
-                        printf("Logout!\n");
-                        break;
-                    }
                     char buff[512] = {0};
                     recv(events[i].data.fd, buff, sizeof(buff), 0);
                     printf("recv : %s\n", buff);
                 }
-                sleep(1);
+                sleep(2);
+                if ((!events[i].events & EPOLLIN) && (events[i].events & EPOLLRDHUP)) {
+                    epoll_ctl(epollfd, EPOLL_CTL_DEL, events[i].data.fd, NULL);
+                    DBG("events[i].data.fd = %d\n", events[i].data.fd);
+                    close (events[i].data.fd);
+                    printf("Logout!\n");
+                }
             }
         }
     }
-    
+    }
 
 	return 0;
 }
