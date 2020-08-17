@@ -30,14 +30,16 @@ typedef struct User {
     int online;
 }User;
 
-//User users[100];
+User users[100];
 
-typedef struct ChatMag {
+extern User user;
+
+typedef struct ChatMsg {
     int type;
     int opt;
     char name[20];
     char msg[1024];
-} ChatMag;
+} ChatMsg;
 
 typedef struct task_queue {
     int *data;

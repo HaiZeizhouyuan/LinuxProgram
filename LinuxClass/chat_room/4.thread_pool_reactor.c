@@ -5,8 +5,8 @@
 	> Created Time: Wed 12 Aug 2020 04:10:08 PM CST
  ************************************************************************/
 
-#include "head.h"
-#include "./thread_pool/thread_pool.h"
+
+#include "work_list.h"
 #define MAXTHREAD 10
 #define MAXQUEUE 20
 #define MAXEVENTS 10
@@ -44,21 +44,22 @@ int main(int argc, char **argv) {
     struct epoll_event ev, events[MAXEVENTS];
 
     ev.data.fd = server_listen;
-    ev.events = EPOLLIN | EPOLLET;
+    ev.events = EPOLLIN;
 
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, server_listen, &ev) < 0) {
         perror("epoll_ctl()");
         exit(1);
     }
-
+    //pthread_mutex_t mutex;
     while (1) {
+        //pthread_mutex_lock(&mutex);
         int nfds;
+        DBG(RED"old ndfs"NONE" : %d\n", nfds);
         nfds = epoll_wait(epollfd, events, MAXEVENTS, -1);
         if (nfds < 0) {
             perror("epoll_wait");
             exit(1);
         }
-        DBG(GREEN"<%ld>"NONE" : will work!\n", pthread_self());
         DBG(YELLOW"<Debg>"NONE" : After wait nfds = %d\n", nfds);
         for (int i = 0; i < nfds; ++i) {
             if (events[i].data.fd == server_listen  && (events[i].events & EPOLLIN)) {
@@ -66,16 +67,14 @@ int main(int argc, char **argv) {
                     perror("accept()");
                     exit(1);
                 }
-                DBG(GREEN"Have new socked!\n"NONE);
                 fd[sockfd] = sockfd;
-                ev.events = EPOLLIN | EPOLLET;
+                ev.events = EPOLLIN;
                 ev.data.fd = sockfd;
                 if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &ev) < 0) {
                     perror("epoll_ctl()");
                     exit(1);
                 }
             } else {
-                DBG(BLUE"will push!\n"NONE);
                 if (events[i].events & EPOLLIN) {
                     task_queue_push(&taskQueue, events[i].data.fd);
                 }
@@ -89,6 +88,7 @@ int main(int argc, char **argv) {
                 */
             }
         }
+        //pthread_mutex_unlock(&mutex);
     }
     return 0;
 }

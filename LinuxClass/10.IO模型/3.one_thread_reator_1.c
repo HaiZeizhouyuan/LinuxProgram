@@ -38,12 +38,14 @@ int main(int argc, char **argv) {
     }
 
     while (1) {
-        int nfds = epoll_wait(epollfd, events, MAX, -1);
+        int nfds;
+        DBG(GREEN"old nfds"NONE":%d\n", nfds);
+        nfds = epoll_wait(epollfd, events, MAX, -1);
         if (nfds < 0) {
             perror("epoll_wait()");
             exit(1);
         }
-
+        DBG(BLUE"new ndfs"NONE": %d\n",nfds );
         for (int i = 0; i < nfds; ++i) {
             if (events[i].data.fd == server_listen && ( events[i].events & EPOLLIN)) {
                 if ((sockfd = accept(server_listen, NULL, NULL)) < 0) {
@@ -57,6 +59,7 @@ int main(int argc, char **argv) {
                     perror("epol_ctl()");
                     exit(1);
                 }
+                DBG(YELLOW"<NEWSOCKED>"NONE"%d\n", sockfd);
             } else {
                 if (events[i].events & EPOLLIN) {
                     char buff[512] = {0};

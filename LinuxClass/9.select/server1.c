@@ -6,6 +6,7 @@
  ************************************************************************/
 
 #include "head.h"
+
 void *do_chat(void *arg) {
     int fd;
     fd = *(int *)arg;
@@ -22,9 +23,27 @@ void *do_chat(void *arg) {
         send(fd, buffer, strlen(buffer), 0);
     }
 }
-//./a.out ip;
+//./client -h 47.94.34.228 -p 8888 -n zhouyuan
 int main (int argc, char *argv[]) {
-    if (argc != 2) {
+    /*int opt;
+    while ((opt = getopt(argc, argv, "h:p:n:")) != -1) {
+        switch(opt) {
+            case 'h':
+                h_flag = 1;
+                
+                break;
+            case 'p':
+                p_flag = 1;
+                break;
+            case 'n':
+                n_flag = 1;
+                break;
+            default : 
+                fprintf(stderr, "Usage : %s -h IP -p PORT -n NMAE", argv[0]);
+        }
+        
+    }*/
+    if (argc != 3) {
         fprintf(stderr, "Usage : %s port!\n", argv[0]);
         exit(1);
     }

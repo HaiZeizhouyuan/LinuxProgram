@@ -10,12 +10,20 @@
 
 extern int epollfd;
 
-void do_work(int fd) {
-    char buff[512] = {0};
-    if (recv(fd, buff, sizeof(buff), 0) <= 0) {
+void do_work(int fd, int *flag) {
+    char buff[512];
+    ssize_t rev = recv(fd, buff, sizeof(buff), 0);
+    if (rev < 0) {
+        perror("recv()");
+        return ;
+    }
+
+    if (rev == 0) {
         epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
         DBG(RED"<Reactor>"NONE" : Del from reactor!\n");
         close(fd);
+        printf("have logout\n");
+        *flag = 1;
         return ;
     } 
     printf("Recv : %s", buff);
@@ -35,6 +43,7 @@ void task_queue_push(struct task_queue *taskQueue, int fd) {
     if (taskQueue->total == taskQueue->size) {
         pthread_mutex_unlock(&taskQueue->mutex);
         DBG(YELLOW"<taskQueue>"NONE" : taskQueue is full!\n");
+        sleep(1);
         return;
     }
     taskQueue->fd[taskQueue->tail] = fd;
@@ -73,8 +82,10 @@ void *thread_run(void *arg) {
     pthread_detach(pthread_self());
     struct task_queue *taskQueue = (struct task_queue *)arg;
     while (1) {
+        int flag = 0;
         int fd = task_queue_pop(taskQueue);
-        do_work(fd);
+        do_work(fd, &flag);
+        if (flag == 1) break;
     }
 }
 

@@ -19,7 +19,7 @@ int main (int argc, char **argv) {
                 m_flag = 1;
                 strcpy(msg, optarg);
                 break;
-            default :
+            defult :
                 fprintf(stderr, "Usage : %s -m msg", argv[0]);
                 break;
         }

@@ -1,5 +1,5 @@
 /*************************************************************************
-	> File Name: 3.epoll_thread_list.c
+	> File Name: chat_server.c
 	> Author: zhouyuan
 	> Mail: 
 	> Created Time: 2020年08月12日 星期三 16时10分21秒
@@ -12,7 +12,7 @@
 #define THREAD_NUM 10
 
 int epollfd;
-
+User user;
 int main(int argc, char **argv) {
     if (argc != 2) {
         fprintf(stderr, "Usage %s port!\n", argv[0]);

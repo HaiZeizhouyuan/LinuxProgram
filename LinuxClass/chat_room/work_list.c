@@ -1,5 +1,5 @@
 /*************************************************************************
-	> File Name: thread_pool.c
+	> File Name: work_list.c
 	> Author: 
 	> Mail: 
 	> Created Time: Thu Aug  6 08:55:20 2020
@@ -7,8 +7,11 @@
 
 #include "work_list.h"
 #define BUFFSIZE 512
+
 extern int epollfd;
+extern User user;
 char buff[BUFFSIZE] = {0};
+int user_num = 0, sum = 0;
 
 void do_work(int fd) {
     memset(buff, 0, strlen(buff));
@@ -23,10 +26,33 @@ void do_work(int fd) {
     	epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
         DBG(RED"<Reactor>"NONE" : Del from reactor!\n");
    		close(fd);
-        printf("<%ld> have logout!\n", pthread_self());
-    	return ;
+        printf("have logout!\n");
+        return ;
     }
-    printf("<%ld> %s\n", pthread_self(), buff);
+
+    char str[10] = {"Welcome"};
+    char sign_success[20] = {"Sign in success!"};
+    char have_sign[30];
+    int is_find = 0;
+    DBG(BLUE"<Dbug>"NONE"str : %s, buff: %s\n", str, buff);
+    if (strncmp(buff, str, 7) == 0) {
+        for (int i = 1; i <= user_num; i++) {
+            DBG(GREEN"<Dbug>"NONE"user_name :%s, buff + 8: %s\n", users[i].name, buff + 8);
+            if ((strcmp(users[i].name, buff + 8)) == 0) {
+                sprintf(have_sign, "%s have sign in!\n", users[i].name);
+                send(fd, have_sign, strlen(have_sign), 0);
+                close(fd);
+                return ;
+            }
+        }
+        strcpy(users[++user_num].name, buff + 8);
+        printf("%s\n", buff);
+        send(fd, sign_success, strlen(sign_success), 0);
+        users[user_num].online = 1;
+    } else {
+        printf("%s\n", buff);
+    }
+    //printf("name:%s\n", users[user_num].name);
     sleep(1);
 }
 void task_queue_init(Task_Queue *taskQueue, int size) {
