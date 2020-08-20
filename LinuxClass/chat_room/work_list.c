@@ -6,55 +6,7 @@
  ************************************************************************/
 
 #include "work_list.h"
-#define BUFFSIZE 512
 
-extern int epollfd;
-extern User user;
-char buff[BUFFSIZE] = {0};
-int user_num = 0, sum = 0;
-
-void do_work(int fd) {
-    memset(buff, 0, strlen(buff));
-    ssize_t rev;
-    rev = recv(fd, buff,sizeof(buff), 0);
-    if (rev < 0) {
-		perror("recv()");
-		exit(1);
-    }
-
-	if (rev == 0) {
-    	epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
-        DBG(RED"<Reactor>"NONE" : Del from reactor!\n");
-   		close(fd);
-        printf("have logout!\n");
-        return ;
-    }
-
-    char str[10] = {"Welcome"};
-    char sign_success[20] = {"Sign in success!"};
-    char have_sign[30];
-    int is_find = 0;
-    DBG(BLUE"<Dbug>"NONE"str : %s, buff: %s\n", str, buff);
-    if (strncmp(buff, str, 7) == 0) {
-        for (int i = 1; i <= user_num; i++) {
-            DBG(GREEN"<Dbug>"NONE"user_name :%s, buff + 8: %s\n", users[i].name, buff + 8);
-            if ((strcmp(users[i].name, buff + 8)) == 0) {
-                sprintf(have_sign, "%s have sign in!\n", users[i].name);
-                send(fd, have_sign, strlen(have_sign), 0);
-                close(fd);
-                return ;
-            }
-        }
-        strcpy(users[++user_num].name, buff + 8);
-        printf("%s\n", buff);
-        send(fd, sign_success, strlen(sign_success), 0);
-        users[user_num].online = 1;
-    } else {
-        printf("%s\n", buff);
-    }
-    //printf("name:%s\n", users[user_num].name);
-    sleep(1);
-}
 void task_queue_init(Task_Queue *taskQueue, int size) {
     taskQueue->data = calloc(size, sizeof(int));
     taskQueue->head = taskQueue->tail = taskQueue->total = 0;

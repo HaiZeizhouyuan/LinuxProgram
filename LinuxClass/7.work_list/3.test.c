@@ -15,7 +15,6 @@ int main () {
     pthread_t tid[THREADNUM];
     Task_Queue taskQueue;
     task_queue_init(&taskQueue, SIZE);
-
     char buff[SIZE][BUFFSIZE] = {0};
     for (int i = 0; i < THREADNUM; i++) {
         pthread_create(&tid[i], NULL, thread_run, (void *)&taskQueue);

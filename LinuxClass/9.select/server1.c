@@ -25,7 +25,7 @@ void *do_chat(void *arg) {
 }
 //./client -h 47.94.34.228 -p 8888 -n zhouyuan
 int main (int argc, char *argv[]) {
-    /*int opt;
+    int opt;
     while ((opt = getopt(argc, argv, "h:p:n:")) != -1) {
         switch(opt) {
             case 'h':
@@ -42,7 +42,7 @@ int main (int argc, char *argv[]) {
                 fprintf(stderr, "Usage : %s -h IP -p PORT -n NMAE", argv[0]);
         }
         
-    }*/
+    }
     if (argc != 3) {
         fprintf(stderr, "Usage : %s port!\n", argv[0]);
         exit(1);

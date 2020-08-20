@@ -16,7 +16,7 @@
 #define CHAT_PUB 0x20
 #define CHAT_FUNC 0x40
 #define CHAT_SYS 0x80
-
+#define CHAT_FIN_1 0x200
 #define FUNC_CHECK_ONLINE 0x01
 #define FUNC_CHANGE_NAME 0x02
 
@@ -30,8 +30,8 @@ typedef struct User {
     int online;
 }User;
 
-User users[100];
-
+extern int epollfd;
+extern User users[100];
 extern User user;
 
 typedef struct ChatMsg {
@@ -40,6 +40,7 @@ typedef struct ChatMsg {
     char name[20];
     char msg[1024];
 } ChatMsg;
+
 
 typedef struct task_queue {
     int *data;
@@ -54,6 +55,13 @@ void task_queue_push(Task_Queue *taskQueue, int data);
 int empty(Task_Queue *taskQueue);
 int front(Task_Queue *taskQueue);
 int task_queue_pup(Task_Queue *taskQueue);
-void clear(Task_Queue *taskQueue);
 void *thread_run(void *arg);
+
+void do_work(int fd);
+void tell_sys_logout(int fd);
+void is_welcome(int fd);
+void user_init(User *users);
+void chat_msg_init(ChatMsg chatmsg);
+void Stop(int signal);
+
 #endif

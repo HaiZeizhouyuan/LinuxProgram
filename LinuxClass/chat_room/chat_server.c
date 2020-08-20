@@ -13,6 +13,8 @@
 
 int epollfd;
 User user;
+User users[100];
+
 int main(int argc, char **argv) {
     if (argc != 2) {
         fprintf(stderr, "Usage %s port!\n", argv[0]);
@@ -41,8 +43,8 @@ int main(int argc, char **argv) {
         perror("epol_ctl()");
         exit(1);
     }
-
     pthread_t *tid = (pthread_t *)calloc(THREAD_NUM, sizeof(pthread_t));
+    user_init(users);
     Task_Queue taskQueue;
     task_queue_init(&taskQueue, QUEUESIZE);
     for (int i = 0; i < THREAD_NUM; i++) {
@@ -50,6 +52,7 @@ int main(int argc, char **argv) {
     }
 
     while (1) {
+        //signal(SIGINT, Stop);
         usleep(100);
         int nfds = epoll_wait(epollfd, events, MAXEVENTS, -1);
         if (nfds < 0) {
@@ -77,5 +80,6 @@ int main(int argc, char **argv) {
             }
         }
     }
+
 	return 0;
 }

@@ -6,7 +6,7 @@
  ************************************************************************/
 
 #include "head.h"
-#include "common.h"
+
 char conf_value_ans[512] = {0};
 int make_non_block (int fd) {
     int flag;
@@ -44,6 +44,7 @@ char *get_conf(const char *conf, const char *key) {
         if (line[strlen(key)] == '=') {
             strncpy(conf_value_ans, sub + strlen(key) + 1, nread - strlen(key) - 2);
             *(conf_value_ans + nread - strlen(key) - 2) = '\0';
+            break;
         }
     }
     free(line);
@@ -58,6 +59,7 @@ int socket_create(int port) {
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) { //int socket(int domain, int type, int protocal);
         return -1;
     }
+    //重启地址
     int val = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR,(const char*)&val, sizeof(int)) < 0) {
         return -1;
@@ -89,5 +91,52 @@ int socket_connect(char *ip, int port){
     if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0) {
         return -1;
     }
+    return sockfd;
+}
+
+int socket_connect_timeout(char *host, int port, long timeout) {
+    int sockfd;
+    struct sockaddr_in server;
+    server.sin_family = AF_INET;
+    server.sin_port = htons(port);
+    server.sin_addr.s_addr = inet_addr(host);
+
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket");
+        return -1;
+    }
+    make_non_block(sockfd);
+    
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = timeout;
+
+    fd_set wfds;
+    FD_ZERO(&wfds);
+    FD_SET(sockfd, &wfds);
+
+    if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0) {
+        int retval, error = -1;
+        int len = sizeof(int);
+        retval = select(sockfd + 1, NULL, &wfds, NULL, &tv);
+        if (retval < 0) {
+            close(sockfd);
+            return -1;
+        } else if (retval) {
+            if (getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, (socklen_t *)&len) < 0) {
+                close(sockfd);
+                return -1;
+            }
+            if (error) {
+                close(sockfd);
+                return -1;
+            }
+        } else {
+            printf("Connect Time Out!\n");
+            close(sockfd);
+            return -1;
+        }
+    }
+    make_block(sockfd);
     return sockfd;
 }
