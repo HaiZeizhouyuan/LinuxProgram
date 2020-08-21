@@ -71,13 +71,17 @@ int main(int argc, char **argv) {
     pthread_create(&recv_t, NULL, client_recv, NULL);
 
     strcpy(msg.name, name);
-    msg.type = CHAT_PUB;
     while(1) {
+        msg.type = CHAT_PUB;
         bzero(msg.msg, sizeof(msg.msg));
         scanf("%[^\n]s", msg.msg);
         getchar();
-        send(sockfd, (void *)&msg, sizeof(msg), 0);
 
+        if (msg.msg[0] == '@') msg.type = CHAT_PRI;
+        if (msg.msg[0] == '#'){
+            msg.type = CHAT_FUNC;
+        }
+        send(sockfd, (void *)&msg, sizeof(msg), 0);      
     }
 	return 0;
 }

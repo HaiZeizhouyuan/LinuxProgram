@@ -10,9 +10,8 @@
 #define true 1
 #define FIN 0x01
 int main () {
-    int b = 0x04;
-    b |= FIN;
-    printf("%d\n", b);
-
+    char str[20] = {"hello "}, str2[20] = {"world"};
+    strcat(str, str2);
+    printf("%s\n", str);
     return 0;
 }

@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
         perror("socket_create()");
         exit(1);
     }
+    make_non
     DBG(GREEN"INFO"NONE": server started on port %d\n", port);
 	
     users = (struct User *)calloc(MAXUSER, sizeof(struct User));

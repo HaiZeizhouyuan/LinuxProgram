@@ -7,6 +7,7 @@
 
 #ifndef _HEAD_H
 #define _HEAD_H
+
 #include "color.h"
 #include "common.h"
 #include "datatype.h"
