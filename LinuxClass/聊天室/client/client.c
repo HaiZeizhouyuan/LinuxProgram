@@ -6,24 +6,29 @@
  ************************************************************************/
 
 #include "head.h"
+WINDOW *msg_win, *sub_msg_win, *input_win, *sub_input_win, *help_win, *sub_help_win;
 
 char *conf = "./chat.conf";
 char name[20] = {0};
 char server_ip[20] = {0};
-int sockfd;
+int sockfd, msg_num;
 
 void logout(int signum) {
+    DBG(RED"ctrl C!\n"NONE);
     struct ChatMsg msg;
     msg.type = CHAT_FIN;
     send(sockfd, (void *)&msg, sizeof(msg), 0);
-    if (recv(sockfd, (void *)&msg), sizeof(msg), 0) {
-        printf(GREEN"Bye 1\n"NONE);
+    if (recv(sockfd, (void *)&msg, sizeof(msg), 0) <= 0) {
+        sprintf(msg.msg, "Bye");
+        print_message(sub_msg_win, &msg, 1);
+        sleep(1);
+        endwin();
         exit(1);
     }
     
 }
 int main(int argc, char **argv) {
-    int opt, server_port = 0,sockfd;
+    int opt, server_port = 0;
     pthread_t recv_t;
     while ((opt = getopt(argc, argv, "p:h:n:")) != -1) {
         switch(opt) {
@@ -45,6 +50,7 @@ int main(int argc, char **argv) {
     if (!server_ip) strcpy(server_ip, get_conf(conf, "SERVERIP"));
     if (!strlen(name)) strcpy(name, get_conf(conf, "NAME"));
 
+    setlocale(LC_ALL, "en_GB.UTF-8");
     DBG(GREEN"INFO"NONE" : server_ip = %s, server_port = %d, name = %s\n", server_ip, server_port, name);
     if ((sockfd = socket_connect_timeout(server_ip, server_port, 100000)) < 0) {
         perror("socket_connect()");
@@ -66,22 +72,32 @@ int main(int argc, char **argv) {
         DBG(RED"Server returned Error"NONE" : login failed : %s\n", msg.msg);
         exit(1);
     }
-    DBG(RED"login success"NONE" : login success :%s\n, msg.msg");
-    signal(SIGINT, logout);
+    DBG(RED"login success"NONE" : login success :%s\n", msg.msg);
+    signal(SIGINT, logout);//如果^c则发送信号执行函数
     pthread_create(&recv_t, NULL, client_recv, NULL);
-
+    init_ui();
     strcpy(msg.name, name);
+    echo();
+    nocbreak();
+
     while(1) {
         msg.type = CHAT_PUB;
         bzero(msg.msg, sizeof(msg.msg));
-        scanf("%[^\n]s", msg.msg);
-        getchar();
-
+        w_gotoxy_puts(sub_input_win, 1, 1, "Input :");
+        DBG(RED"start scanf!\n"NONE);
+        mvwscanw(sub_input_win, 2, 2, "%[^\n]s", msg.msg);
+        DBG(RED"have scanf!\n"NONE);
+        if (!strlen(msg.msg)) continue;
         if (msg.msg[0] == '@') msg.type = CHAT_PRI;
-        if (msg.msg[0] == '#'){
-            msg.type = CHAT_FUNC;
-        }
-        send(sockfd, (void *)&msg, sizeof(msg), 0);      
+        if (msg.msg[0] == '#') msg.type = CHAT_FUNC;
+        int retval = send(sockfd, (void *)&msg, sizeof(msg), 0);      
+        DBG(RED"SEND"NONE" : %d bytes sent, %s\n", retval, msg.msg);
+        wclear(input_win);
+        box(input_win, 0, 0);
+        wrefresh(input_win);
     }
+
 	return 0;
 }
+
+

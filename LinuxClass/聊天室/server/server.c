@@ -11,9 +11,9 @@ char *conf = "./chat.conf";
 int epollfd;
 int maxfd = 0;
 struct User *users;
-
+int cnt_online = 0;
 int main(int argc, char **argv) {
-    int opt, port = 0, server_listen, sockfd, maxfd = 0;
+    int opt, port = 0, server_listen, sockfd;
     pthread_t heart_t;
     while((opt = getopt(argc, argv, "p:"))!= -1) {
         switch(opt) {
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
         perror("socket_create()");
         exit(1);
     }
-    make_non
+    //make_non_block(server_listen);
     DBG(GREEN"INFO"NONE": server started on port %d\n", port);
 	
     users = (struct User *)calloc(MAXUSER, sizeof(struct User));
@@ -65,17 +65,19 @@ int main(int argc, char **argv) {
 
     while (1) {
         int nfds = epoll_wait(epollfd, events, MAXEVENTS, -1);
+        DBG(RED"%d have events!\n"NONE, epollfd);
         if (nfds < 0) {
             perror("epoll_wait()");
             exit(1);
         }
         for (int i = 0; i < nfds; i++) {
             struct User *user = (struct User *)events[i].data.ptr;
-            if (user->fd == server_listen && (events[i].events & EPOLLIN)) {
-                if ((sockfd = accept(server_listen, NULL, NULL)) < 0) {
+            if ((user->fd == server_listen) && (events[i].events & EPOLLIN)) {
+               if ((sockfd = accept(server_listen, NULL, NULL)) < 0) {
                     perror("accept()");
                     exit(1);
                 }
+                //make_non_block(sockfd);
                 if (sockfd > maxfd) maxfd = sockfd;
                 DBG(L_GREEN"Acceptor"NONE" : Accept a new client!\n");
                 struct User newuser;
@@ -90,8 +92,10 @@ int main(int argc, char **argv) {
                 }
                 users[sub] = newuser;
                 add_event(epollfd, sockfd, EPOLLIN | EPOLLET, &users[sub]);
+                DBG(RED"start push\n"NONE);
                 task_queue_push(&taskQueue, &users[sub]);
             } else {
+                DBG(RED"start push 2 !\n"NONE);
                 if (events[i].events & EPOLLIN) {
                     task_queue_push(&taskQueue, user);
                 }
