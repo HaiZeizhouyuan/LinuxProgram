@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
     DBG(GREEN"INFO"NONE" : Thread poll created for worker\n");
 
-    users[0].fd = server_listen;
+   users[0].fd = server_listen;
     strcpy(users[0].name, "server_listen");
     strcpy(users[0].real_name, "server_listen");
     add_event(epollfd, server_listen, EPOLLIN, &users[0]);
