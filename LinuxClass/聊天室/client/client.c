@@ -94,15 +94,7 @@ int main(int argc, char **argv) {
         //if (!strlen(msg.msg)) continue;
         if (msg.msg[0] == '@') msg.type = CHAT_PRI;
         if (msg.msg[0] == '#') msg.type = CHAT_FUNC;
-        //send filename to sb;
-        if (strcmp(msg.msg, "send", 4) == 0) {
-            struct fileMsg fmsg;
-
-            for (int ) {}
-            msg.type = CHAT_FILE;
-            send_file(filename, sockfd);
-            continue;
-        }
+        //send filename to sb;     
         int retval = send(sockfd, (void *)&msg, sizeof(msg), 0);      
         DBG(RED"SEND"NONE" : %d bytes sent, %s\n", retval, msg.msg);
        // wclear(input_win);

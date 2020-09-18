@@ -12,6 +12,36 @@ char name[20] = {0};
 char server_ip[20] = {0};
 int sockfd, msg_num;
 
+
+void send_file(char *chatmsg, int sockfd) {
+    struct FileMsg fmsg;
+    struct ChatMsg msg;
+ 	msg.type = SEND_FILE;
+    char recv_name[20];
+    int i = 2;
+    for (; i < 100; i++) {
+        if (chatmsg[i] == ' ') break;
+    }
+    strncpy(msg.fmsg.filename, chatmsg + 2, i - 2);
+    strncpy(msg.fmsg.send_name, name, strlen(name));
+    strncpy(msg.fmsg.recv_name, chatmsg + i + 1, strlen(chatmsg) - i);
+    FILE *fp;
+    int nread;
+    char *buff = (char *)malloc(sizeof(char) *1024);
+    char *tmp = (char *)malloc(sizeof(char) * 1024);
+    fp = fopen(msg.fmsg.filename, "r");
+    while((nread = fread(tmp, 1, 1024, fp)) > 0) {
+        sprintf(buff, "%s%s", buff, tmp);
+        memset(tmp, 0, sizeof(tmp));
+    }
+    strncpy(msg.fmsg.buff, buff, strlen(buff));
+    msg.fmsg.size = strlen(buff);
+    DBG(YELLOW"msg.name :%s\n"NONE, msg.name);
+    send(sockfd, (void *)&msg, sizeof(msg), 0);
+    free(tmp);
+    return ;
+}
+
 void logout(int signum) {
     DBG(RED"ctrl C!\n"NONE);
     struct ChatMsg msg;
@@ -70,33 +100,25 @@ int main(int argc, char **argv) {
     signal(SIGINT, logout);//如果^c则发送信号执行函数
     pthread_create(&recv_t, NULL, client_recv, NULL);
     strcpy(msg.name, name);
-
+    struct FileMsg fmsg;
     while(1) {
         msg.type = CHAT_PUB;
         bzero(msg.msg, sizeof(msg.msg));
-        //DBG(RED"start scanf!\n"NONE);
         scanf("%[^\n]s", msg.msg);
         getchar();
-        //DBG(RED"have scanf!\n"NONE);
+        if (msg.msg[0] == '*') {
+            send_file(msg.msg, sockfd);
+            continue;
+        } 
         if (msg.msg[0] == '@') {
             DBG(BLUE"@ sb\n"NONE);
             msg.type = CHAT_PRI;
         }
-        if (msg.msg[0] == '#') msg.type = CHAT_FUNC;
-        if (msg.msg[0] == '*') {
-            msg.type = SEND_FILE;
-            char recv_name[20];
-            int i = 2;
-            for (; i < 100; i++) {
-                if (msg.msg[i] == ' ') break;
-            }
-            strncpy(msg.fmsg.filename, msg.msg + 2, i - 2);
-            strncpy(msg.fmsg.send_name, name, strlen(name));
-            strncpy(msg.fmsg.recv_name, msg.msg + i + 1, strlen(msg.msg) - i);
-            send_file(msg.fmsg.filename, sockfd);
-            continue;
+        if (msg.msg[0] == '#') {
+            msg.type = CHAT_FUNC;
         }
-        int retval = send(sockfd, (void *)&msg, sizeof(msg), 0);      
+        int retval = send(sockfd, (void *)&msg, sizeof(msg), 0);  
+        
         //DBG(RED"SEND"NONE" : %d bytes sent, %s\n", retval, msg.msg);
     }
 	return 0;
