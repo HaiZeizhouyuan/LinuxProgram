@@ -42,7 +42,7 @@
 #include "thread_pool.h"
 #include "client_recv.h"
 #include "chat_ui.h"
-
+#include "file.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

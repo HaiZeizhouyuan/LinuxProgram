@@ -12,39 +12,6 @@ char name[20] = {0};
 char server_ip[20] = {0};
 int sockfd, msg_num;
 
-
-void send_file(char *chatmsg, int sockfd) {
-    printf("msg: %s\n", chatmsg);
-    struct FileMsg fmsg;
-    struct ChatMsg msg;
-    bzero(&fmsg, sizeof(fmsg));
- 	msg.type = SEND_FILE;
-    char recv_name[20];
-    int i = 2;
-    for (; i < 100; i++) {
-        if (chatmsg[i] == ' ') break;
-    }
-
-    strncpy(msg.fmsg.filename, chatmsg + 2, i - 2);
-    strncpy(msg.fmsg.send_name, name, strlen(name));
-    strncpy(msg.fmsg.recv_name, chatmsg + i + 1, strlen(chatmsg) - i);
-    FILE *fp;
-    int nread;
-    char *buff = (char *)malloc(sizeof(char) * 6000);
-    char *tmp = (char *)malloc(sizeof(char) * 6000);
-    fp = fopen(msg.fmsg.filename, "r");
-    while((nread = fread(tmp, 1, 1024, fp)) > 0) {
-        sprintf(buff, "%s%s", buff, tmp);
-        memset(tmp, 0, sizeof(tmp));
-    }
-    strncpy(msg.fmsg.buff, buff, strlen(buff));
-    msg.fmsg.size = strlen(buff);
-   // DBG(BLUE"%s "RED"start send to %s"GREEN" %s!,"YELLOW" size : %ld\n"NONE, msg.fmsg.send_name, msg.fmsg.recv_name, msg.fmsg.filename, msg.fmsg.size);
-    send(sockfd, (void *)&msg, sizeof(msg), 0);
-    free(tmp);
-    return ;
-}
-
 void logout(int signum) {
     DBG(RED"ctrl C!\n"NONE);
     struct ChatMsg msg;
@@ -103,15 +70,15 @@ int main(int argc, char **argv) {
     signal(SIGINT, logout);//如果^c则发送信号执行函数
     pthread_create(&recv_t, NULL, client_recv, NULL);
     strcpy(msg.name, name);
-    struct FileMsg fmsg;
+
     while(1) {
         msg.type = CHAT_PUB;
         bzero(msg.msg, sizeof(msg.msg));
         scanf("%[^\n]s", msg.msg);
         getchar();
-        if (msg.msg[0] == '*') {
-            send_file(msg.msg, sockfd);
-            continue;
+        if (strcmp(msg.msg, "send", 4)) {
+            DBG(GREEN"send file!\n"NONE);
+            msg.type = SEND_FILE;
         } 
         if (msg.msg[0] == '@') {
             DBG(BLUE"@ sb\n"NONE);
