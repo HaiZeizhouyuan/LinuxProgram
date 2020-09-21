@@ -70,16 +70,30 @@ int main(int argc, char **argv) {
     signal(SIGINT, logout);//如果^c则发送信号执行函数
     pthread_create(&recv_t, NULL, client_recv, NULL);
     strcpy(msg.name, name);
-
     while(1) {
         msg.type = CHAT_PUB;
         bzero(msg.msg, sizeof(msg.msg));
         scanf("%[^\n]s", msg.msg);
         getchar();
-        if (strcmp(msg.msg, "send", 4)) {
+        if (strncmp(msg.msg, "send", 4) == 0) {
             DBG(GREEN"send file!\n"NONE);
-            msg.type = SEND_FILE;
-        } 
+            char filename[512];
+            int i = 5, flag = 0;
+            for (; i < strlen(msg.msg); i++) {
+                if (msg.msg[i] == ' ') {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag == 0) {
+                msg.type = SEND_FILE_ALL;
+                strcpy(msg.filemsg.name, msg.msg + 5);
+            } else {
+                msg.type = SEND_FILE_TO;
+                strncpy(msg.filemsg.name, msg.msg + 5, i - 5);
+                strcpy(msg.filemsg.recv_name, msg.msg + i + 1);
+            } 
+        }
         if (msg.msg[0] == '@') {
             DBG(BLUE"@ sb\n"NONE);
             msg.type = CHAT_PRI;

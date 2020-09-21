@@ -17,7 +17,8 @@
 #define CHAT_SYS 0x80
 #define CHAT_NAK 0x100
 #define CHAT_FIN_1 0x200
-#define SEND_FILE 0x900
+#define SEND_FILE_TO 0x500
+#define SEND_FILE_ALL 0x900
 #define FUNC_CHECK_ONLINE 0x01
 #define FUNC_CHANGE_NAME 0x02
 
@@ -32,17 +33,20 @@ struct User{
     int online;
 };
 
+struct FileMsg {
+    char name[512];
+    long size;
+    char buff[4096];
+    char recv_name[20];
+};
+
 struct ChatMsg {
     int type;
     int opt;
     char name[20];
     char msg[2000];
+    struct FileMsg filemsg;
 };
 
-struct FileMsg {
-    char name[512];
-    long size;
-    char buff[4096];
-};
 
 #endif

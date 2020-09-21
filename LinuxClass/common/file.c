@@ -11,6 +11,7 @@ char *re_filename(char *filename);
 void send_file(const char *filename, int sockfd) {
     FILE *fp = NULL;
     size_t size;
+    struct ChatMsg msg;
     struct FileMsg filemsg;
     char *p;
     if ((fp = fopen(filename, "rb")) == NULL) {//'b'以二进制打开
@@ -19,12 +20,12 @@ void send_file(const char *filename, int sockfd) {
     }
     memset(&filemsg, 0, sizeof(filemsg));
     fseek(fp, 0L, SEEK_END);//将指针移到文件末尾
-    filemsg.size = ftell(fp);//获取当前文件指针,得到文件的大小
+    msg.filemsg.size = ftell(fp);//获取当前文件指针,得到文件的大小
     fseek(fp, 0L, SEEK_SET);//将指针移到文件起始位置
-    strcpy(filemsg.name, (p = strrchr(filename, '/')) ? p + 1 : filename);// ./
-    while((size = fread(filemsg.buff, 1, sizeof(filemsg.buff), fp))) {
-        send(sockfd, (void *)&filemsg, sizeof(filemsg), 0);
-        memset(filemsg.buff, 0, sizeof(filemsg.buff));
+    strcpy(msg.filemsg.name, (p = strrchr(filename, '/')) ? p + 1 : filename);// ./
+    while((size = fread(msg.filemsg.buff, 1, sizeof(msg.filemsg.buff), fp))) {
+        send(sockfd, (void *)&msg, sizeof(msg), 0);
+        memset(msg.filemsg.buff, 0, sizeof(msg.filemsg.buff));
     }
     return ;
 }

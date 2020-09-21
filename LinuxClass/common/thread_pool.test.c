@@ -33,22 +33,32 @@ void get_name(int fd) {
 }
 
 void send_all(struct ChatMsg *msg) {
-    struct FileMsg fmsg;
     for (int i = 1; i <= maxfd; i++) {
         if (users[i].online == 1) {
             int a = 0;
             DBG(RED"have send : %d "NONE"%s\n", a++, msg->msg);
-            if (msg->type & SEND_FILE) {
-                DBG(BLUE"file msg : %s\n"NONE, msg->fmsg.buff);
-                memset(msg->fmsg.recv_name, 0, sizeof(msg->fmsg.recv_name));
-                strncpy(msg->fmsg.recv_name, users[i].name, strlen(users[i].name));
-            }
-            DBG(GREEN"read recv!, type : %d, size : %ld\n"NONE, msg->type, msg->fmsg.size);
             send(users[i].fd, (void *)msg, sizeof(struct ChatMsg), 0);
         }
     }
 }
 
+void send_file_to_every(struct ChatMsg *msg) {
+    for (int i = 1; i <= maxfd; i++) {
+        if (users[i].online == 1) {
+            send_file(msg->filemsg.name, users[i].fd);
+        }
+    }
+    return ;
+}
+
+void send_file_to_someone(struct ChatMsg *msg) {
+    for (int i = 1; i <= maxfd; i++) {
+        if (users[i].online && !strcmp(msg->filemsg.recv_name, users[i].chat_name)) {
+            DBG(BLUE"sys send %s to %s\n"NONE, msg->filemsg.name, msg->filemsg.recv_name);
+            send_file(msg->filemsg.name, users[i].fd);
+        }
+    }
+}
 
 void send_to_name(char *to, struct ChatMsg *msg, int fd) {
     DBG(RED"START send_to_name\n"NONE);
@@ -68,8 +78,6 @@ void send_to_name(char *to, struct ChatMsg *msg, int fd) {
         send(fd, (void *)msg, sizeof(struct ChatMsg), 0);
     }
 }
-
-
 
 void send_to (int fd, struct ChatMsg *msg) {
     DBG(RED"START send_to!\n"NONE);
@@ -121,19 +129,13 @@ void do_work (struct User *user) {
         user->online = 0;
         del_event(epollfd, user);
         cnt_online --;
-    } else if (msg.type & SEND_FILE) {
-
-        DBG(GREEN"Send FILE"NONE " :recv a file from %s, send to %s\n", user->chat_name, msg.fmsg.recv_name);
-        for (int i = strlen(msg.msg) - 1; i >= 0; i--) {
-
-        }
-
-        if (strncmp(msg.fmsg.recv_name, "all", strlen(msg.fmsg.recv_name)) == 0) {
-            send_all(&msg);
-
-        } else {
-            send_to_name(msg.fmsg.recv_name, &msg, user->fd);
-        }   
+    } else if (msg.type & SEND_FILE_ALL) {
+        DBG(GREEN"Send FILE"NONE " :recv a file from %s, send to every\n", 
+            user->chat_name);
+        send_file_to_every(&msg);
+    } else if (msg.type & SEND_FILE_TO){
+        DBG(GREEN"Send FILE"NONE " : %s send %s to you!\n", user->chat_name, msg.filemsg.name);
+        send_file_to_someone(&msg);
     } else if (msg.type & CHAT_FUNC) {
         DBG(YELLOW"type : chat_func\n"NONE);
         if (msg.msg[0] != '#') {
