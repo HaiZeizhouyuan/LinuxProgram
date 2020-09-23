@@ -7,6 +7,6 @@
 
 #ifndef _FILE_H
 #define _FILE_H
-void send_file(const char *filename, int sockfd);
+int send_file(const char *filename, int sockfd);
 void recv_file(int sockfd);
 #endif

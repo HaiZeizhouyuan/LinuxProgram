@@ -11,7 +11,7 @@ extern int epollfd;
 extern struct User *users;
 extern int maxfd;
 extern int cnt_online;
-char rand_name[50][20] = {"刘备", "关羽", "曹操", "诸葛亮", "周瑜", "鲁肃", "张飞"}; 
+char rand_name[50][20] = {"刘备", "关羽", "曹操", "诸葛亮", "周瑜", "鲁肃", "张飞", "荀彧", "荀攸","贾诩", "郭嘉"}; 
 void get_name(int fd) {
     struct ChatMsg msg;
     memset(&msg,0,sizeof(msg));
@@ -45,6 +45,7 @@ void send_all(struct ChatMsg *msg) {
 void send_file_to_every(struct ChatMsg *msg) {
     for (int i = 1; i <= maxfd; i++) {
         if (users[i].online == 1) {
+            DBG(GREEN"send %s to %s!\n"NONE, msg->filemsg.name, users[i].chat_name);
             send_file(msg->filemsg.name, users[i].fd);
         }
     }
@@ -77,8 +78,8 @@ void send_to_name(char *to, struct ChatMsg *msg, int fd) {
         msg->type = CHAT_SYS;
         send(fd, (void *)msg, sizeof(struct ChatMsg), 0);
     }
-}
 
+}
 void send_to (int fd, struct ChatMsg *msg) {
     DBG(RED"START send_to!\n"NONE);
     char to_name[20] = {0};
@@ -102,7 +103,64 @@ void do_work (struct User *user) {
     DBG(RED"START do_work!\n"NONE);
     struct ChatMsg msg;
     int re;
-    DBG(RED"server start recv!\n"NONE);
+    int fd;
+    pid_t pid;
+    if (user->is_send) {
+        DBG(RED"server start recv!\n"NONE);
+        while(1) {
+            if ((fd = accept(user->fd, NULL, NULL)) < 0) {
+                perror("accept");
+                return ;                       
+            }
+            if ((pid = fork()) < 0) {
+                perror("fork()");
+                return ;
+            }
+            if (pid == 0) {//child, 写
+                close(user->fd);
+                recv_file(user->fd);
+                return ;
+            } else {//father, 接收
+                close(user->fd);
+            }               
+            //if(recv_file(user->fd)) break;
+        }
+        DBG(L_PINK"reflesh!\n"NONE);
+        user->is_send = 0;
+         /*   if (msg.type & SEND_FILE_ALL) {
+        BG(GREEN"Send FILE"NONE " :recv %s from %s, send to every\n", msg.filemsg.name,
+                user->chat_name);
+        pid_t pid;
+        int fd;
+        while(1) {
+            if ((fd = accept(user->fd, NULL, NULL)) < 0) {
+                perror("accept");
+                return ;                       
+            }
+            if ((pid = fork()) < 0) {
+                perror("fork()");
+                return ;
+            }
+            if (pid == 0) {//child, 写
+                close(user->fd);
+                recv_file(user->fd);
+                return ;
+            } else {//father, 接收
+                close(user->fd);
+            }                
+        }
+        if(recv_file(user->fd)) {
+            send_file_to_every(&msg);
+        } else {
+            DBG(GREEN"sys recv %s is failed!\n"NONE, msg.filemsg.name);
+        }
+    } else if (msg.type & SEND_FILE_TO){
+        DBG(GREEN"Send FILE"NONE " : %s send %s to you!\n", user->chat_name, msg.filemsg.name);
+         recv_file(user->fd);
+        send_file_to_someone(&msg);
+    }*/
+        return ;
+    }
     recv(user->fd, &msg, sizeof(msg), 0);
     DBG(RED"mag:%d\n"NONE, msg.type);
     user->flag = 10;
@@ -129,13 +187,10 @@ void do_work (struct User *user) {
         user->online = 0;
         del_event(epollfd, user);
         cnt_online --;
-    } else if (msg.type & SEND_FILE_ALL) {
-        DBG(GREEN"Send FILE"NONE " :recv a file from %s, send to every\n", 
-            user->chat_name);
-        send_file_to_every(&msg);
-    } else if (msg.type & SEND_FILE_TO){
-        DBG(GREEN"Send FILE"NONE " : %s send %s to you!\n", user->chat_name, msg.filemsg.name);
-        send_file_to_someone(&msg);
+
+    } else if (msg.type & SEND_FILE) {
+        user->is_send = 1;
+        DBG(PINK"start recv file!\n"NONE);
     } else if (msg.type & CHAT_FUNC) {
         DBG(YELLOW"type : chat_func\n"NONE);
         if (msg.msg[0] != '#') {
@@ -146,8 +201,11 @@ void do_work (struct User *user) {
             get_name(user->fd);
         } else if (msg.msg[1] == '2') {
            strcpy(user->chat_name, rand_name[rand()%7]);
+        } else if (msg.msg[1] == '3') {
+            strcpy(user->chat_name, user->name);
         }
     }
+    return ;
 }
 
 void task_queue_init(struct task_queue *taskQueue, int size, int epollfd) {

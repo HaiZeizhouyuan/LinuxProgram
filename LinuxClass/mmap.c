@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
         handle_error("fstat()");
 
     offset = atoi(argv[2]);//字符串转整数　
-    pa_offset = offset & ~(sysconf(_SC_PAGE_SIZE) - 1);//sysconf在运行时获取配置信息，获取页面大小，pa_offset是获取需要映射到虚拟空间的大小
+    pa_offset = offset & ~(sysconf(_SC_PAGE_SIZE) - 1);//sysconf在运行时获取配置信息，获取页面大小，pa_offset是获取需要映射到虚拟空间的大小, 页对齐;
     /* offset for mmap() must be page aligned */
 
     if (offset >= sb.st_size) {//当截取的字节的起始位置大于读取文件时报错
