@@ -18,7 +18,7 @@
         exit(EXIT_FAILURE);\
     } while (0);\
 }
-
+//mmap filename off_t length
 int main(int argc, char *argv[]) {
     char *addr;
     int fd;

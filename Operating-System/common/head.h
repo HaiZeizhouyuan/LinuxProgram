@@ -35,6 +35,7 @@
 #include <sys/epoll.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include<sys/sem.h>
 #include "color.h"
 #include "common.h"
 #include "datatype.h"
