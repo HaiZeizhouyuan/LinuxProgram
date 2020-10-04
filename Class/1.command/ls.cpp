@@ -111,6 +111,7 @@ void size_window(char names[][MAXNAME], int cnt, int *row, int *col) {
             break;
         }
     }
+
     for (int i = try_begin; ; i--) {
         int *wide = (int *)malloc(sizeof(int) * i);//每列的宽度
         memset(wide, 0, sizeof(int) * i);
@@ -118,7 +119,7 @@ void size_window(char names[][MAXNAME], int cnt, int *row, int *col) {
         int sum = 0;
         for (int x = 0; x < i; x++) {//x是列
             for (int y = x * (*row); y < (x + 1) * (*row) && y < cnt; y++) {
-                if (wide[x] < len[y]) wide[x] = len[y];
+                if (wide[x] < len[y]) wide[x] = len[y];//获取每列的宽度
             }
             sum += (wide[x] + 1);
         }
@@ -141,10 +142,11 @@ void show_files(char names[][MAXNAME], int cnt, int row, int col) {
     }
 
     for (int i = 0; i < row; i++) {
-        for (int j = i; (j <= i + (row * col)) && j < cnt; j = j + row) {
+        //for (int j = i; (j <= i + (row * col)) && j < cnt; j = j + row) {
+        for (int j = i; (j < cnt); j += row) {
             lstat(names[j], &tmp_st);
             update_color(tmp_st.st_mode);
-            int wide_tmp = wide[j / row];
+            int wide_tmp = wide[j / row];//每列的宽度
             printf("\033[%d;%dm%-*s \033[0m", bg_c, fg_c, wide_tmp, names[j]);
         }
         printf("\n");
