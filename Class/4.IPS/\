@@ -1,0 +1,68 @@
+/*************************************************************************
+	> File Name: server1.c
+    erver1.c
+	> Author: 
+	> Mail: 
+	> Created Time: Mon Aug  3 17:06:44 2020
+ ************************************************************************/
+
+#include "head.h"
+#define MAXSIZE 1024
+#define INS 2
+
+char name[INS];
+
+struct Num {
+    char name[20];
+    char msg[1024];
+    pid_t pid;
+    pthread_mutex_t mutex;
+};
+
+struct Num *share_memory = NULL;
+
+void *do_print(int signum) {
+    pthread_mutex_lock(&share_memory->mutex);
+    printf(RED"<%s>"NONE":  %s\n",share_memory->name, share_memory->msg);
+    memset(share_memory->msg, 0 ,sizeof(share_memory->msg));
+    memset(share_memory->name,0, sizeof(share_memory->name));
+    pthread_mutex_unlock(&share_memory->mutex);
+    return NULL;
+}
+
+
+
+int main (int argc, char **argv) {
+    pid_t pid;
+    int shmid;
+    key_t key = ftok(".", 2109);
+    if (shmid = shmget(key, sizeof(struct Num), IPC_CREAT | 0666) < 0) {
+        perror("shmget()");
+        exit(1);
+    }
+
+    if ((share_memory = (struct Num *)shmat(shmid, NULL, 0)) == NULL) {
+        perror("shmat()");
+        exit(1);
+    }
+
+    memset(share_memory, 0, sizeof(struct Num));
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);//PTHREAD_PROCESS_SHREAD可共享，锁是进程的
+    pthread_mutex_init(&share_memory->mutex, &attr);
+    share_memory->pid = getpid();
+
+    while(1) {
+        printf("Please Input :");
+        share_memory->pid = getppid();
+    	scanf("%[^\n]s", share_memory->name,share_memory->msg );
+    	getchar();
+		pthread_mutex_lock(&share_memory->mutex);
+    	kill(share_memory->pid, SIGUSR1);        
+    	pthread_mutex_unlock(&share_memory->mutex);    
+    }
+   
+}
+
+
