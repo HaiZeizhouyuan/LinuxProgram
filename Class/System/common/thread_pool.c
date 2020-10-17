@@ -176,7 +176,7 @@ struct User *task_queue_pop(struct task_queue *taskQueue) {
     //惊群效应
     while (empty(taskQueue)) {
         DBG(PINK"<Dbug>"NONE" : taskQueue is empty!\n");
-        pthread_cond_wait(&taskQueue->cond, &taskQueue->mutex);//解锁，等待信号
+        pthread_cond_wait(&taskQueue->cond, &taskQueue->mutex);//等待信号, 当有信号时上锁
     }
     struct User *user = taskQueue->users[taskQueue->head];
     taskQueue->total -= 1;
