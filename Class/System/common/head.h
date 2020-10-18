@@ -7,7 +7,6 @@
 
 #ifndef _HEAD_H
 #define _HEAD_H
-
 #include <pthread.h>
 #include <arpa/inet.h>
 #include <stdio.h>
@@ -36,6 +35,7 @@
 #include <sys/stat.h>
 #include <sys/sem.h>
 #include <sys/statfs.h>
+#include "cJSON.h"
 #include "color.h"
 #include "common.h"
 #include "datatype.h"
@@ -43,6 +43,7 @@
 #include "thread_pool.h"
 #include "client_recv.h"
 #include "file.h"
+#include "parse_conf.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

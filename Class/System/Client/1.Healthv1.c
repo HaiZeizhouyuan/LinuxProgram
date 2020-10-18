@@ -8,12 +8,22 @@
 #include "../common/head.h"
 #include "./health.h"
 
-struct Share *share_memory = NULL;
 
+
+struct Share *share_memory = NULL;
+cJSON *conf = NULL;
 void doing_process(int who) {
     char msg[512] = {0};
-    strcpy(msg, who ? "Salve" : "Master");
+    char config_p[30];
+    char desc[20];
+    int port;
+    strcpy(msg, who ? "Slave" : "Master");
+    sprintf(config_p, "%s%s", msg, "Port");
+    port = get_json_valueint(conf, msg, config_p);
+    strcpy(desc, get_json_valuestring(conf, msg, "Desc"));
     printf("I'm %s\n", msg);
+    printf("port = %d, desc = %s\n", port, desc);
+    
 }
 
 int main() {
@@ -36,7 +46,6 @@ int main() {
 
     DBG(GREEN"Share Mem memset success...\n"NONE);
     
-
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
     pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
@@ -54,6 +63,15 @@ int main() {
     DBG(GREEN"Program set to be Master default...\n"NONE);
     DBG(GREEN"Forking...\n"NONE);
 
+    DBG(GREEN"Checking config file...\n"NONE);
+    char buff[512] = {0};
+    conf = get_cjson("./conf.json");
+    if (conf == NULL) {
+        perror("get_string()");
+        exit(1);
+    }
+    
+    
     pid_t pid;
     int x = 0;
     for (int i = 0; i < 2; i++) {
