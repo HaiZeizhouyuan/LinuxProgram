@@ -12,8 +12,9 @@ int epollfd;
 int maxfd = 0;
 struct User *users;
 int cnt_online = 0;
+int server_listen;
 int main(int argc, char **argv) {
-    int opt, port = 0, server_listen, sockfd;
+    int opt, port = 0, sockfd;
     pthread_t heart_t;
     while((opt = getopt(argc, argv, "p:"))!= -1) {
         switch(opt) {
@@ -57,7 +58,7 @@ int main(int argc, char **argv) {
 
     users[0].fd = server_listen;
     strcpy(users[0].name, "server_listen");
-    strcpy(users[0].real_name, "server_listen");
+  //  strcpy(users[0].real_name, "server_listen");
     add_event(epollfd, server_listen, EPOLLIN, &users[0]);
 
     pthread_create(&heart_t, NULL, heart_beat, NULL);
@@ -97,7 +98,9 @@ int main(int argc, char **argv) {
             } else {
                 DBG(RED"start push 2 !\n"NONE);
                 if (events[i].events & EPOLLIN) {
-                    task_queue_push(&taskQueue, user);
+                    if (user->file_flag == 0) {
+                        task_queue_push(&taskQueue, user);
+                    }
                 }
 
             }

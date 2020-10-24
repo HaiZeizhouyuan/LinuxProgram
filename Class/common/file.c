@@ -9,7 +9,6 @@
 char *re_filename(char *filename);
 
 void send_file(const char *filename, int sockfd) {
-    printf("start send!\n");
     FILE *fp = NULL;
     size_t size;
     struct FileMsg filemsg;
@@ -29,12 +28,12 @@ void send_file(const char *filename, int sockfd) {
         usleep(100);
         memset(filemsg.buff, 0, sizeof(filemsg.buff));
     }
-    printf("end send!\n");
+    DBG(GREEN"end send!\n"NONE);
     return ;
 }
 
 void recv_file(int sockfd) {
-    printf("start recv!\n");
+    DBG(RED"start recv!\n"NONE);
     size_t recv_size, total_size = 0, write_size = 0;
     long left_size;
     struct FileMsg packet_t, packet, packet_pre;
@@ -77,18 +76,6 @@ void recv_file(int sockfd) {
                 break;
             }
         }
-
-        /*if (!cnt) {
-            DBG(BLUE"Start recv file %s, with size %ld!\n"NONE, packet.name, packet.size);
-            char name[1024] = {0};
-            sprintf(name, "./data/%s", packet.name);
-            if ((fp = fopen(name, "wb")) == NULL) {
-                perror("fopen()");
-                return ;
-            }
-        }*/
-        
-
         DBG(RED"offset : %ld!\n"NONE,offset);
         if (!cnt) {
             char path[30];
@@ -117,10 +104,7 @@ void recv_file(int sockfd) {
             break;
         }
     }
-    //if (offset) {
-    //    DBG(RED"have offset!\n"NONE);
-  //  }
-    printf("have finish send!\n");
+    DBG(BLUE"have finish send!\n"NONE);
     fclose(fp);
     return ;
 }

@@ -46,9 +46,9 @@
 #include "chat_ui.h"
 #include "file.h"
 #ifdef _D
-#define DBG(fmt, args...) printf(fmt, ##args);
+#define DBG(fmt, args...) printf(fmt, ##args); //将后面的参数加到后面，　如果没有参数则将'.'删除
 #else 
-#define DBG(fmt, args...) 
+#define DBG(fmt, args...)  //如果定义了，预编译时会删掉这个宏　
 #endif
 
 #endif

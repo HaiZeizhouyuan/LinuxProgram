@@ -54,14 +54,14 @@ int main (int argc, char **argv) {
     if (pid == 0) {
         while(1) {
             if (strlen(share_memory->buff)) continue;
-                pthread_mutex_lock(&share_memory->mutex);
-                DBG(GREEN"<Debug>"NONE " : locked in child\n");
-                printf("child input:");
-                scanf("%[^\n]s", share_memory->buff);
-                getchar();
-                DBG(PINK"<Child>"NONE" : %s\n", share_memory->buff);
-                pthread_mutex_unlock(&share_memory->mutex);
-                //usleep(20);
+            pthread_mutex_lock(&share_memory->mutex);
+            DBG(GREEN"<Debug>"NONE " : locked in child\n");
+            printf("child input:");
+            scanf("%[^\n]s", share_memory->buff);
+            getchar();
+            DBG(PINK"<Child>"NONE" : %s\n", share_memory->buff);
+            pthread_mutex_unlock(&share_memory->mutex);
+            //usleep(20);
         }
     } else {
         do_printf();

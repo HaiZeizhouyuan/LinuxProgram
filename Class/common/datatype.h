@@ -17,7 +17,8 @@
 #define CHAT_SYS 0x80
 #define CHAT_NAK 0x100
 #define CHAT_FIN_1 0x200
-#define SEND_FILE 0x500
+#define RECV_READY 0x2100
+#define RECV_END 0x3000
 #define SEND_FILE_TO 0x800
 #define SEND_FILE_ALL 0x1000
 #define SEND_FAIL 0x1021
@@ -27,13 +28,13 @@
 struct User{
     char name[20];
     char chat_name[20];
-    char real_name[20];
+    //char real_name[20];
     int flag;//心跳次数
     char ip[20];
     char id[20];
     int fd;
     int online;
-    int is_send;
+    int file_flag;
 };
 
 struct FileMsg {
@@ -49,7 +50,6 @@ struct ChatMsg {
     int opt;
     char name[20];
     char msg[2000];
-    struct FileMsg filemsg;
 };
 
 

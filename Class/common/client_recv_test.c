@@ -7,6 +7,7 @@
 
 #include "head.h"
 extern int sockfd;
+extern char filename[20];
 void *client_recv(void *arg) {
     struct ChatMsg msg;
     struct FileMsg fmsg;
@@ -31,12 +32,10 @@ void *client_recv(void *arg) {
         } else if (msg.type & (CHAT_FIN_1 | CHAT_FIN)) {
             printf(GREEN"Bye!\n"NONE);
             exit(1);
-        } else if (msg.type & SEND_FILE_ALL) {
-            printf("%s send %s to every!\n", msg.name, msg.filemsg.name);
-            recv_file(sockfd);
-        } else if (msg.type & SEND_FILE_TO) {
-            printf("%s send %s to you!\n", msg.name, msg.filemsg.name);
-            recv_file(sockfd);
+        } else if (msg.type & RECV_READY ) {
+            DBG(RED"recv response start send %s!\n"NONE, filename);
+            send_file(filename, sockfd);
+            DBG(BLUE"have send finish %s!\n"NONE, filename);
         }
     }
 }

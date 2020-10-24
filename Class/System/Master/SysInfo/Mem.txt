@@ -1,0 +1,10 @@
+time                   total available  used(%)  mic average of occupancy percentage
+2020-10-20__10:46:07   2000M     1732M     3.3%                                 2.3%
+time                   total available  used(%)  mic average of occupancy percentage
+2020-10-20__10:50:29   2000M     1732M     3.3%                                 2.3%
+time                   total available  used(%)  mic average of occupancy percentage
+2020-10-20__11:05:40   2000M     1732M     3.3%                                 2.3%
+time                   total available  used(%)  mic average of occupancy percentage
+2020-10-20__14:26:57   2000M     1732M     3.3%                                 2.3%
+time                   total available  used(%)  mic average of occupancy percentage
+2020-10-20__15:34:33   2000M     1732M     3.3%                                 2.3%

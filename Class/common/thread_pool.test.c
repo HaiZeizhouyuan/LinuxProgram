@@ -11,6 +11,7 @@ extern int epollfd;
 extern struct User *users;
 extern int maxfd;
 extern int cnt_online;
+extern int server_listen;
 void get_name(int fd) {
     struct ChatMsg msg;
     memset(&msg,0,sizeof(msg));
@@ -41,7 +42,7 @@ void send_all(struct ChatMsg *msg) {
     }
 }
 
-void send_file_to_every(struct ChatMsg *msg) {
+/*void send_file_to_every(struct ChatMsg *msg) {
     for (int i = 1; i <= maxfd; i++) {
         if (users[i].online == 1) {
             DBG(GREEN"send %s to %s!\n"NONE, msg->filemsg.name, users[i].chat_name);
@@ -49,9 +50,9 @@ void send_file_to_every(struct ChatMsg *msg) {
         }
     }
     return ;
-}
+}*/
 
-void send_file_to_someone(struct ChatMsg *msg) {
+/*void send_file_to_someone(struct ChatMsg *msg) {
     for (int i = 1; i <= maxfd; i++) {
         if (users[i].online && !strcmp(msg->filemsg.recv_name, users[i].chat_name)) {
             DBG(BLUE"sys send %s to %s\n"NONE, msg->filemsg.name, msg->filemsg.recv_name);
@@ -59,7 +60,7 @@ void send_file_to_someone(struct ChatMsg *msg) {
         }
     }
 }
-
+*/
 void send_to_name(char *to, struct ChatMsg *msg, int fd) {
     DBG(RED"START send_to_name\n"NONE);
     int flag = 0;
@@ -101,58 +102,8 @@ void send_to (int fd, struct ChatMsg *msg) {
 void do_work (struct User *user) {
     DBG(RED"START do_work!\n"NONE);
     struct ChatMsg msg;
-    int re;
-    int fd;
-    pid_t pid;
-    if (user->is_send == 1) {
-        DBG(RED"server start recv!\n"NONE);            
-        /*if(!recv_file(user->fd)) {
-            memset(&msg, 0, sizeof(struct ChatMsg));
-            msg.type = CHAT_SYS;
-            sprintf(msg.msg, "sys recv file failed !\n");
-            send(user->fd, (void *)&msg, sizeof(struct ChatMsg), 0);
-        
-        }*/
-        recv_file(user->fd);
-        DBG(L_PINK"reflesh!\n"NONE);
-        user->is_send = 0;
-        return ;
-    }
-        /*   if (msg.type & SEND_FILE_ALL) {
-        BG(GREEN"Send FILE"NONE " :recv %s from %s, send to every\n", msg.filemsg.name,
-                user->chat_name);
-        pid_t pid;
-        int fd;
-        while(1) {
-            if ((fd = accept(user->fd, NULL, NULL)) < 0) {
-                perror("accept");
-                return ;                       
-            }
-            if ((pid = fork()) < 0) {
-                perror("fork()");
-                return ;
-            }
-            if (pid == 0) {//child, 写
-                close(user->fd);
-                recv_file(user->fd);
-                return ;
-            } else {//father, 接收
-                close(user->fd);
-            }                
-        }
-        if(recv_file(user->fd)) {
-            send_file_to_every(&msg);
-        } else {
-            DBG(GREEN"sys recv %s is failed!\n"NONE, msg.filemsg.name);
-        }
-    } else if (msg.type & SEND_FILE_TO){
-        DBG(GREEN"Send FILE"NONE " : %s send %s to you!\n", user->chat_name, msg.filemsg.name);
-         recv_file(user->fd);
-        send_file_to_someone(&msg);
-    }
-        return ;
-    }*/
-    if (user->is_send == 0) recv(user->fd, &msg, sizeof(msg), 0);
+    DBG(RED"server start recv!\n"NONE);            
+    recv(user->fd, &msg, sizeof(msg), 0);
     DBG(RED"mag:%d\n"NONE, msg.type);
     user->flag = 10;
     DBG(RED"Start select type!\n"NONE);
@@ -179,12 +130,37 @@ void do_work (struct User *user) {
         del_event(epollfd, user);
         cnt_online --;
 
-    } else if (msg.type & SEND_FILE) {
-        user->is_send = 1;
-        DBG(PINK"sys start recv file!\n"NONE);
-    } else if (msg.type & SEND_FAIL){
-        user->is_send = 0;
-        DBG(PINK"sys recv file failed!\n"NONE);
+    } else if (msg.type & SEND_FILE_ALL) {
+        DBG(BLUE"Have File !\n"NONE);
+        memset(&msg, 0, sizeof(struct ChatMsg));
+        msg.type = RECV_READY;
+        send(user->fd, (void *)&msg, sizeof(msg), 0);
+        user->file_flag = 1;
+        memset(&msg, 0, sizeof(struct ChatMsg));
+        int fd;
+        pid_t pid;
+     /*   while(1) {
+            if ((fd = accept(server_listen, NULL, NULL)) < 0) {
+                perror("accept");
+                exit(1);                     
+            }
+            if ((pid = fork()) < 0) {
+                perror("fork()");
+                exit(1);                    
+            }
+            if (pid == 0) {
+                close(server_listen);
+                recv_file(fd);
+                exit(0);
+            } else {
+                close(fd);
+            }
+        }*/
+        recv_file(user->fd);
+        user->file_flag = 0;
+        msg.type = RECV_END;
+        send(user->fd, (void *)&msg, sizeof(msg), 0);
+        DBG(GREEN"Sys recv finish file\n"NONE);
     } else if (msg.type & CHAT_FUNC) {
         DBG(BLUE"type : chat_func! msg.msg : %d\n"NONE, msg.msg[1]);
         if (msg.msg[0] != '#') {
@@ -199,15 +175,22 @@ void do_work (struct User *user) {
             if (strcmp(user->chat_name, user->name) != 0) {
                 memset(&msg, 0, sizeof(struct ChatMsg));
                 msg.type = CHAT_SYS;
-                sprintf(msg.msg, "你已匿名!\n");
+                sprintf(msg.msg, "你已匿名!");
                 send(user->fd, (void *)&msg, sizeof(msg), 0);
             } else {
                 strcpy(user->chat_name, rand_name[rand()%7]);
             }
         } else if (msg.msg[1] == '3') {
-            printf("real_name : %s, chat_name : %s\n", user->name, user->chat_name);
-            memset(user->chat_name, 0, sizeof(user->chat_name));
-            strcpy(user->chat_name, user->name);
+            if (strcmp(user->name, user->chat_name) == 0) {
+                memset(&msg, 0, sizeof(struct ChatMsg));
+                msg.type = CHAT_SYS;
+                sprintf(msg.msg, "你没有匿名, 无法解除匿名!");
+                send(user->fd, (void *)&msg, sizeof(msg), 0);
+            } else {
+                printf("real_name : %s, chat_name : %s\n", user->name, user->chat_name);
+                memset(user->chat_name, 0, sizeof(user->chat_name));
+                strcpy(user->chat_name, user->name);
+            }
         }
     }
     return ;

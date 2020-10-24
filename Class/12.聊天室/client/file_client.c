@@ -6,7 +6,7 @@
  ************************************************************************/
 
 #include "head.h"
-//./a.out 47.94.34.228 8888 name
+//./a.out 47.94.34.228 8888 file   ---- IP port name
 int main(int argc, char **argv) {
     if (argc != 4) {
         fprintf(stderr, "Usage: %s is port path_of_file!\n", argv[0]);

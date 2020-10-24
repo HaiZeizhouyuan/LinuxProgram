@@ -7,7 +7,6 @@
 
 #include "head.h"
 
-
 cJSON *get_cjson(const char *file) {
     FILE *f = NULL;
     char *buff = (char *)calloc(512 , sizeof(char));
@@ -23,8 +22,7 @@ cJSON *get_cjson(const char *file) {
         fprintf(stderr, "Buffer is less than the len of file!\n");
         return NULL;
     }
-    const cJSON *master = NULL;
-    const cJSON *slave = NULL;
+    
     cJSON *conf = NULL;
     if ((conf = cJSON_Parse(buff)) == NULL) {
         const char *err_ptr = cJSON_GetErrorPtr();
@@ -40,25 +38,31 @@ cJSON *get_cjson(const char *file) {
 
 int get_json_valueint(cJSON *conf, const char *who, const char *config) {
     const cJSON *user = NULL;
-    int val = -1;
     user = cJSON_GetObjectItemCaseSensitive(conf, who);
     cJSON *user_port = cJSON_GetObjectItemCaseSensitive(user, config);
-    val = user_port->valueint;
     
 end :
     //cJSON_Delete(conf);
-    return val;
+    return user_port->valueint;
 }
 
 char *get_json_valuestring(cJSON *conf, const char *who, const char *config) {
     cJSON *user = NULL;
-    char *str = (char *)calloc(512, sizeof(char));
     user = cJSON_GetObjectItemCaseSensitive(conf, who);
     cJSON *user_desc = cJSON_GetObjectItemCaseSensitive(user, config);
-    strcpy(str, user_desc->valuestring);
 end :
     //cJSON_Delete(conf);
-    return str;
+    return user_desc->valuestring;
 }
 
+int get_timer(cJSON *slave, const char *info) {
+    cJSON *sla = NULL;
+  //  printf("%s\n", info);
+    sla = cJSON_GetObjectItemCaseSensitive(slave, "Slave");
+    cJSON *sla_time = cJSON_GetObjectItemCaseSensitive(sla, "Timer");
+    cJSON *in = cJSON_GetObjectItemCaseSensitive(sla_time, info);
+    DBG(BLUE"get slave info success...\n"NONE);
+end :
+    return in->valueint;
+}
 

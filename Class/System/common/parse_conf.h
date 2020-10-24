@@ -10,8 +10,6 @@
 cJSON *get_cjson(const char *file);
 int get_json_valueint(cJSON *conf, const char *who, const char *config);
 char *get_json_valuestring(cJSON *conf, const char *who, const char *config);
+int get_timer(cJSON *slave, const char *info);
 
-
-//int parse_conf(char *string);
-//int get_string(const char *file, char *buff, size_t size);
 #endif

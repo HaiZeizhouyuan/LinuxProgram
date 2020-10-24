@@ -11,7 +11,7 @@ char *conf = "./chat.conf";
 char name[20] = {0};
 char server_ip[20] = {0};
 int sockfd, msg_num;
-
+char filename[20] = {0};
 void logout(int signum) {
     DBG(RED"ctrl C!\n"NONE);
     struct ChatMsg msg;
@@ -83,44 +83,45 @@ int main(int argc, char **argv) {
         if (msg.msg[0] == '#') {
             msg.type = CHAT_FUNC;
         }
+        //send file sb;
+
         if (strncmp(msg.msg, "send", 4) == 0) {
             pid_t pid;
-            if (pid = fork() < 0) {
-                perror("fork");
-                exit(1);
+
+            int black_flag = 0, file_loc, name_loc;
+            for (int i = 0; i < strlen(msg.msg); i++) {
+                if (msg.msg[i] == ' ') {
+                    black_flag += 1;
+                    if (black_flag == 1) file_loc = i;
+                    if (black_flag == 2) name_loc = i;
+                }
             }
-            if (pid != 0) {
-            msg.type = SEND_FILE;
-            DBG(GREEN"send file!\n"NONE);
+            DBG(RED"msg: %s, file_loc = %d, name_loc = %d\n"NONE, msg.msg, file_loc, name_loc);
+            if (black_flag == 0) {//send;
+                printf("The format of your send file is wrong\n");
+                continue;
+            } else if (black_flag == 1) { //send file
+                DBG(BLUE"send file to all\n"NONE);
+                msg.type = SEND_FILE_ALL;
+                strcpy(filemsg.name, msg.msg + file_loc + 1);
+                strcpy(filemsg.recv_name, "NULL");
+            } else { //send file name
+                DBG(BLUE"send file to sb\n"NONE);
+                msg.type = SEND_FILE_TO;
+                strncpy(filemsg.name, msg.msg + file_loc + 1, name_loc - file_loc - 1);
+                strcpy(filemsg.recv_name, msg.msg + name_loc + 1);
+            }
+            strcpy(filename, filemsg.name);
+            DBG(RED"Filename is %s, recv_name is %s\n"NONE, filemsg.name, filemsg.recv_name);
             send(sockfd, (void *)&msg, sizeof(msg), 0);
-            } else {
-            
-            bzero(msg.msg, sizeof(msg.msg));
-            scanf("%[^\n]s", msg.msg);
-            getchar();
-            int i = 0;
-            for (; i < strlen(msg.msg); i++) {
-                if (msg.msg[i] == ' ') break;
-            }
-            if (i == strlen(msg.msg)) {
-                filemsg.type = SEND_FILE_ALL;
-                strcpy(filemsg.name, msg.msg);
-            } else {
-                filemsg.type = SEND_FILE_TO;
-                strncpy(filemsg.name, msg.msg, i);
-                strncpy(filemsg.recv_name, msg.msg + i + 1, strlen(msg.msg) - 1 - i);
-            }
-            send_file(filemsg.name, sockfd);
-          /*  if (!send_file(filemsg.name, sockfd)) {
-                printf("send %s failed!", filemsg.name);
-                msg.type = SEND_FAIL;
-                send(sockfd, (void *)&msg, sizeof(msg), 0);
-            }*/
-            sleep(1);
-            DBG(GREEN"FILE:"NONE" : type : %d, filename : %s, recv_name : %s!\n", msg.type, filemsg.name, filemsg.recv_name);
+            bzero(&msg, sizeof(msg));
+            recv(sockfd, (void *)&msg, sizeof(msg), 0);
+            if (msg.type & RECV_END) {
+                DBG(GREEN"FILE:"NONE" : type : %d, filename : %s, recv_name : %s!\n", msg.type, filemsg.name, filemsg.recv_name);
+                printf("File have send finish!\n");
+                continue;
             } 
-            continue;
-        } 
+        }
         
         int retval = send(sockfd, (void *)&msg, sizeof(msg), 0);  
         

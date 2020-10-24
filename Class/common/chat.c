@@ -67,7 +67,6 @@ int do_login(struct User *user, struct ChatMsg *msg) {
         sprintf(msg->msg, "%s, you have login Success!", msg->name);
         msg->type = CHAT_ACK;
         send(user->fd, msg, sizeof(msg), 0);
-        user->is_send = 0;
         user->online = 1;
         user->flag = 10; 
         strcpy(user->name, msg->name);

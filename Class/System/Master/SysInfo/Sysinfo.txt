@@ -1,0 +1,6 @@
+2020-10-20__10:46:07  HaiZei Ubuntu_16.04.6_LTS__　4.4.0-176-generic up_26_weeks,_22_hours,_42_minutes 0.14 0.05 0.02 41152812 12% 2000M 3%  normal normal normal
+2020-10-20__10:50:29  HaiZei Ubuntu_16.04.6_LTS__　4.4.0-176-generic up_26_weeks,_22_hours,_47_minutes 0.02 0.03 0.00 41152812 12% 2000M 3%  normal normal normal
+2020-10-20__11:04:15  HaiZei Ubuntu_16.04.6_LTS__　4.4.0-176-generic up_26_weeks,_23_hours 0.04 0.02 0.00 41152812 12% 2000M 3%  normal normal normal
+2020-10-20__11:05:40  HaiZei Ubuntu_16.04.6_LTS__　4.4.0-176-generic up_26_weeks,_23_hours,_2_minutes 0.05 0.03 0.00 41152812 12% 2000M 3%  normal normal normal
+2020-10-20__14:26:57  HaiZei Ubuntu_16.04.6_LTS__　4.4.0-176-generic up_26_weeks,_1_day,_2_hours,_23_minutes 0.11 0.03 0.01 41152812 12% 2000M 3%  normal normal normal
+2020-10-20__15:34:33  HaiZei Ubuntu_16.04.6_LTS__　4.4.0-176-generic up_26_weeks,_1_day,_3_hours,_31_minutes 0.14 0.04 0.01 41152812 12% 2000M 3%  normal normal normal

@@ -44,6 +44,7 @@
 #include "client_recv.h"
 #include "file.h"
 #include "parse_conf.h"
+#include "get_info.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 
