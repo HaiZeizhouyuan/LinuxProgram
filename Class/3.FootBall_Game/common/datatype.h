@@ -19,7 +19,7 @@ struct Bpoint {
 struct User {
     int team; // 0 RED  1 BLUE
     int fd; //该玩家对应的连接
-    char name[20];
+    char name[20]; //姓名
     int online;// 1 在线 0 不在线
     int flag; //未响应次数
     struct Point loc;
@@ -75,16 +75,17 @@ struct Ctl{
     int diry;
     int strength;
 };
-//type的值
-#define FT_HEART 0x01
-#define FT_ACK 0x02
+//type的值, 0x为16进制
+#define FT_HEART 0x01 //心跳
+#define FT_ACK 0x02　//确认
 #define FT_MSG 0x04  //私聊，队友之间
-#define FT_WALL 0x08
-#define FT_CTL 0x10
+#define FT_WALL 0x08 //广播
+#define FT_CTL 0x10　
 #define FT_MAP 0x20 //场地数据
 #define FT_FIN 0x40
 #define FT_SCORE 0x80
 #define FT_GAMEOVER 0x100
+
 #define MAX_MSG 1024
 
 struct FootBallMsg {

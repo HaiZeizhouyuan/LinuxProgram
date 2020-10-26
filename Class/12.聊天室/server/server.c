@@ -13,6 +13,7 @@ int maxfd = 0;
 struct User *users;
 int cnt_online = 0;
 int server_listen;
+// ./a.out -p 8888
 int main(int argc, char **argv) {
     int opt, port = 0, sockfd;
     pthread_t heart_t;
@@ -98,9 +99,7 @@ int main(int argc, char **argv) {
             } else {
                 DBG(RED"start push 2 !\n"NONE);
                 if (events[i].events & EPOLLIN) {
-                    if (user->file_flag == 0) {
-                        task_queue_push(&taskQueue, user);
-                    }
+                    task_queue_push(&taskQueue, user);
                 }
 
             }

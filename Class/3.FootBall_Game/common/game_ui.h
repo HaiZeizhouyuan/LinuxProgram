@@ -1,12 +1,12 @@
 /*************************************************************************
-	> File Name: chat_ui.h
+	> File Name: game_ui.h
 	> Author: zhouyuan
 	> Mail: 
 	> Created Time: 2020年08月23日 星期日 14时07分55秒
  ************************************************************************/
 
-#ifndef _CHAT_UI_H
-#define _CHAT_UI_H
+#ifndef _GAME_UI_H
+#define _GAME_UI_H
 
 #define MSG_WIDTH 80
 #define MSG_HEIGHT 20

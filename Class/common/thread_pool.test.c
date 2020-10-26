@@ -9,6 +9,7 @@
 #include "anonymous.txt"
 extern int epollfd;
 extern struct User *users;
+struct FileMsg filemsg;
 extern int maxfd;
 extern int cnt_online;
 extern int server_listen;
@@ -42,15 +43,15 @@ void send_all(struct ChatMsg *msg) {
     }
 }
 
-/*void send_file_to_every(struct ChatMsg *msg) {
+void send_file_to_every(char *filename) {
     for (int i = 1; i <= maxfd; i++) {
         if (users[i].online == 1) {
-            DBG(GREEN"send %s to %s!\n"NONE, msg->filemsg.name, users[i].chat_name);
-            send_file(msg->filemsg.name, users[i].fd);
+            DBG(GREEN"send %s to every!\n"NONE, users[i].name);
+            send_file(filename, users[i].fd);
         }
     }
     return ;
-}*/
+}
 
 /*void send_file_to_someone(struct ChatMsg *msg) {
     for (int i = 1; i <= maxfd; i++) {
@@ -100,6 +101,7 @@ void send_to (int fd, struct ChatMsg *msg) {
 }
 
 void do_work (struct User *user) {
+    if (user->issend == 1) return ;
     DBG(RED"START do_work!\n"NONE);
     struct ChatMsg msg;
     DBG(RED"server start recv!\n"NONE);            
@@ -131,33 +133,16 @@ void do_work (struct User *user) {
         cnt_online --;
 
     } else if (msg.type & SEND_FILE_ALL) {
+        recv(user->fd, (void *)&filemsg, sizeof(filemsg), 0);
         DBG(BLUE"Have File !\n"NONE);
         memset(&msg, 0, sizeof(struct ChatMsg));
         msg.type = RECV_READY;
         send(user->fd, (void *)&msg, sizeof(msg), 0);
-        user->file_flag = 1;
+        user->issend = 1;
         memset(&msg, 0, sizeof(struct ChatMsg));
-        int fd;
-        pid_t pid;
-     /*   while(1) {
-            if ((fd = accept(server_listen, NULL, NULL)) < 0) {
-                perror("accept");
-                exit(1);                     
-            }
-            if ((pid = fork()) < 0) {
-                perror("fork()");
-                exit(1);                    
-            }
-            if (pid == 0) {
-                close(server_listen);
-                recv_file(fd);
-                exit(0);
-            } else {
-                close(fd);
-            }
-        }*/
         recv_file(user->fd);
-        user->file_flag = 0;
+        send_file_to_every(filemsg.name);
+        user->issend = 0;
         msg.type = RECV_END;
         send(user->fd, (void *)&msg, sizeof(msg), 0);
         DBG(GREEN"Sys recv finish file\n"NONE);

@@ -34,7 +34,7 @@ struct User{
     char id[20];
     int fd;
     int online;
-    int file_flag;
+    int issend;
 };
 
 struct FileMsg {

@@ -114,6 +114,7 @@ int main(int argc, char **argv) {
             strcpy(filename, filemsg.name);
             DBG(RED"Filename is %s, recv_name is %s\n"NONE, filemsg.name, filemsg.recv_name);
             send(sockfd, (void *)&msg, sizeof(msg), 0);
+            send(sockfd, (void *)&filemsg, sizeof(filemsg), 0);
             bzero(&msg, sizeof(msg));
             recv(sockfd, (void *)&msg, sizeof(msg), 0);
             if (msg.type & RECV_END) {

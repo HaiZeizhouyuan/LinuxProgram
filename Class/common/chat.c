@@ -48,7 +48,7 @@ int do_login(struct User *user, struct ChatMsg *msg) {
     DBG(RED"START do_login!\n"NONE);
     int online = 0;
     for (int i = 1; i <= maxfd; i++) {
-        if (users[i],online && !strcmp(msg->name, users[i].name)) {
+        if (users[i].online && !strcmp(msg->name, users[i].name)) {
             online = 1;
             break;
         }
@@ -82,7 +82,7 @@ void *heart_beat(void *arg) {
     struct ChatMsg msg;
     msg.type = CHAT_HEART;
     while (1) {
-        sleep(100);
+        sleep(10);
         for (int i = 1; i <= maxfd; i++) {
             if(users[i].online == 1) {
                 send(users[i].fd, (void *)&msg, sizeof(msg), 0);

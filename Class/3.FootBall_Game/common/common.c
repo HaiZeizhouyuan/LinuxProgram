@@ -38,13 +38,13 @@ int socket_create_udp(int port) {
         return -1;
     }
 
-    setnonblocking(server_listen);//设为非阻塞套接字
     //重启地址
     int val = 1;
     if (setsockopt(server_listen, SOL_SOCKET, SO_REUSEADDR,(const char*)&val, sizeof(int)) < 0) {
         return -1;    
     }
 
+    setnonblocking(server_listen);//设为非阻塞套接字
     struct sockaddr_in server; //创建表单名server;
     server.sin_family = AF_INET; //协议族
     server.sin_port = htons(port);//本地字节序转换成网络字节序的短整形
@@ -53,7 +53,7 @@ int socket_create_udp(int port) {
         perror("bind()");
         return -1;
     }
-    setblocking(server_listen);
+    //setblocking(server_listen);
     DBG(GREEN"Server socket create success...\n"NONE);
     return server_listen;
 
@@ -62,6 +62,7 @@ int socket_create_udp(int port) {
 int socket_udp() {
     int sockfd;//创建端口名
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+        perror("socket");
         return -1;        
     }
     DBG(GREEN"Socket create success...\n"NONE);

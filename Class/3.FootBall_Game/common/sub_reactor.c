@@ -5,7 +5,7 @@
 	> Created Time: 2020年10月23日 星期五 10时36分52秒
  ************************************************************************/
 #include "head.h"
-#define NTHREAD 30
+#define NTHREAD 10
 #define MAX 30 
 void *sub_reactor(void *arg) {
     struct task_queue *taskQueue = (struct task_queue *)arg;
@@ -16,7 +16,7 @@ void *sub_reactor(void *arg) {
     struct epoll_event ev, events[MAX];
     int fds;
     while(1) {
-        nfds = epoll_wait(taskQueue->epollfd, events, MAX, -1);
+        int nfds = epoll_wait(taskQueue->epollfd, events, MAX, -1);
         if (nfds == -1) {
             perror("epoll_wait()");
             exit(1);
@@ -27,5 +27,5 @@ void *sub_reactor(void *arg) {
             }
         }
     }
-    return ;
+    return NULL;
 }

@@ -9,6 +9,8 @@
 #define _HEAD_H
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <dirent.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,11 +19,10 @@
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
-#include <dirent.h>
 #include <math.h>
 #include <mntent.h>
+#include <ncurses.h>
 #include <locale.h>
-#include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 #include <sys/time.h>
@@ -41,7 +42,9 @@
 #include "common.h"
 #include "get_cjson_value.h"
 #include "udp_epoll.h"
+#include "sub_reactor.h"
 #include "thread_pool.h"
+#include "./heart_beat.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

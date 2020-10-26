@@ -1,0 +1,25 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+MAX_TEAM	client.c	9;"	d	file:
+blue_sockfd	client.c	/^int red_sockfd, blue_sockfd;$/;"	v
+blue_team	client.c	/^struct User *blue_team;$/;"	v	typeref:struct:User
+chat_msg	client.c	/^char chat_msg[512];$/;"	v
+chat_msg	client_test.c	/^char chat_msg[512] = {0};$/;"	v
+conf	client.c	/^char *conf = ".\/football.json";$/;"	v
+main	client.c	/^int main(int argc, char **argv) {$/;"	f
+main	client_test.c	/^int main(int argc, char **argv) {$/;"	f
+name	client.c	/^char name[20] = {0};$/;"	v
+red_sockfd	client.c	/^int red_sockfd, blue_sockfd;$/;"	v
+red_team	client.c	/^struct User *red_team;$/;"	v	typeref:struct:User
+server_ip	client.c	/^char server_ip[20] = {0};$/;"	v
+server_ip	client_test.c	/^char server_ip[20] = {0};$/;"	v
+server_port	client.c	/^int sockfd = -1, team = -1, server_port = 0;$/;"	v
+server_port	client_test.c	/^int sockfd = -1, team = -1, server_port = 0;$/;"	v
+sockfd	client.c	/^int sockfd = -1, team = -1, server_port = 0;$/;"	v
+sockfd	client_test.c	/^int sockfd = -1, team = -1, server_port = 0;$/;"	v
+team	client.c	/^int sockfd = -1, team = -1, server_port = 0;$/;"	v
+team	client_test.c	/^int sockfd = -1, team = -1, server_port = 0;$/;"	v

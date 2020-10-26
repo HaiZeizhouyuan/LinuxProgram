@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
     if (strlen(chat_msg) == 0) strcpy(chat_msg, get_cjson_value(conf, "LOGMSG"));
     DBG(GREEN"Get server_port = %d, server_ip = %s, name = %s, team = %d, LOGMSG = %s  success!\n"NONE, server_port, server_ip, name, team, chat_msg);
 
-    *red_team = (struct User *)calloc(MAX_TEAM, sizoef(struct User));
-    *blue_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
+    red_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
+    blue_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
 
     struct sockaddr_in server;
     server.sin_family = AF_INET;
@@ -66,38 +66,39 @@ int main(int argc, char **argv) {
         exit(1);
     }
     
-    DBG(GREEN"sockfd create udp success...\n"NONE);
+    DBG(GREEN"client create success...\n"NONE);
     strcpy(request.msg, chat_msg);
     sendto(sockfd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&server, len);
-
-    fd_set rfds;
+    
+    fd_set wfds;
     struct timeval tv;
     int retval;
 
-    FD_ZERO(&rfds);
-    FD_SET(0, &rfds);
+    FD_ZERO(&wfds);
+    FD_SET(sockfd, &wfds);
     //设置超时时间为５秒，0毫秒
     tv.tv_sec = 5;
     tv.tv_usec = 0;
 
-    retval = select(1, &rfds, NULL, NULL, &tv);
-
+    retval = select(sockfd + 1, NULL, &wfds, NULL, &tv);
 
     if (retval < 0) { //出错
         perror("select()");
         exit(1);
-    } else if (retval) { //超时
+    } else if (retval) {
         int ret = recvfrom(sockfd, (void *)&response, sizeof(response), 0,(struct sockaddr *)&server, &len);
-        if (ret != sizeof(response) || response.type) {
+        if (ret != sizeof(response) || response.type) { //response.type == 1服务端是拒绝连接
             printf("The Game Server refused your logion.\n\tThis May be helpful:%s\n", response.msg);
             exit(1);
         }
-    } else {
+    } else {//超时
         printf("The Game Server is out of service!.\n");
         exit(1);
     }
     printf("Server : %s\n", response.msg);
     connect(sockfd, (struct sockaddr *)&server, len);
-
+    pthread_t recv_t;
+    pthread_create(&recv_t, NULL, client_recv, NULL);
+    
     return 0;
 }

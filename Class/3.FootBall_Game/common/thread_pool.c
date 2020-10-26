@@ -11,12 +11,12 @@ extern int epollfd;
 extern struct User *users;
 extern int maxfd;
 
-void thread_run(struct User *user) {
+void do_work(struct User *user) {
     struct FootBallMsg msg;
     if (recv(user->fd, (void *)&msg, sizeof(msg), 0) <= 0) {
         return ;
     }
-    if ( )
+    
 }
 
 void task_queue_init(struct task_queue *taskQueue, int size, int epollfd) {
@@ -76,11 +76,11 @@ struct User *task_queue_pop(struct task_queue *taskQueue) {
 
 void *thread_run (void *arg) {
     DBG(RED"START thread_run!\n"NONE);
-    pthread_detach(pthread_self());//分离线程，　其他线程不用在等待
+    pthread_detach(pthread_self());//分离线程,其他线程不用在等待
     struct task_queue *taskQueue = (struct task_queue *)arg;
     while (1) {
         struct User *user = task_queue_pop(taskQueue);
-        thread_run(user);
+        do_work(user);
     }
 }
 
