@@ -7,14 +7,39 @@
 
 #include "head.h"
 
-extern int epollfd;
+extern int epollfd, red_epollfd, blue_epollfd;
 extern struct User *users;
 extern int maxfd;
-
 void do_work(struct User *user) {
     struct FootBallMsg msg;
-    if (recv(user->fd, (void *)&msg, sizeof(msg), 0) <= 0) {
+    struct sockaddr_in client;
+    socklen_t len = sizeof(client);
+    DBG(BLUE"Server Start Recv!\n"NONE);
+    bzero(&msg, sizeof(msg));
+    int ret = recv(user->fd, (void *)&msg, sizeof(msg), 0);
+    if (ret != sizeof(msg)) {
+        perror("recvfrom()");
         return ;
+    }
+    DBG(BLUE"Have recv msg success!\n"NONE);
+    user->flag = 10;
+    if (msg.type & FT_WALL) {
+        DBG(BLUE"[ WALL ]"NONE" : %s say %s\n", msg.name, msg.msg);
+        send_all(&msg);
+        
+    } else if (msg.type & FT_MSG) {
+        DBG(BLUE"[TEAM]"NONE" : %s say %s \n", msg.name, msg.msg);
+        if (user->team) send_team(blue_team, &msg);
+        else send_team(red_team, &msg);
+    } else if (msg.type & FT_FIN) {
+        DBG(L_PINK"Chat Fin"NONE " :recv a CHAT_FIN from %s\n", user->name);
+        send(user->fd, (void *)&msg, sizeof(msg), 0);
+        DBG(L_PINK"Chat Fin"NONE" : send a CHAT_FIN_1 to %s\n", user->name);
+        user->online = 0;
+        //加锁
+        int tmp_epollfd = ( user->team ? blue_epollfd : red_epollfd);
+        del_event(tmp_epollfd, user->fd);
+        close(user->fd);
     }
     
 }

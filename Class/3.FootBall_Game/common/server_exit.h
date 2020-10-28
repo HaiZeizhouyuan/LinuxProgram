@@ -1,11 +1,12 @@
 /*************************************************************************
-	> File Name: client_recv.h
+	> File Name: server_exit.h
 	> Author: zhouyuan
 	> Mail: 3294207721@qq.com 
-	> Created Time: 2020年10月26日 星期一 21时23分24秒
+	> Created Time: 2020年10月28日 星期三 11时40分19秒
  ************************************************************************/
 
-#ifndef _CLIENT_RECV_H
-#define _CLIENT_RECV_H
-void *client_recv(void *arg);
+#ifndef _SERVER_EXIT_H
+#define _SERVER_EXIT_H
+
+void server_exit(int signum);
 #endif

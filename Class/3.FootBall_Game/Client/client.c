@@ -68,6 +68,8 @@ int main(int argc, char **argv) {
     
     DBG(GREEN"client create success...\n"NONE);
     strcpy(request.msg, chat_msg);
+    strcpy(request.name, name);
+    request.team = team;
     sendto(sockfd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&server, len);
     
     fd_set wfds;
@@ -99,6 +101,23 @@ int main(int argc, char **argv) {
     connect(sockfd, (struct sockaddr *)&server, len);
     pthread_t recv_t;
     pthread_create(&recv_t, NULL, client_recv, NULL);
+    struct FootBallMsg msg;
+    strcpy(msg.name, name);
+    msg.team = team;
+    signal(SIGINT, client_exit);
+    msg.type = FT_WALL;
+    while(1) {
+        bzero(&msg.msg, sizeof(msg.msg));
+        scanf("%[^\n]s", msg.msg);
+        getchar();
+        if (strcmp(msg.msg, "#1") == 0) {
+            msg.type = FT_MSG;
+            continue;
+        }
+        int ret = send(sockfd, (void *)&msg, sizeof(msg), 0);
+        DBG(BLUE"Send Msg have success!, ret = %d\n"NONE, ret);
+
+    }
     
     return 0;
 }

@@ -44,7 +44,12 @@
 #include "udp_epoll.h"
 #include "sub_reactor.h"
 #include "thread_pool.h"
-#include "./heart_beat.h"
+#include "heart_beat.h"
+#include "client_recv.h"
+#include "game_ui.h"
+#include "./server_exit.h"
+#include "./server_send_all.h"
+#include "./client_exit.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

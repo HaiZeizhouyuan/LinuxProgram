@@ -54,6 +54,7 @@ int socket_create_udp(int port) {
         return -1;
     }
     //setblocking(server_listen);
+    setnonblocking(server_listen);
     DBG(GREEN"Server socket create success...\n"NONE);
     return server_listen;
 

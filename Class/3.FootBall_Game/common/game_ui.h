@@ -1,8 +1,8 @@
 /*************************************************************************
 	> File Name: game_ui.h
 	> Author: zhouyuan
-	> Mail: 
-	> Created Time: 2020年08月23日 星期日 14时07分55秒
+	> Mail: 3294207721@qq.com 
+	> Created Time: 2020年10月28日 星期三 10时50分26秒
  ************************************************************************/
 
 #ifndef _GAME_UI_H
@@ -20,6 +20,7 @@ void gotoxy_putc(int x,int y, char c);
 void gotoxy_puts(int x,int y, char *s);
 void w_gotoxy_putc(WINDOW *win, int x,int y, char c);
 void w_gotoxy_puts(WINDOW *win, int x,int y, char *s);
-void init_ui();
-void print_message(WINDOW *win, struct ChatMsg *msg, int type);
+void initfootball();
+//void print_message(WINDOW *win, struct ChatMsg *msg, int type);
+
 #endif

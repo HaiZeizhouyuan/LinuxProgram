@@ -6,7 +6,13 @@
  ************************************************************************/
 
 #include "head.h"
-int extern MAX;
+extern int port; //服务端的全局变量
+extern struct User *red_team;
+extern struct User *blue_team;
+extern int red_epollfd, blue_epollfd;
+extern pthread_mutex_t red_mutex, blue_mutex;
+
+
 //将user添加到epollfd中, 监控user发生events事件
 void add_event_ptr(int epollfd, int fd, int events, struct User *user) {
     struct epoll_event ev;
@@ -33,9 +39,11 @@ int udp_connect(struct sockaddr_in *client) {
         perror("socket_create_udp()");
         return -1;
     }
-    if (connect(sockfd, (struct sockaddr *)&client, sizeof(struct sockaddr_in)) < 0) {
+    if (connect(sockfd, (struct sockaddr *)client, sizeof(struct sockaddr)) < 0) {
+        perror("connect()");
         return -1;    
     }
+    DBG(GREEN"udp connect success!\n"NONE);
     return sockfd;
 
 }
@@ -48,13 +56,17 @@ int udp_accept(int fd, struct User *user) {
     struct LogRequest request;
     struct LogResponse response;
     socklen_t len = sizeof(client);
+
     char log_faile[30] = {"Login failed with Data errors!"};
     char log_success[30] = {"Login Success, Enjoy Yourself"};
     char re_log[30] = {"You Have login!\n"};
+
     //初始化必要的结构体
     bzero(&request,  sizeof(request));
     bzero(&response, sizeof(response));
+
     ret = recvfrom(fd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&client, &len);
+
     if (ret != sizeof(request)) {
         response.type = 1;
         strcpy(response.msg, log_faile);
@@ -75,29 +87,39 @@ int udp_accept(int fd, struct User *user) {
     }
     strcpy(user->name, request.name);
     user->team = request.team;
-    user->fd = fd;
-    strcpy(user->name, request.name);
+    user->fd = new_fd;
     response.type = 0;
     strcpy(response.msg, log_success);
-    printf("%s\n", request.msg);
-    sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
-    DBG(BLUE"server response log success!"NONE);
+
+    printf("%s : %s\n", request.name, request.msg);
+    sendto(user->fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
+    
+    DBG(BLUE"%s %s log success!\n"NONE, user->team ? "Blue Team" : "Red Team", user->name);
     return new_fd;
 }
 
 //在确定允许用户登录前，需要判断是否重复登录
 int check_online(struct LogRequest *request) {
-    int online = 0;
-    struct LogResponse response;
     for (int i = 0; i < MAX_TEAM; i++) {
-        if(red_team[i].online && !strcmp(red_team[i].name, request->name)) return 1;
-        if(blue_team[i].online && !strcmp(blue_team[i].name, request->name)) return 1;
+        if(red_team[i].online && !strcmp(red_team[i].name, request->name)) {
+            DBG(YELLOW"<RELOG>"NONE" : red_team_user : %s , request_user : %s\n", red_team[i].name, request->name);
+            return 1;
+        }
+        if(blue_team[i].online && !strcmp(blue_team[i].name, request->name)) {
+            DBG(YELLOW"<RELOG>"NONE" : blue_team_user : %s , request_user : %s\n", blue_team[i].name, request->name);
+            return 1;
+        }
     }
     return 0;
 }
 
 void add_to_sub_reactor(struct User *user) {
     struct User *team = (user->team ? blue_team : red_team);
+    if (user->team) {
+        pthread_mutex_lock(&blue_mutex);
+    } else {
+        pthread_mutex_lock(&red_mutex);
+    }
     int loc;
     //找到空闲的位置
     for (int i = 0; i < MAX_TEAM; i++) {
@@ -110,10 +132,20 @@ void add_to_sub_reactor(struct User *user) {
     team[loc] = *user;
     team[loc].online = 1;
     team[loc].flag = 10;
+    if (user->team) {
+        pthread_mutex_unlock(&blue_mutex);
+    } else {
+        pthread_mutex_unlock(&red_mutex);
+    }
+
+    struct FootBallMsg msg;
+    msg.type = FT_WALL;
+    sprintf(msg.msg, "You good friend %s have login!\n", user->name);
+    send_all(&msg);
     int user_epollfd = (user->team ? blue_epollfd : red_epollfd);
-    if (user->team) add_event_ptr(blue_epollfd, user->fd, EPOLLIN | EPOLLET, &team[loc]);
-    else add_event_ptr(red_epollfd, user->fd, EPOLLIN | EPOLLET, &team[loc]);
-    DBG(BLUE"%s have insert %d success!\n"NONE, user->name, user->team);
+    if (user->team) add_event_ptr(blue_epollfd, team[loc].fd, EPOLLIN | EPOLLET, &team[loc]);
+    else add_event_ptr(red_epollfd, team[loc].fd, EPOLLIN | EPOLLET, &team[loc]);
+    DBG(BLUE"%s have insert %d success!, loc is %d\n"NONE, user->name, user->team, loc);
 }
 
 

@@ -8,10 +8,6 @@
 #ifndef _UDP_EPOLL_H
 #define _UDP_EPOLL_H
 #define MAX_TEAM 11
-extern int port; //服务端的全局变量
-extern struct User *red_team;
-extern struct User *blue_team;
-extern int red_epollfd, blue_epollfd;
 
 void add_event_ptr(int epollfd, int fd, int events, struct User *user);
 void del_event(int epollfd, int fd);

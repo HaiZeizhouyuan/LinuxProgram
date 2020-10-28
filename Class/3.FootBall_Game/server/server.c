@@ -13,8 +13,15 @@ char msg[30] = {0};
 int port = 0;
 struct LogResponse response;
 struct LogRequest request;
+struct Map court;
+struct Point start;
 struct User *red_team, *blue_team, *users;
 int epollfd, red_epollfd, blue_epollfd;
+WINDOW *Football, *Football_t, *Message, *Help, *Score, *Write;
+struct Bpoint ball;
+struct BallStatus ball_status;
+pthread_mutex_t red_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t blue_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 //./a.out -p 8888
 int main(int argc, char **argv) {
@@ -36,9 +43,17 @@ int main(int argc, char **argv) {
     }
     
     if (port == 0) port = atoi(get_cjson_value(conf, "SERVERPORT"));
+    court.width = atoi(get_cjson_value(conf, "COLS"));
+    court.height = atoi(get_cjson_value(conf, "LINES"));
 
+    court.start.x = 3;
+    court.start.y = 3;
+
+    ball.x = court.width / 2;
+    ball.y = court.width / 2;
+    bzero(&ball_status, sizeof(ball_status));
     DBG(BLUE"Get Port = %d seuccess!\n"NONE, port);
-    
+
     if ((server_listen = socket_create_udp(port)) < 0) {
         //创建端口，　等待客户端的连接
         perror("socket_create_udp()");
@@ -46,9 +61,9 @@ int main(int argc, char **argv) {
     }
     DBG(GREEN"server create scuuess...\n"NONE);
 
-    epollfd = epoll_create(2);//参数可忽略，大于零即可
-    red_epollfd = epoll_create(1);
-    blue_epollfd = epoll_create(1);
+    epollfd = epoll_create(2 * MAX_TEAM);//参数可忽略，大于零即可
+    red_epollfd = epoll_create(MAX_TEAM);
+    blue_epollfd = epoll_create(MAX_TEAM);
     if (epollfd < 0 || red_epollfd < 0 || blue_epollfd < 0) {
         //创建监控红队和蓝队的监控
         perror("epoll_create()");
@@ -60,6 +75,7 @@ int main(int argc, char **argv) {
     //创建红队和蓝队的队列．
     struct task_queue Red_Queue;
     struct task_queue Blue_Queue;
+
     task_queue_init(&Red_Queue, MAX_TEAM, red_epollfd);
     task_queue_init(&Blue_Queue, MAX_TEAM, blue_epollfd);
     
@@ -73,40 +89,37 @@ int main(int argc, char **argv) {
     DBG(BLUE"INFO"NONE": Thread poll created for worker!\n");
     
     struct epoll_event ev, events[MAX_TEAM * 2];
-    users[0].fd = server_listen;
-    strcpy(users[0].name, "server_listen");
-    add_event_ptr(epollfd, server_listen, EPOLLIN, &users[0]);
+    ev.events = EPOLLIN;
+    ev.data.fd = server_listen;
 
-    pthread_create(&heart_t, NULL, heart_beat, NULL);//处理心跳
-    
+    epoll_ctl(epollfd, EPOLL_CTL_ADD, server_listen, &ev);
+    //initfootball();
+    pthread_create(&heart_t, NULL, heart_beat, NULL);//处理心跳 
+    signal(SIGINT, server_exit);
     while(1) {
+        DBG(GREEN"Epollfd Start Wait events!\n"NONE);
         int nfds = epoll_wait(epollfd, events, MAX_TEAM * 2, -1);
         DBG(BLUE"%d have %d events!\n"NONE, epollfd, nfds);
-        printf("nfds: %d\n", nfds);
         if (nfds < 0) {
             perror("epoll_wait()");
             exit(1);
         }
         
     	for(int i = 0; i < nfds; i++) {
-        	struct User *user = (struct User *)events[i].data.ptr;
-            if ((user->fd == server_listen) && (events[i].events & EPOLLIN)) {
+            if (events[i].data.fd == server_listen) {
                 //监测到有新用户    
                 DBG(L_GREEN"Acceptor"NONE" : Accept a new client!\n");
                 struct User user;
+                bzero(&user, sizeof(user));
                 int new_fd = udp_accept(server_listen, &user);
+                DBG(BLUE"new_fd is %d\n"NONE, new_fd);
                 if (new_fd > 0) {
                     //是新用户，并且连接成功，开始插入
+                    printf("Welcome %s Join Our Game\n", user.name);
                     add_to_sub_reactor(&user);
                     DBG(BLUE"Add %s to %s success!\n"NONE, user.name, user.team ? "Blue Team" : "Red Team");
                 }
-            } else {
-                if (events[i].events & EPOLLIN) { 
-                    //监测到老用户有事件发生
-                    if (user->team) task_queue_push(&Blue_Queue, user);
-                    else task_queue_push(&Red_Queue, user);
-                }
-	        }
+            } 
         }
     }
     return 0;

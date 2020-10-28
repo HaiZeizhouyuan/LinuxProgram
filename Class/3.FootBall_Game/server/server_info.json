@@ -1,4 +1,6 @@
 {
     "SERVERIP" : "47.94.34.228" ,
-    "SERVERPORT" : "8888"
+    "SERVERPORT" : "8888" ,
+    "COLS": "50",
+    "LINES" : "60"
 }

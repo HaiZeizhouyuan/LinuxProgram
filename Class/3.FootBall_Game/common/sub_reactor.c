@@ -6,17 +6,17 @@
  ************************************************************************/
 #include "head.h"
 #define NTHREAD 10
-#define MAX 30 
+#define MAX_TEAM 11 
 void *sub_reactor(void *arg) {
     struct task_queue *taskQueue = (struct task_queue *)arg;
     pthread_t *tid = (pthread_t *)calloc(NTHREAD, sizeof(pthread_t));
     for (int i = 0; i < NTHREAD; i++) {
         pthread_create(&tid[i], NULL, thread_run, (void *)taskQueue);
     }
-    struct epoll_event ev, events[MAX];
-    int fds;
+    struct epoll_event ev, events[MAX_TEAM];
     while(1) {
-        int nfds = epoll_wait(taskQueue->epollfd, events, MAX, -1);
+        DBG(RED"Sub Rector"NONE": Epoll Waiting...\n");
+        int nfds = epoll_wait(taskQueue->epollfd, events, MAX_TEAM, -1);
         if (nfds == -1) {
             perror("epoll_wait()");
             exit(1);

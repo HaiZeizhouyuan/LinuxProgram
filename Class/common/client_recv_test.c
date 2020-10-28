@@ -22,8 +22,8 @@ void *client_recv(void *arg) {
             printf(BLUE"%s"NONE" : %s\n", msg.name, msg.msg);
         } else if (msg.type & CHAT_HEART) {
             DBG(RED"❤"NONE": heart beat from server!\n");
-            msg.type = CHAT_ACK;
-            send(sockfd, (void *)&msg, sizeof(msg), 0);
+            //msg.type = CHAT_ACK;
+           // send(sockfd, (void *)&msg, sizeof(msg), 0);
         } else if (msg.type & CHAT_PRI) {
             DBG(RED"chat sb\n"NONE);
             printf(RED"%s"GREEN"*"NONE": %s\n", msg.name, msg.msg);

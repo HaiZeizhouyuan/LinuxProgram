@@ -18,20 +18,25 @@ void *client_recv(void *arg) {
         }
         DBG(BLUE"type : %d\n"NONE, msg.type);
         if(msg.type & CHAT_PUB) {
+            //公聊
             DBG(GREEN"have chat_pub!\n"NONE);
             printf(BLUE"%s"NONE" : %s\n", msg.name, msg.msg);
             //print_message(sub_msg_win, &msg, 0);
         } else if (msg.type & CHAT_HEART) {
+            //心跳
             DBG(RED"❤"NONE": heart beat from server!\n");
             msg.type = CHAT_ACK;
             send(sockfd, (void *)&msg, sizeof(msg), 0);
         } else if (msg.type & CHAT_PRI) {
+            //私聊
             printf(BLUE"%s"GREEN"*"NONE": %s\n", msg.name, msg.msg);
             //print_message(sub_msg_win, &msg, 0);
         } else if (msg.type & CHAT_SYS) {
+            //系统信息
             printf(L_PINK"%s"NONE" :%s\n","Server Info", msg.msg);
             //print_message(sub_msg_win, &msg, 1);
         } else if (msg.type & (CHAT_FIN_1 | CHAT_FIN)) {
+            //下线
             printf(GREEN"Bye!\n"NONE);
            // sprintf(msg.msg, "Bye!");
            // print_message(sub_msg_win, &msg, 1);

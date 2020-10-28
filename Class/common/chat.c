@@ -82,9 +82,10 @@ void *heart_beat(void *arg) {
     struct ChatMsg msg;
     msg.type = CHAT_HEART;
     while (1) {
-        sleep(10);
+        sleep(5);
         for (int i = 1; i <= maxfd; i++) {
             if(users[i].online == 1) {
+                DBG(BLUE"Heart Beart Have %d!\n"NONE, users[i].flag);
                 send(users[i].fd, (void *)&msg, sizeof(msg), 0);
                 if (--users[i].flag <= 0) {
                     DBG(PINK"Heart Beart"NONE" : %s is offline by heart_beat\n", users[i].name);

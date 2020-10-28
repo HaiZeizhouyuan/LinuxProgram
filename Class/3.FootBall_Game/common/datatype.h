@@ -11,6 +11,8 @@ struct Point {
     int x;
     int y;
 };
+
+//球的坐标
 struct Bpoint {
     double x;
     double y;
@@ -22,7 +24,7 @@ struct User {
     char name[20]; //姓名
     int online;// 1 在线 0 不在线
     int flag; //未响应次数
-    struct Point loc;
+    struct Point loc; //用户坐标
 };
 
 //登录相关的
@@ -54,10 +56,10 @@ struct Speed{
 };
 //球的状态
 struct BallStatus {
-    struct Speed v;
-    struct Aspeed a;
-    int by_team;
-    char name[20];
+    struct Speed v;//速度
+    struct Aspeed a;//加速度
+    int by_team; //which team
+    char name[20]; //by who
     //pthread_mutex_t mutex;
 };
 struct Score{
@@ -69,22 +71,23 @@ struct Score{
 #define ACTION_CARRY 0x02
 #define ACTION_STOP 0x04
 #define ACTION_DFL 0x08
+
 struct Ctl{
     int action;
     int dirx;
     int diry;
-    int strength;
+    int strength;//踢球力度
 };
 //type的值, 0x为16进制
 #define FT_HEART 0x01 //心跳
 #define FT_ACK 0x02　//确认
 #define FT_MSG 0x04  //私聊，队友之间
 #define FT_WALL 0x08 //广播
-#define FT_CTL 0x10　
+#define FT_CTL 0x10　//控制信息
 #define FT_MAP 0x20 //场地数据
-#define FT_FIN 0x40
-#define FT_SCORE 0x80
-#define FT_GAMEOVER 0x100
+#define FT_FIN 0x40  //离场 
+#define FT_SCORE 0x80 //比分变化
+#define FT_GAMEOVER 0x100　//gameover
 
 #define MAX_MSG 1024
 

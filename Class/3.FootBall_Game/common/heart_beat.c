@@ -10,6 +10,7 @@
 void *heart_beat(void *arg) {
     while(1) {
         sleep(5);
+        DBG(BLUE"Start Heart Beart!\n"NONE);
         heart_beat_team(red_team);
         heart_beat_team(blue_team);
     }
@@ -18,10 +19,9 @@ void *heart_beat(void *arg) {
 void heart_beat_team(struct User *team) {
     struct FootBallMsg msg;
     msg.type = FT_HEART;
-    struct sockaddr_in client;
-    socklen_t len = sizeof(client); 
     for (int i = 0; i < MAX_TEAM; i++) {
         if (team[i].online) {
+            DBG(PINK"❤"NONE": Have %d!\n", team[i].flag);
             if (team[i].flag <= 0) {
                 DBG(RED"Heart Beart"NONE" : %s is offline by heart_beat\n", team[i].name);
                 del_event(red_epollfd, team[i].fd);
@@ -29,7 +29,7 @@ void heart_beat_team(struct User *team) {
                 team[i].online = 0;
                // cnt_online--;
             }
-            sendto(team[i].fd, (void *)&msg, sizeof(msg), 0, (struct sockaddr *)&client, len);
+            send(team[i].fd, (void *)&msg, sizeof(msg), 0);
             team[i].flag -= 1;
         }
     }
