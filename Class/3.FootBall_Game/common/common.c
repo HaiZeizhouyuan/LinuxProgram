@@ -14,7 +14,7 @@ void setnonblocking(int fd) {
         exit(1);
     }
     flag |= O_NONBLOCK;
-    fcntl(fd, F_SETFL, flag);////把新的flag设置给fd文件
+    fcntl(fd, F_SETFL, flag);//把新的flag设置给fd文件
     return ;
 }
 

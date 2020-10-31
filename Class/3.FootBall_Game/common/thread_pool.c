@@ -10,37 +10,85 @@
 extern int epollfd, red_epollfd, blue_epollfd;
 extern struct User *users;
 extern int maxfd;
+extern pthread_mutex_t red_mutex, blue_mutex;
+extern struct Map court;
+extern struct BallStatus ball_status;
+
+extern struct Bpoint ball;
+char user_logout[512];
+
 void do_work(struct User *user) {
-    struct FootBallMsg msg;
+    struct FootBallMsg chat_msg;
     struct sockaddr_in client;
     socklen_t len = sizeof(client);
     DBG(BLUE"Server Start Recv!\n"NONE);
-    bzero(&msg, sizeof(msg));
-    int ret = recv(user->fd, (void *)&msg, sizeof(msg), 0);
-    if (ret != sizeof(msg)) {
+    bzero(&chat_msg, sizeof(chat_msg));
+    int ret = recv(user->fd, (void *)&chat_msg, sizeof(chat_msg), 0);
+    if (ret != sizeof(chat_msg)) {
         perror("recvfrom()");
         return ;
     }
     DBG(BLUE"Have recv msg success!\n"NONE);
     user->flag = 10;
-    if (msg.type & FT_WALL) {
-        DBG(BLUE"[ WALL ]"NONE" : %s say %s\n", msg.name, msg.msg);
-        send_all(&msg);
-        
-    } else if (msg.type & FT_MSG) {
-        DBG(BLUE"[TEAM]"NONE" : %s say %s \n", msg.name, msg.msg);
-        if (user->team) send_team(blue_team, &msg);
-        else send_team(red_team, &msg);
-    } else if (msg.type & FT_FIN) {
+    if (chat_msg.type & FT_ACK) {
+        if (user->team) {
+            DBG(L_BLUE" %s "NONE"❤\n", user->name);
+        } else {
+            DBG(L_RED" %s "NONE"❤\n", user->name);
+        }
+    } else if (chat_msg.type & (FT_WALL | FT_MSG)) {//聊天
+        DBG(BLUE"[ WALL ]"NONE" : %s say %s, type = %d\n", chat_msg.name, chat_msg.msg, chat_msg.type);
+        show_message(NULL, user, chat_msg.msg, 0);
+        send_all(&chat_msg); 
+    } else if (chat_msg.type & FT_FIN) {
         DBG(L_PINK"Chat Fin"NONE " :recv a CHAT_FIN from %s\n", user->name);
-        send(user->fd, (void *)&msg, sizeof(msg), 0);
+        chat_msg.type = FT_FIN_T;
+        send(user->fd, (void *)&chat_msg, sizeof(chat_msg), 0);
         DBG(L_PINK"Chat Fin"NONE" : send a CHAT_FIN_1 to %s\n", user->name);
         user->online = 0;
         //加锁
+        if (user->team == 1) pthread_mutex_lock(&blue_mutex);
+        else pthread_mutex_lock(&red_mutex);
         int tmp_epollfd = ( user->team ? blue_epollfd : red_epollfd);
         del_event(tmp_epollfd, user->fd);
         close(user->fd);
-    }
+        memset(user_logout, 0, sizeof(user_logout));
+        sprintf(user_logout, "%s have logout!", user->name);
+        show_message(NULL, NULL, user_logout, 1);
+        if (user->team == 1) pthread_mutex_unlock(&blue_mutex);
+        else pthread_mutex_unlock(&red_mutex);
+    } else if (chat_msg.type & FT_CTL) {//球的移动
+        char tmp[512] = {0};
+        sprintf(tmp, "%s kicks ball with %d Newtons of force!", user->name, chat_msg.ctl.strength);
+        show_message(NULL, user, tmp, 0);
+        if (chat_msg.ctl.action & ACTION_DFL) {
+            //show_data_stream('n');
+            user->loc.x += chat_msg.ctl.dirx;
+            user->loc.y += chat_msg.ctl.diry;
+            //边界
+            if (user->loc.x <= 2) user->loc.x = 2;
+            if (user->loc.x >= court.width * 4 - 2) user->loc.x = court.width * 4 - 2;
+            if (user->loc.y <= 1) user->loc.y = 1;
+            if (user->loc.y >= 4 * court.height - 1) user->loc.y = court.height * 4 - 1;
+        
+        } else if (chat_msg.ctl.action & ACTION_KICK) {//踢球
+            //show_data_stream('k');
+            sprintf(tmp, "ball_x = %f, ball_f = %f, user_x = %d, user_y = %d\n", ball.x, ball.y, user->loc.x, user->loc.y);
+            show_message(NULL, user, tmp, 0);
+            if (can_kick(&user->loc, chat_msg.ctl.strength)) {
+                ball_status.by_team = user->team;
+                strcpy(ball_status.name, user->name);
+                sprintf(tmp, "vx = %f, vy = %f, ax = %f, ay = %f\n", ball_status.v.x, ball_status.v.y, ball_status.a.x, ball_status.a.y);
+                show_message(NULL, user, tmp, 0);          
+            }
+        } else if (chat_msg.ctl.action & ACTION_STOP) {
+            //show_data_stream('s');
+            if (can_access(&user->loc)) {
+                bzero();
+            }
+        } else {
+
+        }
     
 }
 

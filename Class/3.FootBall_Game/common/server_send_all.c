@@ -10,15 +10,14 @@
 struct sockaddr_in client;
 socklen_t len = sizeof(client);
 extern struct User *red_team, *blue_team;
-
-void send_team(struct User *team, struct FootBallMsg *msg) {
+extern WINDOW *Football, *Football_t, *Message, *Help, *Score, *Write;
+void send_team(struct User *team, struct FootBallMsg *chat_msg) {
     DBG(YELLOW"Start Send Wall Mag!\n"NONE);
     for (int i = 0; i < MAX_TEAM; i++) {
         if (team[i].online) {
             DBG(BLUE"%s online!\n"NONE, team[i].name);
-            send(team[i].fd, (void *)msg, sizeof(struct FootBallMsg), 0);
-            // sendto(team[i].fd, (void *)msg, sizeof(msg), 0, (struct sockaddr *)&client, len);
-            DBG(BLUE"send msg : %s success!\n"NONE, msg->msg);
+            send(team[i].fd, (void *)chat_msg, sizeof(struct FootBallMsg), 0);
+            DBG(BLUE"send msg : %s success!, type = %d\n"NONE, chat_msg->msg, chat_msg->type);
         }
     }
 }

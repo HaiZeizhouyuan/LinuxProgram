@@ -94,6 +94,7 @@ void init_ui (){
     wrefresh(help_win);
     wrefresh(msg_win);
     wrefresh(input_win);
+    refresh();
     sleep(5);
 }
 

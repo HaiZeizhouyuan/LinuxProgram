@@ -47,9 +47,14 @@
 #include "heart_beat.h"
 #include "client_recv.h"
 #include "game_ui.h"
-#include "./server_exit.h"
-#include "./server_send_all.h"
-#include "./client_exit.h"
+#include "server_exit.h"
+#include "server_send_all.h"
+#include "client_exit.h"
+#include "send_chat.h"
+#include "send_ctl.h"
+#include "show_strength.h"
+#include "ball_status.h"
+#include "can_access.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

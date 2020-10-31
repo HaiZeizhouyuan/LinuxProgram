@@ -21,6 +21,6 @@ void server_exit(int signum) {
         if (red_team[i].online) send(red_team[i].fd, (void *)&msg, sizeof(msg), 0);
         if (blue_team[i].online) send(blue_team[i].fd, (void *)&msg, sizeof(msg), 0);
     }
-    //endwin();
+    endwin();
     exit(0);
 }

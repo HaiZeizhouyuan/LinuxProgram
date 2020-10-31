@@ -7,15 +7,23 @@
 
 #include "head.h"
 #define MAX_TEAM 11
-struct User *blue_team;
-struct User *red_team;
-int red_sockfd, blue_sockfd;
-int sockfd = -1, team = -1, server_port = 0;
-char server_ip[20] = {0};
-char name[20] = {0};
+int red_sockfd, blue_sockfd, sockfd = -1, team = -1, server_port = 0, msg_num = 0;
+char server_ip[20] = {0},  name[20] = {0}, log_msg[20] = {0};
 char *conf = "./football.json";
-char chat_msg[512];
+
+WINDOW *Write, *Message, *Message_t,  *Help, *Score, *Football, *Football_t;
+
+struct User *blue_team, *red_team;
+struct Score score;
+struct Bpoint ball;
+struct BallStatus ball_status;
+struct Map court;
+struct Point start;
+struct FootBallMsg chat_msg;
+struct FootBallMsg ctl_msg;
+
 int main(int argc, char **argv) {
+    setlocale(LC_ALL,"");
     int opt;
     struct LogRequest request;
     struct LogResponse response;
@@ -37,7 +45,7 @@ int main(int argc, char **argv) {
                 team = atoi(optarg);
                 break;
             case 'm':
-                strcpy(chat_msg, optarg);
+                strcpy(log_msg, optarg);
                 break;
             default:
                 fprintf(stderr, "Usage : %s [-hptmn]!\n", argv[0]);
@@ -50,8 +58,26 @@ int main(int argc, char **argv) {
     if (!strlen(server_ip)) strcpy(server_ip, get_cjson_value(conf, "SERVERIP"));
     if (!strlen(name)) strcpy(name, get_cjson_value(conf, "NAME"));
     if (team == - 1) team = atoi(get_cjson_value(conf, "TEAM"));
-    if (strlen(chat_msg) == 0) strcpy(chat_msg, get_cjson_value(conf, "LOGMSG"));
-    DBG(GREEN"Get server_port = %d, server_ip = %s, name = %s, team = %d, LOGMSG = %s  success!\n"NONE, server_port, server_ip, name, team, chat_msg);
+    if (strlen(log_msg) == 0) strcpy(log_msg, get_cjson_value(conf, "LOGMSG"));
+    DBG(GREEN"Get server_port = %d, server_ip = %s, name = %s, team = %d, LOGMSG = %s  success!\n"NONE, server_port, server_ip, name, team, log_msg);
+
+
+    struct winsize size;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) < 0) {
+        perror("ioctl()");
+        exit(1);           
+    }
+
+    court.width = size.ws_col / 5;
+    court.height = size.ws_row / 7;
+    court.start.x = 3;
+    court.start.y = 3;
+
+    ball.x = court.width / 2;
+    ball.y = court.width / 2;
+    bzero(&ball_status, sizeof(ball_status));
+
+    signal(SIGINT, client_exit);
 
     red_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
     blue_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
@@ -67,11 +93,10 @@ int main(int argc, char **argv) {
     }
     
     DBG(GREEN"client create success...\n"NONE);
-    strcpy(request.msg, chat_msg);
+    strcpy(request.msg, log_msg);
     strcpy(request.name, name);
     request.team = team;
     sendto(sockfd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&server, len);
-    
     fd_set wfds;
     struct timeval tv;
     int retval;
@@ -99,24 +124,56 @@ int main(int argc, char **argv) {
     }
     printf("Server : %s\n", response.msg);
     connect(sockfd, (struct sockaddr *)&server, len);
-    pthread_t recv_t;
-    pthread_create(&recv_t, NULL, client_recv, NULL);
-    struct FootBallMsg msg;
-    strcpy(msg.name, name);
-    msg.team = team;
-    signal(SIGINT, client_exit);
-    msg.type = FT_WALL;
-    while(1) {
-        bzero(&msg.msg, sizeof(msg.msg));
-        scanf("%[^\n]s", msg.msg);
-        getchar();
-        if (strcmp(msg.msg, "#1") == 0) {
-            msg.type = FT_MSG;
-            continue;
-        }
-        int ret = send(sockfd, (void *)&msg, sizeof(msg), 0);
-        DBG(BLUE"Send Msg have success!, ret = %d\n"NONE, ret);
 
+    strcpy(chat_msg.name, name);
+    chat_msg.team = team;
+    chat_msg.type = FT_MSG;
+
+#ifndef _D
+   initfootball();
+#endif
+    pthread_t recv_t, draw_t;
+    pthread_create(&recv_t, NULL, client_recv, NULL);
+    
+    signal(SIGALRM, send_ctl);//由setitimer触发的信号
+    struct itimerval itimer;
+    itimer.it_interval.tv_sec = 0;
+    itimer.it_interval.tv_usec = 100000;
+    itimer.it_value.tv_sec = 0;
+    itimer.it_value.tv_usec = 100000;
+    setitimer(ITIMER_REAL, &itimer, NULL );
+
+    while(1) {
+        int c = getchar();
+        switch(c) { 
+            case 'a':
+                ctl_msg.ctl.dirx -= 1;
+                break;
+            case 'd':
+                ctl_msg.ctl.dirx += 1;
+                break;
+            case 'w':
+                ctl_msg.ctl.diry -= 1;
+                break;
+            case 's':
+                ctl_msg.ctl.diry += 1;
+                break;
+            case 13:
+                send_chat();
+                break;
+            case ' ':
+                show_strength();
+                break;
+            case 'k':
+                //show_data_stream('k');
+                struct FootBallMsg msg;
+                bzero(&msg, sizeof(msg));
+                msg.type = FT_CTL;
+                msg.ctl.action = ACTION_KICK;
+                msg.ctl.strength = 1;
+                send(sockfd, (void *)&msg, sizeof(msg), 0);
+                break;
+        }
     }
     
     return 0;

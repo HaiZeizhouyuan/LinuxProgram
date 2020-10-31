@@ -7,13 +7,18 @@
 
 #include "head.h"
 extern int sockfd;
+struct FootBallMsg chat_msg;
 void client_exit(int signum) {
     DBG(RED"ctrl C!\n"NONE);
-    struct FootBallMsg msg;
-    msg.type = FT_FIN;
-    send(sockfd, (void *)&msg, sizeof(msg), 0);
-    if (recv(sockfd, (void *)&msg, sizeof(msg), 0) > 0) {
-        printf(GREEN "Bye 1\n"NONE);
+    struct User user;
+    chat_msg.type = FT_FIN;
+    user.team = chat_msg.team;
+    strcpy(user.name, chat_msg.name);
+    send(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0);
+    if (recv(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0) > 0) {
+        show_message(NULL, &user, "Bye!", 0);
+        close(sockfd);
+        endwin();
         exit(0);    
     }
 }

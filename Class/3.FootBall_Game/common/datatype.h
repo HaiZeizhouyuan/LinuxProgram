@@ -19,12 +19,12 @@ struct Bpoint {
 };
 
 struct User {
-    int team; // 0 RED  1 BLUE
-    int fd; //该玩家对应的连接
-    char name[20]; //姓名
+    int team;// 0 RED  1 BLUE
+    int fd;//该玩家对应的连接
+    char name[20];//姓名
     int online;// 1 在线 0 不在线
-    int flag; //未响应次数
-    struct Point loc; //用户坐标
+    int flag;//未响应次数
+    struct Point loc;//用户坐标
 };
 
 //登录相关的
@@ -67,10 +67,10 @@ struct Score{
     int blue;
 };
 //action value
-#define ACTION_KICK 0x01
-#define ACTION_CARRY 0x02
-#define ACTION_STOP 0x04
-#define ACTION_DFL 0x08
+#define ACTION_KICK 0x01//踢
+#define ACTION_CARRY 0x02//带
+#define ACTION_STOP 0x04//停
+#define ACTION_DFL 0x08//移动
 
 struct Ctl{
     int action;
@@ -79,15 +79,16 @@ struct Ctl{
     int strength;//踢球力度
 };
 //type的值, 0x为16进制
-#define FT_HEART 0x01 //心跳
-#define FT_ACK 0x02　//确认
-#define FT_MSG 0x04  //私聊，队友之间
-#define FT_WALL 0x08 //广播
-#define FT_CTL 0x10　//控制信息
-#define FT_MAP 0x20 //场地数据
-#define FT_FIN 0x40  //离场 
-#define FT_SCORE 0x80 //比分变化
-#define FT_GAMEOVER 0x100　//gameover
+#define FT_HEART 0x01//心跳
+#define FT_ACK 0x02//确认
+#define FT_MSG 0x04//聊天
+#define FT_WALL 0x08//广播
+#define FT_CTL 0x10//控制信息
+#define FT_MAP 0x20//场地数据
+#define FT_FIN 0x40//离场
+#define FT_FIN_T 0x200
+#define FT_SCORE 0x80//比分变化
+#define FT_GAMEOVER 0x100//gameover
 
 #define MAX_MSG 1024
 

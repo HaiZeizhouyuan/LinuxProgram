@@ -90,10 +90,8 @@ int udp_accept(int fd, struct User *user) {
     user->fd = new_fd;
     response.type = 0;
     strcpy(response.msg, log_success);
-
-    printf("%s : %s\n", request.name, request.msg);
     sendto(user->fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
-    
+    show_message(NULL, user, request.msg, 0);
     DBG(BLUE"%s %s log success!\n"NONE, user->team ? "Blue Team" : "Red Team", user->name);
     return new_fd;
 }
