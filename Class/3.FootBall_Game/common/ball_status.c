@@ -6,38 +6,53 @@
  ************************************************************************/
 
 #include "head.h"
+
 #define PI (arccos(-1))
 extern struct Bpoint ball;
 extern struct BallStatus ball_status;
 
 int can_kick(struct Point *loc, int strength) {///?????
     char tmp[512] = {0};
-    sprintf(tmp, "loc_x = %d, lox_y = %d, ball_x = %f, ball_y = %f", loc->x, loc->y, ball.x, ball.y);
+    int ux =loc->x - 2, uy = loc->y - 1;
+    sprintf(tmp, "loc_x = %d, lox_y = %d, ball_x = %f, ball_y = %f", ux, uy, ball.x, ball.y);
     show_message(NULL, NULL, tmp, 1);
-    double dis = sqrt(pow(loc->x - ball.x, 2) + pow(loc->y - ball.y, 2));
-    if (dis > 0 && dis <= 2) {
-        double v_tmp = (40.0 * strength) * 0.2;
+    if (abs(ux - (int)ball.x) <= 2 && abs(uy - (int)ball.y) <= 2) {
+        if (ux == (int)ball.x && uy == (int)ball.y) return 0;
+        /*double v_tmp = (40.0 * strength) * 0.2;//初始速度
         sprintf(tmp, "v_tmp = %lf", v_tmp);
         show_message(NULL, NULL, tmp, 1);
-    
-        double angle = atan(fabs(loc->y - ball.y) / fabs(loc->x - ball.x));
-        if (ball.x > loc->x) {
+        double angle;
+        if (ux == (int)ball.x)  angle = acos(-1) / 2;
+        else angle = atan(fabs(uy - ball.y) / fabs(ux  - ball.x));
+        if (ball.x > ux) {
             ball_status.v.x = cos(angle) * v_tmp;
-            ball_status.a.x = cos(angle) * 3;
+            ball_status.a.x = -cos(angle) * 3;
         } else {
             ball_status.v.x = -cos(angle) * v_tmp;
-            ball_status.a.x = -cos(angle) * 3;
+            ball_status.a.x = cos(angle) * 3;
         } 
         
 
-        if (ball.y > loc->y) {
+        if (ball.y > uy) {
             ball_status.v.y = cos(angle) * v_tmp;
-            ball_status.a.y = cos(angle) * 3;
+            ball_status.a.y = -cos(angle) * 3;
         } else {
             ball_status.v.y = -cos(angle) * v_tmp;
-            ball_status.a.y = -cos(angle) * 3;
-        } 
-        return 1;
+            ball_status.a.y = cos(angle) * 3;
+        } */
+		double tx = ball.x - ux;
+		double ty = ball.y - uy;
+		double dx = tx / sqrt(pow(tx, 2) + pow(ty, 2));
+		double dy = ty / sqrt(pow(tx, 2) + pow(ty, 2));
+		ball_status.a.x = -3.0 * dx;
+		ball_status.a.y = -3.0 * dy;
+		ball_status.v.x = 40 * strength * 0.2 * dx;
+		ball_status.v.y = 40 * strength * 0.2 * dy;
+		char tmp[512] = {0};
+		sprintf(tmp, "a(%lf, %lf) v(%lf, %lf)", ball_status.a.x, ball_status.a.y, ball_status.v.x, ball_status.v.y);
+		show_message(NULL , NULL, tmp, 1);
+    
+		return 1;
     }
     return 0;
 }

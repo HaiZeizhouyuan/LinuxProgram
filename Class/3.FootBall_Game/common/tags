@@ -57,8 +57,8 @@ CLEAR	color.h	33;"	d
 CLRLINE	color.h	34;"	d
 CYAN	color.h	24;"	d
 Ctl	datatype.h	/^struct Ctl{$/;"	s
-DBG	head.h	56;"	d
-DBG	head.h	58;"	d
+DBG	head.h	62;"	d
+DBG	head.h	64;"	d
 FT_ACK	datatype.h	83;"	d
 FT_CTL	datatype.h	86;"	d
 FT_FIN	datatype.h	88;"	d
@@ -82,16 +82,18 @@ L_RED	color.h	15;"	d
 LogRequest	datatype.h	/^struct  LogRequest {$/;"	s
 LogResponse	datatype.h	/^struct LogResponse{$/;"	s
 MAX_MSG	datatype.h	93;"	d
+MAX_TEAM	create_spirit.c	9;"	d	file:
 MAX_TEAM	heart_beat.h	10;"	d
 MAX_TEAM	server_exit.c	9;"	d	file:
+MAX_TEAM	server_re_draw.c	9;"	d	file:
 MAX_TEAM	server_send_all.c	8;"	d	file:
 MAX_TEAM	sub_reactor.c	9;"	d	file:
-MAX_TEAM	udp_epoll.h	10;"	d
 Map	datatype.h	/^struct Map {$/;"	s
 NAN	cJSON.c	82;"	d	file:
 NAN	cJSON.c	84;"	d	file:
 NONE	color.h	11;"	d
 NTHREAD	sub_reactor.c	8;"	d	file:
+PI	ball_status.c	10;"	d	file:
 PINK	color.h	22;"	d
 Point	datatype.h	/^struct Point {$/;"	s
 RED	color.h	14;"	d
@@ -102,34 +104,42 @@ UNDERLINE	color.h	29;"	d
 User	datatype.h	/^struct User {$/;"	s
 WHITE	color.h	27;"	d
 YELLOW	color.h	19;"	d
+_BALL_STATUS_H	ball_status.h	9;"	d
+_CAN_ACCESS_H	can_access.h	9;"	d
 _CLIENT_EXIT_H	client_exit.h	9;"	d
 _CLIENT_RECV_H	client_recv.h	9;"	d
 _COLOR_H	color.h	9;"	d
 _COMMON_H	common.h	9;"	d
+_CREATE_SPIRIT_H	create_spirit.h	9;"	d
 _CRT_SECURE_NO_DEPRECATE	cJSON.c	28;"	d	file:
 _DATATYPE_H	datatype.h	9;"	d
 _GAME_UI_H	game_ui.h	9;"	d
 _GET_CJSON_VALUE_H	get_cjson_value.h	9;"	d
 _HEAD_H	head.h	9;"	d
 _HEART_BEAT_H	heart_beat.h	9;"	d
+_PARSE_SPIRIT_H	parse_spirit.h	9;"	d
 _SEND_CHAT_H	send_chat.h	9;"	d
 _SEND_CTL_H	send_ctl.h	9;"	d
 _SERVER_EXIT_H	server_exit.h	9;"	d
 _SERVER_RE_DRAW_H	server_re_draw.h	9;"	d
 _SERVER_SEND_ALL_H	server_send_all.h	9;"	d
+_SHOW_DATA_STREAM_H	show_data_stream.h	9;"	d
 _SHOW_STRENGTH_H	show_strength.h	9;"	d
 _SUB_REACTOR_H	sub_reactor.h	9;"	d
 _THREAD_POOL_H	thread_pool.h	9;"	d
-_UDP_EPOLL_H	udp_epoll.h	9;"	d
+_UDP_EPOLL_	udp_epoll.h	9;"	d
 __WINDOWS__	cJSON.h	32;"	d
 a	datatype.h	/^    struct Aspeed a;\/\/加速度$/;"	m	struct:BallStatus	typeref:struct:BallStatus::Aspeed
 action	datatype.h	/^    int action;$/;"	m	struct:Ctl
 add_event_ptr	udp_epoll.c	/^void add_event_ptr(int epollfd, int fd, int events, struct User *user) {$/;"	f
 add_item_to_array	cJSON.c	/^static cJSON_bool add_item_to_array(cJSON *array, cJSON *item)$/;"	f	file:
 add_item_to_object	cJSON.c	/^static cJSON_bool add_item_to_object(cJSON * const object, const char * const string, cJSON * const item, const internal_hooks * const hooks, const cJSON_bool constant_key)$/;"	f	file:
+add_player_to_team	create_spirit.c	/^int add_player_to_team(cJSON *team, struct User *user) {$/;"	f
 add_to_sub_reactor	udp_epoll.c	/^void add_to_sub_reactor(struct User *user) {$/;"	f
 allocate	cJSON.c	/^    void *(CJSON_CDECL *allocate)(size_t size);$/;"	m	struct:internal_hooks	file:
 array	cJSON.h	/^CJSON_PUBLIC(int) cJSON_GetArraySize(const cJSON *array);$/;"	v
+ball_spirit	create_spirit.c	/^cJSON *ball_spirit = NULL;$/;"	v
+blue	create_spirit.c	/^cJSON *blue = NULL;$/;"	v
 blue	datatype.h	/^    int blue;$/;"	m	struct:Score
 boolean	cJSON.h	/^CJSON_PUBLIC(cJSON *) cJSON_CreateBool(cJSON_bool boolean);$/;"	v
 buffer	cJSON.c	/^    unsigned char *buffer;$/;"	m	struct:__anon3	file:
@@ -213,7 +223,9 @@ cJSON_bool	cJSON.h	/^typedef int cJSON_bool;$/;"	t
 cJSON_free	cJSON.c	/^CJSON_PUBLIC(void) cJSON_free(void *object)$/;"	f
 cJSON_malloc	cJSON.c	/^CJSON_PUBLIC(void *) cJSON_malloc(size_t size)$/;"	f
 cJSON_strdup	cJSON.c	/^static unsigned char* cJSON_strdup(const unsigned char* string, const internal_hooks * const hooks)$/;"	f	file:
+can_access	can_access.c	/^int can_access(struct Point *loc) {$/;"	f
 can_access_at_index	cJSON.c	299;"	d	file:
+can_kick	ball_status.c	/^int can_kick(struct Point *loc, int strength) {\/\/\/?????$/;"	f
 can_read	cJSON.c	297;"	d	file:
 cannot_access_at_index	cJSON.c	300;"	d	file:
 case_insensitive_strcmp	cJSON.c	/^static int case_insensitive_strcmp(const unsigned char *string1, const unsigned char *string2)$/;"	f	file:
@@ -233,6 +245,7 @@ content	cJSON.c	/^    const unsigned char *content;$/;"	m	struct:__anon2	file:
 court	game_ui.c	/^struct Map court;\/\/球场大小$/;"	v	typeref:struct:Map
 create_newwin	game_ui.c	/^WINDOW *create_newwin(int width, int height, int startx, int starty) {$/;"	f
 create_reference	cJSON.c	/^static cJSON *create_reference(const cJSON *item, const internal_hooks * const hooks)$/;"	f	file:
+create_spirit	create_spirit.c	/^char  *create_spirit() {$/;"	f
 ctl	datatype.h	/^    struct Ctl ctl;$/;"	m	struct:FootBallMsg	typeref:struct:FootBallMsg::Ctl
 deallocate	cJSON.c	/^    void (CJSON_CDECL *deallocate)(void *pointer);$/;"	m	struct:internal_hooks	file:
 del_event	udp_epoll.c	/^void del_event(int epollfd, int fd) {$/;"	f
@@ -242,6 +255,7 @@ destroy_win	game_ui.c	/^void destroy_win(WINDOW *win) {$/;"	f
 dirx	datatype.h	/^    int dirx;$/;"	m	struct:Ctl
 diry	datatype.h	/^    int diry;$/;"	m	struct:Ctl
 do_work	thread_pool.c	/^void do_work(struct User *user) {$/;"	f
+draw	game_ui.c	/^void *draw(void *arg) {$/;"	f
 empty	thread_pool.c	/^int empty(struct task_queue *taskQueue) {$/;"	f
 ensure	cJSON.c	/^static unsigned char* ensure(printbuffer * const p, size_t needed)$/;"	f	file:
 epollfd	thread_pool.h	/^    int epollfd; \/\/从反应堆$/;"	m	struct:task_queue
@@ -302,13 +316,14 @@ len	server_send_all.c	/^socklen_t len = sizeof(client);$/;"	v
 length	cJSON.c	/^    size_t length;$/;"	m	struct:__anon2	file:
 length	cJSON.c	/^    size_t length;$/;"	m	struct:__anon3	file:
 loc	datatype.h	/^    struct Point loc;\/\/用户坐标$/;"	m	struct:User	typeref:struct:User::Point
-main	test.c	/^int main () {$/;"	f
+main	test.c	/^int main() {$/;"	f
 malloc_fn	cJSON.h	/^      void *(CJSON_CDECL *malloc_fn)(size_t sz);$/;"	m	struct:cJSON_Hooks
 minify_string	cJSON.c	/^static void minify_string(char **input, char **output) {$/;"	f	file:
 msg	datatype.h	/^    char msg[512];$/;"	m	struct:LogRequest
 msg	datatype.h	/^    char msg[512];$/;"	m	struct:LogResponse
 msg	datatype.h	/^    char msg[MAX_MSG];$/;"	m	struct:FootBallMsg
 mutex	thread_pool.h	/^    pthread_mutex_t mutex;$/;"	m	struct:task_queue
+name	create_spirit.c	/^cJSON *name = NULL;$/;"	v
 name	datatype.h	/^    char name[20]; \/\/by who$/;"	m	struct:BallStatus
 name	datatype.h	/^    char name[20];$/;"	m	struct:FootBallMsg
 name	datatype.h	/^    char name[20];$/;"	m	struct:LogRequest
@@ -325,6 +340,7 @@ parse_number	cJSON.c	/^static cJSON_bool parse_number(cJSON * const item, parse_
 parse_object	cJSON.c	/^static cJSON_bool parse_object(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
 parse_string	cJSON.c	/^static cJSON_bool parse_string(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
 parse_value	cJSON.c	/^static cJSON_bool parse_value(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
+player	create_spirit.c	/^cJSON *player = NULL;$/;"	v
 position	cJSON.c	/^    size_t position;$/;"	m	struct:__anon1	file:
 prev	cJSON.h	/^    struct cJSON *prev;$/;"	m	struct:cJSON	typeref:struct:cJSON::cJSON
 print	cJSON.c	/^static unsigned char *print(const cJSON * const item, cJSON_bool format, const internal_hooks * const hooks)$/;"	f	file:
@@ -335,8 +351,12 @@ print_string	cJSON.c	/^static cJSON_bool print_string(const cJSON * const item, 
 print_string_ptr	cJSON.c	/^static cJSON_bool print_string_ptr(const unsigned char * const input, printbuffer * const output_buffer)$/;"	f	file:
 print_value	cJSON.c	/^static cJSON_bool print_value(const cJSON * const item, printbuffer * const output_buffer)$/;"	f	file:
 printbuffer	cJSON.c	/^} printbuffer;$/;"	t	typeref:struct:__anon3	file:
+re_draw_player	server_re_draw.c	/^void re_draw_player(int team, char *name, struct Point *loc) {$/;"	f
+re_drew	server_re_draw.c	/^void re_drew() {$/;"	f
 re_drew_ball	server_re_draw.c	/^void re_drew_ball() {$/;"	f
+re_drew_team	server_re_draw.c	/^void re_drew_team(struct User *team) {$/;"	f
 reallocate	cJSON.c	/^    void *(CJSON_CDECL *reallocate)(void *pointer, size_t size);$/;"	m	struct:internal_hooks	file:
+red	create_spirit.c	/^cJSON *red = NULL;$/;"	v
 red	datatype.h	/^    int red;$/;"	m	struct:Score
 replace_item_in_object	cJSON.c	/^static cJSON_bool replace_item_in_object(cJSON *object, const char *string, cJSON *replacement, cJSON_bool case_sensitive)$/;"	f	file:
 send_all	server_send_all.c	/^void send_all(struct FootBallMsg *msg) {$/;"	f
@@ -346,6 +366,7 @@ send_team	server_send_all.c	/^void send_team(struct User *team, struct FootBallM
 server_exit	server_exit.c	/^void server_exit(int signum) {$/;"	f
 setblocking	common.c	/^void setblocking(int fd) {$/;"	f
 setnonblocking	common.c	/^void setnonblocking(int fd) {$/;"	f
+show_data_stream	show_data_stream.c	/^void show_data_stream(int type) {$/;"	f
 show_help	game_ui.c	/^void show_help() {$/;"	f
 show_message	game_ui.c	/^void show_message(WINDOW *win,struct User *user, char *msg, int type) {$/;"	f
 show_strength	show_strength.c	/^void show_strength() {$/;"	f
@@ -357,10 +378,12 @@ skip_oneline_comment	cJSON.c	/^static void skip_oneline_comment(char **input)$/;
 skip_utf8_bom	cJSON.c	/^static parse_buffer *skip_utf8_bom(parse_buffer * const buffer)$/;"	f	file:
 socket_create_udp	common.c	/^int socket_create_udp(int port) {$/;"	f
 socket_udp	common.c	/^int socket_udp() {$/;"	f
+spirit	create_spirit.c	/^cJSON *spirit = NULL;$/;"	v
 start	datatype.h	/^    struct Point start;$/;"	m	struct:Map	typeref:struct:Map::Point
 static_strlen	cJSON.c	184;"	d	file:
 strength	datatype.h	/^    int strength;\/\/踢球力度$/;"	m	struct:Ctl
 string	cJSON.h	/^    char *string;$/;"	m	struct:cJSON
+string	create_spirit.c	/^char *string = NULL;$/;"	v
 sub_reactor	sub_reactor.c	/^void *sub_reactor(void *arg) {$/;"	f
 suffix_object	cJSON.c	/^static void suffix_object(cJSON *prev, cJSON *item)$/;"	f	file:
 tail	thread_pool.h	/^    int tail;$/;"	m	struct:task_queue
@@ -390,11 +413,14 @@ valueint	cJSON.h	/^    int valueint;$/;"	m	struct:cJSON
 valuestring	cJSON.h	/^    char *valuestring;$/;"	m	struct:cJSON
 w_gotoxy_putc	game_ui.c	/^void w_gotoxy_putc(WINDOW *win, int x, int y, char c) {$/;"	f
 w_gotoxy_puts	game_ui.c	/^void w_gotoxy_puts(WINDOW *win, int x, int y, char *s) {$/;"	f
+who	create_spirit.c	/^cJSON *who = NULL;$/;"	v
 width	datatype.h	/^    int width;$/;"	m	struct:Map
+x	create_spirit.c	/^cJSON *x = NULL;$/;"	v
 x	datatype.h	/^    double x;$/;"	m	struct:Aspeed
 x	datatype.h	/^    double x;$/;"	m	struct:Bpoint
 x	datatype.h	/^    double x;$/;"	m	struct:Speed
 x	datatype.h	/^    int x;$/;"	m	struct:Point
+y	create_spirit.c	/^cJSON *y = NULL;$/;"	v
 y	datatype.h	/^    double y;$/;"	m	struct:Aspeed
 y	datatype.h	/^    double y;$/;"	m	struct:Bpoint
 y	datatype.h	/^    double y;$/;"	m	struct:Speed

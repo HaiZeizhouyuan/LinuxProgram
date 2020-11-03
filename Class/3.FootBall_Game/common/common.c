@@ -40,21 +40,21 @@ int socket_create_udp(int port) {
 
     //重启地址
     int val = 1;
-    if (setsockopt(server_listen, SOL_SOCKET, SO_REUSEADDR,(const char*)&val, sizeof(int)) < 0) {
+    if (setsockopt(server_listen, SOL_SOCKET, SO_REUSEADDR,(const char*)&val, sizeof(val)) < 0) {
         return -1;    
     }
 
     setnonblocking(server_listen);//设为非阻塞套接字
+
     struct sockaddr_in server; //创建表单名server;
     server.sin_family = AF_INET; //协议族
     server.sin_port = htons(port);//本地字节序转换成网络字节序的短整形
     server.sin_addr.s_addr = INADDR_ANY; //所有的ip都要
+    
     if (bind(server_listen, (struct sockaddr *)&server, sizeof(server)) < 0) {//绑定ip和端口
         perror("bind()");
         return -1;
     }
-    //setblocking(server_listen);
-    setnonblocking(server_listen);
     DBG(GREEN"Server socket create success...\n"NONE);
     return server_listen;
 

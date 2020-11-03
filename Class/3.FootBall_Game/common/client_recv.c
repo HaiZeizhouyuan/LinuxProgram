@@ -13,9 +13,7 @@ void *client_recv(void *arg) {
     while(1) {
         bzero(&chat_msg, sizeof(chat_msg));
         bzero(&user, sizeof(user));
-        DBG(GREEN"Wait Msg!\n"NONE);
         int ret = recv(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0);
-        DBG(RED"ret = %d\n"NONE, ret);
         if (ret != sizeof(chat_msg)) {
             perror("client_recv()");
             exit(1);
@@ -34,11 +32,7 @@ void *client_recv(void *arg) {
             close(sockfd);
             endwin();
             exit(0);
-        } else if (chat_msg.type & FT_FIN_T) {//服务端回复用户下线
-            show_message(NULL, NULL, "Bye!", 1);
-            exit(0);
-        } 
-        else if (chat_msg.type & FT_WALL){
+        } else if (chat_msg.type & FT_WALL){
             DBG(BLUE"CHAT_WALL"NONE" : You Have Wall_Mag Need Read!\n");
             show_message(NULL, NULL, chat_msg.msg, 1);
         } else if (chat_msg.type & FT_MSG) {
@@ -46,7 +40,7 @@ void *client_recv(void *arg) {
             show_message(NULL, &user, chat_msg.msg, 0);
         } else if (chat_msg.type & FT_MAP) {
             show_message(NULL, NULL, "FootBall Game refresh", 1);
-          //parse_spirit(msg.msg, msg.size);
+         //  parse_spirit(chat_msg.msg, chat_msg.size);
 
         } 
     }

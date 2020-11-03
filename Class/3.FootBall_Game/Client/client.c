@@ -8,10 +8,10 @@
 #include "head.h"
 #define MAX_TEAM 11
 int red_sockfd, blue_sockfd, sockfd = -1, team = -1, server_port = 0, msg_num = 0;
-char server_ip[20] = {0},  name[20] = {0}, log_msg[20] = {0};
+char server_ip[20] = {0},  name[20] = {0}, log_msg[20] = {0}, data_stream[20];
 char *conf = "./football.json";
 
-WINDOW *Write, *Message, *Message_t,  *Help, *Score, *Football, *Football_t;
+WINDOW *Write, *Message, *Message_t,  *Help, *Help_t, *Score, *Football, *Football_t;
 
 struct User *blue_team, *red_team;
 struct Score score;
@@ -21,14 +21,17 @@ struct Map court;
 struct Point start;
 struct FootBallMsg chat_msg;
 struct FootBallMsg ctl_msg;
+struct LogRequest request;
+struct LogResponse response;
+struct User user;
 
 int main(int argc, char **argv) {
     setlocale(LC_ALL,"");
     int opt;
-    struct LogRequest request;
-    struct LogResponse response;
     bzero(&request, sizeof(request));
     bzero(&response, sizeof(response));
+    bzero(&ctl_msg, sizeof(ctl_msg));
+    bzero(&chat_msg, sizeof(chat_msg));
 
     while ((opt = getopt(argc, argv, "h:p:t:m:n:")) != -1) {
         switch(opt) {
@@ -59,26 +62,33 @@ int main(int argc, char **argv) {
     if (!strlen(name)) strcpy(name, get_cjson_value(conf, "NAME"));
     if (team == - 1) team = atoi(get_cjson_value(conf, "TEAM"));
     if (strlen(log_msg) == 0) strcpy(log_msg, get_cjson_value(conf, "LOGMSG"));
+
+    court.width = atoi(get_cjson_value(conf, "COLS"));
+    court.height = atoi(get_cjson_value(conf, "LINES"));
     DBG(GREEN"Get server_port = %d, server_ip = %s, name = %s, team = %d, LOGMSG = %s  success!\n"NONE, server_port, server_ip, name, team, log_msg);
+    
+    ctl_msg.type = FT_CTL;
+    strcpy(chat_msg.name, name);
+    chat_msg.team = team;
+    chat_msg.type = FT_MSG;
 
-
-    struct winsize size;
+    strcpy(user.name, name);
+    /*struct winsize size;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) < 0) {
         perror("ioctl()");
         exit(1);           
     }
 
-    court.width = size.ws_col / 5;
-    court.height = size.ws_row / 7;
+    court.width = 4 * size.ws_col / 5 - 4;
+    court.height = 4 * size.ws_row / 7 - 2;*/
     court.start.x = 3;
     court.start.y = 3;
 
     ball.x = court.width / 2;
-    ball.y = court.width / 2;
+    ball.y = court.height/ 2;
     bzero(&ball_status, sizeof(ball_status));
 
     signal(SIGINT, client_exit);
-
     red_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
     blue_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
 
@@ -97,6 +107,7 @@ int main(int argc, char **argv) {
     strcpy(request.name, name);
     request.team = team;
     sendto(sockfd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&server, len);
+
     fd_set wfds;
     struct timeval tv;
     int retval;
@@ -125,14 +136,10 @@ int main(int argc, char **argv) {
     printf("Server : %s\n", response.msg);
     connect(sockfd, (struct sockaddr *)&server, len);
 
-    strcpy(chat_msg.name, name);
-    chat_msg.team = team;
-    chat_msg.type = FT_MSG;
-
-#ifndef _D
-   initfootball();
-#endif
     pthread_t recv_t, draw_t;
+#ifndef _D
+    pthread_create(&draw_t, NULL, draw, NULL);
+#endif
     pthread_create(&recv_t, NULL, client_recv, NULL);
     
     signal(SIGALRM, send_ctl);//由setitimer触发的信号
@@ -142,6 +149,10 @@ int main(int argc, char **argv) {
     itimer.it_value.tv_sec = 0;
     itimer.it_value.tv_usec = 100000;
     setitimer(ITIMER_REAL, &itimer, NULL );
+
+    noecho();
+    cbreak;
+    keypad(stdscr, TRUE);
 
     while(1) {
         int c = getchar();
@@ -164,17 +175,40 @@ int main(int argc, char **argv) {
             case ' ':
                 show_strength();
                 break;
-            case 'k':
-                //show_data_stream('k');
-                struct FootBallMsg msg;
-                bzero(&msg, sizeof(msg));
-                msg.type = FT_CTL;
-                msg.ctl.action = ACTION_KICK;
-                msg.ctl.strength = 1;
-                send(sockfd, (void *)&msg, sizeof(msg), 0);
+            case 'j': {
+                show_data_stream('j');
+                show_message(NULL, &user, "stop football", 0);
+                bzero(&chat_msg, sizeof(chat_msg));
+                chat_msg.type = FT_CTL;
+                chat_msg.ctl.action = ACTION_STOP;
+                send(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0);
+                break;
+            }
+            case 'k': {
+                show_data_stream('k');
+                show_message(NULL, &user, "kick football", 0);
+                bzero(&chat_msg, sizeof(chat_msg));
+                chat_msg.type = FT_CTL;
+                chat_msg.ctl.action = ACTION_KICK;
+                chat_msg.ctl.strength = 1;
+                send(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0);
+                break;
+            }
+            case 'l': {
+                show_data_stream('l');
+                show_message(NULL, &user, "carry football", 0);
+                bzero(&chat_msg, sizeof(chat_msg));
+                chat_msg.type = FT_CTL;
+                chat_msg.ctl.action = ACTION_CARRY;
+                chat_msg.ctl.strength = 1;
+                send(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0);
+                break;
+            }
+            default:
                 break;
         }
     }
+    sleep(10);
     
     return 0;
 }

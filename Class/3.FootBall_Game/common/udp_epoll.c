@@ -9,10 +9,11 @@
 extern int port; //服务端的全局变量
 extern struct User *red_team;
 extern struct User *blue_team;
-extern int red_epollfd, blue_epollfd;
+extern int repollfd, bepollfd;
 extern pthread_mutex_t red_mutex, blue_mutex;
-
-
+extern struct Bpoint ball;
+extern WINDOW *Football;
+extern struct Map court;
 //将user添加到epollfd中, 监控user发生events事件
 void add_event_ptr(int epollfd, int fd, int events, struct User *user) {
     struct epoll_event ev;
@@ -88,6 +89,10 @@ int udp_accept(int fd, struct User *user) {
     strcpy(user->name, request.name);
     user->team = request.team;
     user->fd = new_fd;
+    if(user->team) user->loc.x = 1;
+    else user->loc.x = court.width - 2;
+
+    user->loc.y = court.height / 2;
     response.type = 0;
     strcpy(response.msg, log_success);
     sendto(user->fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
@@ -96,17 +101,14 @@ int udp_accept(int fd, struct User *user) {
     return new_fd;
 }
 
+
+
+
 //在确定允许用户登录前，需要判断是否重复登录
 int check_online(struct LogRequest *request) {
     for (int i = 0; i < MAX_TEAM; i++) {
-        if(red_team[i].online && !strcmp(red_team[i].name, request->name)) {
-            DBG(YELLOW"<RELOG>"NONE" : red_team_user : %s , request_user : %s\n", red_team[i].name, request->name);
-            return 1;
-        }
-        if(blue_team[i].online && !strcmp(blue_team[i].name, request->name)) {
-            DBG(YELLOW"<RELOG>"NONE" : blue_team_user : %s , request_user : %s\n", blue_team[i].name, request->name);
-            return 1;
-        }
+        if(red_team[i].online && !strcmp(red_team[i].name, request->name)) return 1;
+        if(blue_team[i].online && !strcmp(blue_team[i].name, request->name)) return 1;
     }
     return 0;
 }
@@ -140,9 +142,9 @@ void add_to_sub_reactor(struct User *user) {
     msg.type = FT_WALL;
     sprintf(msg.msg, "You good friend %s have login!\n", user->name);
     send_all(&msg);
-    int user_epollfd = (user->team ? blue_epollfd : red_epollfd);
-    if (user->team) add_event_ptr(blue_epollfd, team[loc].fd, EPOLLIN | EPOLLET, &team[loc]);
-    else add_event_ptr(red_epollfd, team[loc].fd, EPOLLIN | EPOLLET, &team[loc]);
+    int user_epollfd = (user->team ? bepollfd : repollfd);
+    if (user->team) add_event_ptr(bepollfd, team[loc].fd, EPOLLIN | EPOLLET, &team[loc]);
+    else add_event_ptr(repollfd, team[loc].fd, EPOLLIN | EPOLLET, &team[loc]);
     DBG(BLUE"%s have insert %d success!, loc is %d\n"NONE, user->name, user->team, loc);
 }
 

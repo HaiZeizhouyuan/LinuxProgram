@@ -6,10 +6,8 @@
  ************************************************************************/
 
 #include "head.h"
-
-extern int epollfd, red_epollfd, blue_epollfd;
-extern struct User *users;
-extern int maxfd;
+int carry_flag = 0;
+extern int repollfd, bepollfd;
 extern pthread_mutex_t red_mutex, blue_mutex;
 extern struct Map court;
 extern struct BallStatus ball_status;
@@ -19,8 +17,6 @@ char user_logout[512];
 
 void do_work(struct User *user) {
     struct FootBallMsg chat_msg;
-    struct sockaddr_in client;
-    socklen_t len = sizeof(client);
     DBG(BLUE"Server Start Recv!\n"NONE);
     bzero(&chat_msg, sizeof(chat_msg));
     int ret = recv(user->fd, (void *)&chat_msg, sizeof(chat_msg), 0);
@@ -29,6 +25,7 @@ void do_work(struct User *user) {
         return ;
     }
     DBG(BLUE"Have recv msg success!\n"NONE);
+    //show_message(NULL,NULL, "have msg", 1);
     user->flag = 10;
     if (chat_msg.type & FT_ACK) {
         if (user->team) {
@@ -41,15 +38,14 @@ void do_work(struct User *user) {
         show_message(NULL, user, chat_msg.msg, 0);
         send_all(&chat_msg); 
     } else if (chat_msg.type & FT_FIN) {
-        DBG(L_PINK"Chat Fin"NONE " :recv a CHAT_FIN from %s\n", user->name);
+        show_data_stream('e');
         chat_msg.type = FT_FIN_T;
         send(user->fd, (void *)&chat_msg, sizeof(chat_msg), 0);
-        DBG(L_PINK"Chat Fin"NONE" : send a CHAT_FIN_1 to %s\n", user->name);
         user->online = 0;
         //加锁
         if (user->team == 1) pthread_mutex_lock(&blue_mutex);
         else pthread_mutex_lock(&red_mutex);
-        int tmp_epollfd = ( user->team ? blue_epollfd : red_epollfd);
+        int tmp_epollfd = ( user->team ? bepollfd : repollfd);
         del_event(tmp_epollfd, user->fd);
         close(user->fd);
         memset(user_logout, 0, sizeof(user_logout));
@@ -62,34 +58,64 @@ void do_work(struct User *user) {
         sprintf(tmp, "%s kicks ball with %d Newtons of force!", user->name, chat_msg.ctl.strength);
         show_message(NULL, user, tmp, 0);
         if (chat_msg.ctl.action & ACTION_DFL) {
-            //show_data_stream('n');
+            show_data_stream('n');
             user->loc.x += chat_msg.ctl.dirx;
             user->loc.y += chat_msg.ctl.diry;
             //边界
-            if (user->loc.x <= 2) user->loc.x = 2;
-            if (user->loc.x >= court.width * 4 - 2) user->loc.x = court.width * 4 - 2;
-            if (user->loc.y <= 1) user->loc.y = 1;
-            if (user->loc.y >= 4 * court.height - 1) user->loc.y = court.height * 4 - 1;
-        
+            if (user->loc.x <= 1) user->loc.x = 1;
+            if (user->loc.x >= court.width + 2) user->loc.x = court.width + 2;
+            if (user->loc.y <= 0) user->loc.y = 0;
+            if (user->loc.y >= court.height + 1) user->loc.y = court.height + 1;
+
+
+            if (carry_flag && can_access(&user->loc)) {
+                if (ball.x > user->loc.x) ball.x = user->loc.x + 2;
+                else ball.x = user->loc.x - 2;
+                if (ball.y > user->loc.y) ball.y = user->loc.y + 2;
+                else ball.y = user->loc.y - 2;
+            }
+            if (carry_flag && !can_access(&user->loc)) carry_flag = 0;
+
+            memset(tmp, 0, sizeof(tmp));
+            sprintf(tmp, "%s new loc--------user(%d, %d), ball(%lf, %lf)", user->name, user->loc.x, user->loc.y, ball.x, ball.y );
+            show_message(NULL, NULL, tmp, 1);
+            bzero(&chat_msg, sizeof(chat_msg));
+            strcpy(chat_msg.msg, tmp);
+            chat_msg.type = FT_WALL;
+            send_all(&chat_msg);
         } else if (chat_msg.ctl.action & ACTION_KICK) {//踢球
-            //show_data_stream('k');
-            sprintf(tmp, "ball_x = %f, ball_f = %f, user_x = %d, user_y = %d\n", ball.x, ball.y, user->loc.x, user->loc.y);
-            show_message(NULL, user, tmp, 0);
+            show_data_stream('k');
+            carry_flag = 0;
+            sprintf(tmp, "%s 's ball(%lf, %lf), user(%d, %d)\n",user->name,  ball.x, ball.y, user->loc.x, user->loc.y);
+            show_message(NULL, NULL, tmp, 1);
             if (can_kick(&user->loc, chat_msg.ctl.strength)) {
                 ball_status.by_team = user->team;
                 strcpy(ball_status.name, user->name);
-                sprintf(tmp, "vx = %f, vy = %f, ax = %f, ay = %f\n", ball_status.v.x, ball_status.v.y, ball_status.a.x, ball_status.a.y);
-                show_message(NULL, user, tmp, 0);          
+                sprintf(tmp, "%s 's vx = %f, vy = %f, ax = %f, ay = %f\n", user->name, ball_status.v.x, ball_status.v.y, ball_status.a.x, ball_status.a.y);
+                show_message(NULL, NULL, tmp, 1);          
             }
         } else if (chat_msg.ctl.action & ACTION_STOP) {
-            //show_data_stream('s');
+            carry_flag = 0;
+            show_data_stream('s');
             if (can_access(&user->loc)) {
-                bzero();
+                bzero(&ball_status.v, sizeof(ball_status.v));
+                bzero(&ball_status.a, sizeof(ball_status.a));
+                sprintf(tmp, "Stop The Ball!");
+                show_message(NULL, user, tmp, 0);
             }
-        } else {
-
+        } else  if (chat_msg.ctl.action & ACTION_CARRY){
+            show_data_stream('c');
+            sprintf(tmp, "Try Carry The Ball!");
+            carry_flag = 1;
+            show_message(NULL, user, tmp, 0);
         }
-    
+        char map[1024] = {0};
+        sprintf(map, "%s", create_spirit());
+        bzero(&chat_msg, sizeof(chat_msg));
+        chat_msg.type = FT_MAP;
+        strcpy(chat_msg.msg, map);
+        send_all(&chat_msg);
+    }
 }
 
 void task_queue_init(struct task_queue *taskQueue, int size, int epollfd) {

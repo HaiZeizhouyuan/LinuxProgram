@@ -6,7 +6,7 @@
  ************************************************************************/
 
 #include "head.h"
-
+extern int repollfd, bepollfd;
 void *heart_beat(void *arg) {
     while(1) {
         sleep(5);
@@ -24,7 +24,8 @@ void heart_beat_team(struct User *team) {
             DBG(PINK"❤"NONE": Have %d!\n", team[i].flag);
             if (team[i].flag <= 0) {
                 DBG(RED"Heart Beart"NONE" : %s is offline by heart_beat\n", team[i].name);
-                del_event(red_epollfd, team[i].fd);
+                int epollfd_tmp = (team[i].team ? bepollfd : repollfd);
+                del_event(repollfd, team[i].fd);
                 close(team[i].fd);
                 team[i].online = 0;
                // cnt_online--;

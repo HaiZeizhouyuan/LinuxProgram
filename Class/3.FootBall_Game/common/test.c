@@ -2,14 +2,13 @@
 	> File Name: test.c
 	> Author: zhouyuan
 	> Mail: 3294207721@qq.com 
-	> Created Time: 2020年10月27日 星期二 14时59分22秒
+	> Created Time: 2020年11月01日 星期日 11时08分42秒
  ************************************************************************/
 
 #include<stdio.h>
 #include<math.h>
-
-int main () {
-    int a = pow(6.3 - 2, 2);
-    printf("%d\n", a);
+ 
+int main() {
+    printf("%lf", sqrt(30));
     return 0;
 }

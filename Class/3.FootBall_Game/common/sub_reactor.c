@@ -5,7 +5,7 @@
 	> Created Time: 2020年10月23日 星期五 10时36分52秒
  ************************************************************************/
 #include "head.h"
-#define NTHREAD 10
+#define NTHREAD 11
 #define MAX_TEAM 11 
 void *sub_reactor(void *arg) {
     struct task_queue *taskQueue = (struct task_queue *)arg;
@@ -18,7 +18,7 @@ void *sub_reactor(void *arg) {
         DBG(RED"Sub Rector"NONE": Epoll Waiting...\n");
         int nfds = epoll_wait(taskQueue->epollfd, events, MAX_TEAM, -1);
         if (nfds == -1) {
-            perror("epoll_wait()");
+            perror("epoll wait sub_reactor");
             exit(1);
         }
         for (int i = 0; i < nfds; i++) {

@@ -55,6 +55,9 @@
 #include "show_strength.h"
 #include "ball_status.h"
 #include "can_access.h"
+#include "server_re_draw.h"
+#include "create_spirit.h"
+#include "show_data_stream.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

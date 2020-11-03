@@ -15,7 +15,6 @@ void send_ctl() {
         ctl_msg.ctl.action =  ACTION_DFL;
         send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
         ctl_msg.ctl.dirx = ctl_msg.ctl.diry = 0;
-      //  show_data_stream('n');
-
+        show_data_stream('n');
     }
 }

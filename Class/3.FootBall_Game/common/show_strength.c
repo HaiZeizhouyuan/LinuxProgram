@@ -25,7 +25,7 @@ void show_strength() {
         } else {
             wattron(Write, COLOR_PAIR(10));
         }
-        mvwaddch(Write, 2, i, ' ');//???
+        mvwaddch(Write, 2, i, ' ');
     }
     wattron(Write, COLOR_PAIR(3));
     int tmp[5] = {1, 2, 3, 2, 1};
@@ -48,7 +48,7 @@ void show_strength() {
         tmp_x += offset;
         mvwaddch(Write, 1, tmp_x, '|');
         mvwaddch(Write, 3, tmp_x, '|');
-       // mvwaddch(Write, 4, maxx, ' '); ///????????
+        mvwaddch(Write, 4, maxx, ' ');//?????
         if (tmp_x >= maxx - 2) offset = -1;
         if (tmp_x <= 2) offset = 1;
         wrefresh(Write);

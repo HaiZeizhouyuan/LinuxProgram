@@ -15,10 +15,7 @@ void client_exit(int signum) {
     user.team = chat_msg.team;
     strcpy(user.name, chat_msg.name);
     send(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0);
-    if (recv(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0) > 0) {
-        show_message(NULL, &user, "Bye!", 0);
-        close(sockfd);
-        endwin();
-        exit(0);    
-    }
+    close(sockfd);
+    endwin();
+    exit(0);    
 }
