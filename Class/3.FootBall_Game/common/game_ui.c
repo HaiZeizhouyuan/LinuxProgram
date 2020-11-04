@@ -12,6 +12,7 @@ extern WINDOW *Football, *Football_t, *Message, *Message_t,  *Help, *Help_t,  *S
 extern struct Bpoint ball;//球的位置
 extern struct BallStatus ball_status;
 extern int msg_num;
+extern struct Score score;
 
 WINDOW *create_newwin(int width, int height, int startx, int starty) {
     WINDOW *win;
@@ -54,15 +55,42 @@ void w_gotoxy_puts(WINDOW *win, int x, int y, char *s) {
     wrefresh(win);
 }
 
+void show_football() {
+    for (int i = 1; i < court.height - 1; i++) {
+        wattron(Football, COLOR_PAIR(3));
+        w_gotoxy_puts(Football,court.width / 2, i, "|");
+    }
+}
+
 void show_help() {
     //wattron(Help, COLOR_PAIR(2));
-    w_gotoxy_puts(Help, 6, 1, "HELP");
+    w_gotoxy_puts(Help, 7, 2, "HELP");
     //wattron(Help, COLOR_PAIR(3));
-    w_gotoxy_puts(Help, 2, 2, "W/A/S/D - Move");
-    w_gotoxy_puts(Help, 2, 3, "J - Stop ball");
-    w_gotoxy_puts(Help, 2, 4, "K - Kick ball");
-    w_gotoxy_puts(Help, 2, 5, "L - Carry ball");
+    w_gotoxy_puts(Help, 3, 4, "W/A/S/D - Move");
+    w_gotoxy_puts(Help, 3, 5, "J - Stop ball");
+    w_gotoxy_puts(Help, 3, 6, "K - Kick ball");
+    w_gotoxy_puts(Help, 3, 7, "L - Carry ball");
 
+}
+
+void show_score() {
+    char tmp_red[5] = {0}, tmp_blue[5] = {0};
+    sprintf(tmp_red, "%d", score.red);
+    sprintf(tmp_blue, "%d", score.blue);
+    w_gotoxy_puts(Score, 7, 2, "SCORE");
+    wattron(Score, COLOR_PAIR(2));
+    w_gotoxy_puts(Score, 5, 3, "RED");
+    wattroff(Score, COLOR_PAIR(2));
+    w_gotoxy_puts(Score, 9, 3, ":");
+    wattron(Score, COLOR_PAIR(6));
+    w_gotoxy_puts(Score, 11, 3, "BLUE");
+    wattron(Score, COLOR_PAIR(2));
+    w_gotoxy_puts(Score, 6, 4, tmp_red);
+    wattroff(Score, COLOR_PAIR(2));
+    w_gotoxy_putc(Score, 9, 4, ':');
+    wattron(Score, COLOR_PAIR(6));
+    w_gotoxy_puts(Score, 12, 4, tmp_blue);
+    wattroff(Score, COLOR_PAIR(6));
 }
 
 void initfootball() {
@@ -96,22 +124,26 @@ void initfootball() {
     Score = create_newwin(20, 7,  court.start.x + court.width + 2 , court.start.y + court.height + 1);
     Write = create_newwin(court.width + 4 + 20, 5,  court.start.x - 2, court.start.y + 1 + court.height + 7);
 
-
+ wattron(Football_t, COLOR_PAIR(2));
     box(Football, 0, 0);
-    wattron(Football_t, COLOR_PAIR(2));
     box(Football_t, 0, 0);
+    //wattroff(Football_t, COLOR_PAIR(2));
     box(Message_t, 0, 0);
     box(Help, 0, 0);
     box(Score, 0, 0);
     box(Write, 0, 0);
+    show_football();
     wattron(Football, COLOR_PAIR(6));//设置足球端口的颜色
     w_gotoxy_putc(Football, ball.x, ball.y, 'o');//设置足球的位置
+    wattroff(Football, COLOR_PAIR(6));
     for (int i = 0; i < 6; i++) {
-        w_gotoxy_putc(Football_t, 1, (court.height + 2 ) / 2 - 3 + i, 'x');
-        w_gotoxy_putc(Football_t, court.width + 4 - 2,  (court.height + 2) / 2- 3 + i, 'x');
+        wattron(Football, COLOR_PAIR(2));
+        w_gotoxy_puts(Football, 0, (court.height + 2 ) / 2 - 3 + i, "xx");
+        wattron(Football, COLOR_PAIR(6));
+        w_gotoxy_puts(Football, court.width - 2,  (court.height + 2) / 2 - 3 + i, "xx");
     }
     show_help();
-    w_gotoxy_puts(Score, 5,  1, "Score");
+    show_score();
 }
 
 

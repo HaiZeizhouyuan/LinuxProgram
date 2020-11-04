@@ -10,8 +10,8 @@
 int listener;
 int red_mark[MAX_TEAM] = {0}, blue_mark[MAX_TEAM] = {0};
 char msg[30] = {0}, data_stream[20] = {0};
-int port = 0, msg_num = 0;
-int epoll_fd, repollfd, bepollfd, help_num = 0;
+int port = 0, msg_num = 0, red_num = 0, blue_num = 0;
+int epoll_fd, repollfd, bepollfd;
 struct LogResponse response;
 struct LogRequest request;
 struct Map court;
@@ -26,7 +26,7 @@ pthread_mutex_t blue_mutex = PTHREAD_MUTEX_INITIALIZER;
 //./a.out -p 6666
 int main(int argc, char **argv) {
     int opt;
-    pthread_t red_tid, blue_tid, heart_tid, draw_t;
+    pthread_t red_tid, blue_tid, heart_tid;
     setlocale(LC_ALL, "");
     while ((opt = getopt(argc, argv, "p:")) != -1) {
         switch(opt) {
@@ -49,14 +49,13 @@ int main(int argc, char **argv) {
     if (!port) port = atoi(get_cjson_value(conf, "SERVERPORT"));
     court.width = atoi(get_cjson_value(conf, "COLS"));
     court.height = atoi(get_cjson_value(conf, "LINES"));
-  /*  struct winsize size;
+   /* struct winsize size;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) < 0) {
         perror("ioctl()");
         exit(1);
     }
     court.width = 4 * size.ws_col / 5 - 4;
     court.height = 4 * size.ws_row / 7 - 2;*/
-
 
     court.start.x = 3;
     court.start.y = 3;
@@ -72,6 +71,8 @@ int main(int argc, char **argv) {
     ball_status.by_team = -1;
 
     bzero(&score, sizeof(score));
+    score.red = 0;
+    score.blue = 0;
     
     DBG(BLUE"Get Port = %d seuccess!\n"NONE, port);
 
@@ -83,8 +84,7 @@ int main(int argc, char **argv) {
     DBG(GREEN"server create scuuess...\n"NONE);
 
 #ifndef _D
-    pthread_create(&draw_t, NULL, draw, NULL);
-    //initfootball();
+    initfootball();
 #endif
     epoll_fd = epoll_create(2 * MAX_TEAM);//参数可忽略，大于零即可
     repollfd = epoll_create(MAX_TEAM);
@@ -133,8 +133,8 @@ int main(int argc, char **argv) {
     setitimer(ITIMER_REAL, &itimer, NULL);
     show_message(NULL, NULL, "Whiting for Login.", 1);
     sigset_t origmask, sigmask;
-    sigemptyset(&sigmask);
-    sigaddset(&sigmask, SIGALRM);
+    sigemptyset(&sigmask);//清空sigmask信号集
+    sigaddset(&sigmask, SIGALRM);//把SIGALRM加入到sigmask的信号集中, 即该位设为１,阻塞
 
     while(1) {
         DBG(GREEN"Epollfd Start Wait events!\n"NONE);
@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
                 DBG(BLUE"new_fd is %d\n"NONE, new_fd);
                 if (new_fd > 0) {
                     //是新用户，并且连接成功，开始插入
-                    sprintf(buff, "Welcome %s Join Our Game\n", user.name);
+                    sprintf(buff, "Welcome %s Join Our Game, Team is %s\n", user.name, user.team ? "red" : "blue");
                     add_to_sub_reactor(&user);
                     show_message(NULL, NULL, buff, 1);
                   //  show_data_stream('l');

@@ -14,9 +14,14 @@ void *sub_reactor(void *arg) {
         pthread_create(&tid[i], NULL, thread_run, (void *)taskQueue);
     }
     struct epoll_event ev, events[MAX_TEAM];
+    sigset_t sigmask, origmask;
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGALRM);
     while(1) {
         DBG(RED"Sub Rector"NONE": Epoll Waiting...\n");
+        pthread_sigmask(SIG_SETMASK, &sigmask, &origmask);
         int nfds = epoll_wait(taskQueue->epollfd, events, MAX_TEAM, -1);
+        pthread_sigmask(SIG_SETMASK, &origmask, NULL);
         if (nfds == -1) {
             perror("epoll wait sub_reactor");
             exit(1);

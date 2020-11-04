@@ -10,6 +10,7 @@ extern int sockfd;
 struct FootBallMsg chat_msg;
 void client_exit(int signum) {
     DBG(RED"ctrl C!\n"NONE);
+    show_data_stream('e');
     struct User user;
     chat_msg.type = FT_FIN;
     user.team = chat_msg.team;

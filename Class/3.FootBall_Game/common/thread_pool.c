@@ -11,7 +11,7 @@ extern int repollfd, bepollfd;
 extern pthread_mutex_t red_mutex, blue_mutex;
 extern struct Map court;
 extern struct BallStatus ball_status;
-
+extern int blue_num,  red_num;
 extern struct Bpoint ball;
 char user_logout[512];
 
@@ -39,51 +39,54 @@ void do_work(struct User *user) {
         send_all(&chat_msg); 
     } else if (chat_msg.type & FT_FIN) {
         show_data_stream('e');
-        chat_msg.type = FT_FIN_T;
-        send(user->fd, (void *)&chat_msg, sizeof(chat_msg), 0);
+        chat_msg.type = FT_WALL;
+        memset(chat_msg.msg, 0, sizeof(chat_msg.msg));
+        char tmp[512] = {0};
+        sprintf(tmp, "Your good friend %s have logout!", user->name);
+        strcpy(chat_msg.msg, tmp);
+        send_all(&chat_msg);
         user->online = 0;
+        if (user->team == 1) red_num -= 1;
+        else blue_num -= 1;
         //加锁
         if (user->team == 1) pthread_mutex_lock(&blue_mutex);
         else pthread_mutex_lock(&red_mutex);
         int tmp_epollfd = ( user->team ? bepollfd : repollfd);
         del_event(tmp_epollfd, user->fd);
         close(user->fd);
-        memset(user_logout, 0, sizeof(user_logout));
-        sprintf(user_logout, "%s have logout!", user->name);
-        show_message(NULL, NULL, user_logout, 1);
+        show_message(NULL, NULL, tmp, 1);
         if (user->team == 1) pthread_mutex_unlock(&blue_mutex);
         else pthread_mutex_unlock(&red_mutex);
     } else if (chat_msg.type & FT_CTL) {//球的移动
         char tmp[512] = {0};
-        sprintf(tmp, "%s kicks ball with %d Newtons of force!", user->name, chat_msg.ctl.strength);
         show_message(NULL, user, tmp, 0);
         if (chat_msg.ctl.action & ACTION_DFL) {
             show_data_stream('n');
             user->loc.x += chat_msg.ctl.dirx;
             user->loc.y += chat_msg.ctl.diry;
-            //边界
-            if (user->loc.x <= 1) user->loc.x = 1;
-            if (user->loc.x >= court.width + 2) user->loc.x = court.width + 2;
+            //玩家移动的边界
+            if (user->loc.x <= 0) user->loc.x = 0;
+            if (user->loc.x >= court.width + 3) user->loc.x = court.width + 3;
             if (user->loc.y <= 0) user->loc.y = 0;
             if (user->loc.y >= court.height + 1) user->loc.y = court.height + 1;
-
-
-            if (carry_flag && can_access(&user->loc)) {
-                if (ball.x > user->loc.x) ball.x = user->loc.x + 2;
-                else ball.x = user->loc.x - 2;
-                if (ball.y > user->loc.y) ball.y = user->loc.y + 2;
-                else ball.y = user->loc.y - 2;
+            if (carry_flag) {
+                if (!can_access(&user->loc)) carry_flag = 0;
+                else if ((ball.x == user->loc.x) || (ball.y == user->loc.y)) {
+                    if (ball.x > user->loc.x) ball.x = user->loc.x + 2;
+                    else ball.x = user->loc.x - 2;
+                    if (ball.y > user->loc.y) ball.y = user->loc.y + 2;
+                    else ball.y = user->loc.y - 2;
+                }
             }
-            if (carry_flag && !can_access(&user->loc)) carry_flag = 0;
-
             memset(tmp, 0, sizeof(tmp));
-            sprintf(tmp, "%s new loc--------user(%d, %d), ball(%lf, %lf)", user->name, user->loc.x, user->loc.y, ball.x, ball.y );
+            sprintf(tmp, "%s'(%d, %d), ball(%lf, %lf)", user->name, user->loc.x, user->loc.y, ball.x, ball.y );
             show_message(NULL, NULL, tmp, 1);
             bzero(&chat_msg, sizeof(chat_msg));
             strcpy(chat_msg.msg, tmp);
             chat_msg.type = FT_WALL;
             send_all(&chat_msg);
         } else if (chat_msg.ctl.action & ACTION_KICK) {//踢球
+            sprintf(tmp, "%s kicks ball with %d Newtons of force!", user->name, chat_msg.ctl.strength);
             show_data_stream('k');
             carry_flag = 0;
             sprintf(tmp, "%s 's ball(%lf, %lf), user(%d, %d)\n",user->name,  ball.x, ball.y, user->loc.x, user->loc.y);
@@ -91,7 +94,7 @@ void do_work(struct User *user) {
             if (can_kick(&user->loc, chat_msg.ctl.strength)) {
                 ball_status.by_team = user->team;
                 strcpy(ball_status.name, user->name);
-                sprintf(tmp, "%s 's vx = %f, vy = %f, ax = %f, ay = %f\n", user->name, ball_status.v.x, ball_status.v.y, ball_status.a.x, ball_status.a.y);
+                sprintf(tmp, " vx = %f, vy = %f, ax = %f, ay = %f\n",ball_status.v.x, ball_status.v.y, ball_status.a.x, ball_status.a.y);
                 show_message(NULL, NULL, tmp, 1);          
             }
         } else if (chat_msg.ctl.action & ACTION_STOP) {

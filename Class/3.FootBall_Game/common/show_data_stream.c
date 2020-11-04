@@ -20,21 +20,22 @@ void show_data_stream(int type) {
     for (int i = 1; i < 19; i++) {
         switch(data_stream[i]) {
             case 'l':
-                wattron(Help, COLOR_PAIR(8));
+                wattron(Help, COLOR_PAIR(8));//log
                 break;
             case 'c':
-                wattron(Help, COLOR_PAIR(9));
+                wattron(Help, COLOR_PAIR(9));//carry
                 break;
             case 'k':
-                wattron(Help, COLOR_PAIR(10));
+                wattron(Help, COLOR_PAIR(10));//kick
                 break;
             case 's':
-                wattron(Help, COLOR_PAIR(11));
+                wattron(Help, COLOR_PAIR(11));//stop
+                break;
             case 'n':
-                wattron(Help, COLOR_PAIR(12));
+                wattron(Help, COLOR_PAIR(12));//normal
                 break;
             case 'e':
-                wattron(Help, COLOR_PAIR(7));
+                wattron(Help, COLOR_PAIR(7));//end
                 break;
 
         }

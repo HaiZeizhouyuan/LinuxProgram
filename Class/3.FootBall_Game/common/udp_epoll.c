@@ -6,7 +6,7 @@
  ************************************************************************/
 
 #include "head.h"
-extern int port; //服务端的全局变量
+extern int port, red_num, blue_num; //服务端的全局变量
 extern struct User *red_team;
 extern struct User *blue_team;
 extern int repollfd, bepollfd;
@@ -49,6 +49,19 @@ int udp_connect(struct sockaddr_in *client) {
 
 }
 
+
+void add_new_loc(struct User *user) {
+    if (user->team == 1) {
+        red_num += 1;
+        user->loc.x = court.width / 2 - 1 - 2 * (red_num / 6);
+        user->loc.y = court.height / 2 - 3 + red_num % 6;
+    } else {
+        blue_num += 1;
+        user->loc.x = court.width / 2 + 3 + 2 * (blue_num / 6);
+        user->loc.y = court.height / 2 - 3 + blue_num % 6;
+    }
+}
+
 //接受新用户
 //user指针需要在调用之前创建一个User结构体，然后将其地址传入，这是一个输出参数
 int udp_accept(int fd, struct User *user) {
@@ -88,11 +101,8 @@ int udp_accept(int fd, struct User *user) {
     }
     strcpy(user->name, request.name);
     user->team = request.team;
-    user->fd = new_fd;
-    if(user->team) user->loc.x = 1;
-    else user->loc.x = court.width - 2;
-
-    user->loc.y = court.height / 2;
+    user->fd = new_fd;  
+    add_new_loc(user);
     response.type = 0;
     strcpy(response.msg, log_success);
     sendto(user->fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
@@ -100,9 +110,6 @@ int udp_accept(int fd, struct User *user) {
     DBG(BLUE"%s %s log success!\n"NONE, user->team ? "Blue Team" : "Red Team", user->name);
     return new_fd;
 }
-
-
-
 
 //在确定允许用户登录前，需要判断是否重复登录
 int check_online(struct LogRequest *request) {

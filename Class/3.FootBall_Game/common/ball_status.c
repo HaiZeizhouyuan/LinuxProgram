@@ -18,40 +18,18 @@ int can_kick(struct Point *loc, int strength) {///?????
     show_message(NULL, NULL, tmp, 1);
     if (abs(ux - (int)ball.x) <= 2 && abs(uy - (int)ball.y) <= 2) {
         if (ux == (int)ball.x && uy == (int)ball.y) return 0;
-        /*double v_tmp = (40.0 * strength) * 0.2;//初始速度
+        double v_tmp = (500.0 * strength) * 0.2;//初始速度
         sprintf(tmp, "v_tmp = %lf", v_tmp);
         show_message(NULL, NULL, tmp, 1);
-        double angle;
-        if (ux == (int)ball.x)  angle = acos(-1) / 2;
-        else angle = atan(fabs(uy - ball.y) / fabs(ux  - ball.x));
-        if (ball.x > ux) {
-            ball_status.v.x = cos(angle) * v_tmp;
-            ball_status.a.x = -cos(angle) * 3;
-        } else {
-            ball_status.v.x = -cos(angle) * v_tmp;
-            ball_status.a.x = cos(angle) * 3;
-        } 
         
-
-        if (ball.y > uy) {
-            ball_status.v.y = cos(angle) * v_tmp;
-            ball_status.a.y = -cos(angle) * 3;
-        } else {
-            ball_status.v.y = -cos(angle) * v_tmp;
-            ball_status.a.y = cos(angle) * 3;
-        } */
 		double tx = ball.x - ux;
 		double ty = ball.y - uy;
 		double dx = tx / sqrt(pow(tx, 2) + pow(ty, 2));
 		double dy = ty / sqrt(pow(tx, 2) + pow(ty, 2));
 		ball_status.a.x = -3.0 * dx;
 		ball_status.a.y = -3.0 * dy;
-		ball_status.v.x = 40 * strength * 0.2 * dx;
-		ball_status.v.y = 40 * strength * 0.2 * dy;
-		char tmp[512] = {0};
-		sprintf(tmp, "a(%lf, %lf) v(%lf, %lf)", ball_status.a.x, ball_status.a.y, ball_status.v.x, ball_status.v.y);
-		show_message(NULL , NULL, tmp, 1);
-    
+		ball_status.v.x = v_tmp * dx;
+		ball_status.v.y = v_tmp * dy;
 		return 1;
     }
     return 0;
