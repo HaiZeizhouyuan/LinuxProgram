@@ -55,6 +55,15 @@ void re_drew_ball() {
             bzero(&ball_status.v, sizeof(ball_status.v));
             bzero(&ball_status.a, sizeof(ball_status.a));
         }
+        char map[1024] = {0};
+        struct FootBallMsg chat_msg;
+        sprintf(map, "%s", create_spirit());
+        bzero(&chat_msg, sizeof(chat_msg));
+        chat_msg.type = FT_MAP;
+        strcpy(chat_msg.msg, map);
+        chat_msg.size = sizeof(chat_msg.msg);
+        send_all(&chat_msg);
+
     }
 
     wattron(Football, COLOR_PAIR(3));
@@ -77,19 +86,18 @@ void re_drew_ball() {
     } else {
         wattron(Football, COLOR_PAIR(2));
     }
-   // w_gotoxy_putc(Football, (int)ball.x + 1, (int)ball.y, ACS_DEGREE);//???
-    wattron(Football, COLOR_PAIR(3));
+    //w_gotoxy_putc(Football, (int)ball.x + 1, (int)ball.y, ACS_DEGREE);//
 }
 
 void re_draw_player(int team, char *name, struct Point *loc) {
     if (team) {
-        wattron(Football, COLOR_PAIR(6));
+        wattron(Football_t, COLOR_PAIR(6));
     } else {
-        wattron(Football, COLOR_PAIR(2));
+        wattron(Football_t, COLOR_PAIR(2));
     }
-    wattron(Football_t, team ? COLOR_PAIR(2) : COLOR_PAIR(6));
     w_gotoxy_putc(Football_t, loc->x, loc->y, 'k');
-    w_gotoxy_puts(Football_t, loc->x , loc->y - 1, name);
+    w_gotoxy_puts(Football_t, loc->x + 1 , loc->y - 1, name);
+    wattroff(Football_t, team ? COLOR_PAIR(2) : COLOR_PAIR(6));
 }
 
 void re_drew_team(struct User *team) {
@@ -125,7 +133,9 @@ void re_drew() {
     werase(Football_t);
     werase(Score);
     box(Football_t, 0, 0);
+    wattron(Football, COLOR_PAIR(2));
     box(Football, 0, 0);
+    wattroff(Football, COLOR_PAIR(2));
     box(Score, 0, 0);
     re_drew_ball();
     re_drew_team(red_team);

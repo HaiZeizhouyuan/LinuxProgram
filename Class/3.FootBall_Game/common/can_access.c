@@ -8,6 +8,6 @@
 #include "head.h"
 extern struct Bpoint ball;
 int can_access(struct Point *loc) {
-    if (sqrt(pow(loc->x - ball.x, 2) + pow(loc->y - ball.y, 2)) <= 2) return 1;
+    if (abs(loc->x - 2 - (int)ball.x) <= 2 || abs(loc->y - 1 - (int)ball.y) <= 2) return 1;
     return 0;
 }

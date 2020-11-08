@@ -6,7 +6,6 @@
  ************************************************************************/
 
 #include "head.h"
-int carry_flag = 0;
 extern int repollfd, bepollfd;
 extern pthread_mutex_t red_mutex, blue_mutex;
 extern struct Map court;
@@ -57,11 +56,21 @@ void do_work(struct User *user) {
         show_message(NULL, NULL, tmp, 1);
         if (user->team == 1) pthread_mutex_unlock(&blue_mutex);
         else pthread_mutex_unlock(&red_mutex);
-    } else if (chat_msg.type & FT_CTL) {//球的移动
+    } else if (chat_msg.type & FT_CTL) {//玩家的移动
         char tmp[512] = {0};
         show_message(NULL, user, tmp, 0);
+        if (chat_msg.ctl.dirx * ((int)ball.x - user->loc.x + 2) < 0) user->carry_flag = 0;
+        if (chat_msg.ctl.diry * ((int)ball.y - user->loc.y + 2) < 0) user->carry_flag = 0;
         if (chat_msg.ctl.action & ACTION_DFL) {
             show_data_stream('n');
+            if (user->carry_flag == 1) {
+                if ((int)ball.x > user->loc.x - 2) ball.x = user->loc.x + chat_msg.ctl.dirx - 2 + 1;
+                else if ((int)ball.x < user->loc.x - 2) ball.x = user->loc.x + chat_msg.ctl.dirx - 2 - 1;
+                else ball.x = user->loc.x - 2;
+                if ((int)ball.y > user->loc.y - 1 ) ball.y = user->loc.y + chat_msg.ctl.diry - 1 + 1;
+                else if ((int)ball.y < user->loc.y - 1) ball.y = user->loc.y + chat_msg.ctl.diry - 1 + - 1;
+                else ball.y = user->loc.y - 1;
+            }
             user->loc.x += chat_msg.ctl.dirx;
             user->loc.y += chat_msg.ctl.diry;
             //玩家移动的边界
@@ -69,36 +78,27 @@ void do_work(struct User *user) {
             if (user->loc.x >= court.width + 3) user->loc.x = court.width + 3;
             if (user->loc.y <= 0) user->loc.y = 0;
             if (user->loc.y >= court.height + 1) user->loc.y = court.height + 1;
-            if (carry_flag) {
-                if (!can_access(&user->loc)) carry_flag = 0;
-                else if ((ball.x == user->loc.x) || (ball.y == user->loc.y)) {
-                    if (ball.x > user->loc.x) ball.x = user->loc.x + 2;
-                    else ball.x = user->loc.x - 2;
-                    if (ball.y > user->loc.y) ball.y = user->loc.y + 2;
-                    else ball.y = user->loc.y - 2;
-                }
-            }
-            memset(tmp, 0, sizeof(tmp));
-            sprintf(tmp, "%s'(%d, %d), ball(%lf, %lf)", user->name, user->loc.x, user->loc.y, ball.x, ball.y );
-            show_message(NULL, NULL, tmp, 1);
+            char map[1024] = {0};
+            sprintf(map, "%s", create_spirit());
             bzero(&chat_msg, sizeof(chat_msg));
-            strcpy(chat_msg.msg, tmp);
-            chat_msg.type = FT_WALL;
+            chat_msg.type = FT_MAP;
+            strcpy(chat_msg.msg, map);
+            chat_msg.size = sizeof(chat_msg.msg);
             send_all(&chat_msg);
         } else if (chat_msg.ctl.action & ACTION_KICK) {//踢球
             sprintf(tmp, "%s kicks ball with %d Newtons of force!", user->name, chat_msg.ctl.strength);
             show_data_stream('k');
-            carry_flag = 0;
-            sprintf(tmp, "%s 's ball(%lf, %lf), user(%d, %d)\n",user->name,  ball.x, ball.y, user->loc.x, user->loc.y);
-            show_message(NULL, NULL, tmp, 1);
+            user->carry_flag = 0;
             if (can_kick(&user->loc, chat_msg.ctl.strength)) {
+                sprintf(tmp, "ball(%lf, %lf), %s(%d, %d)\n",  ball.x, ball.y, user->name, user->loc.x, user->loc.y);
+                show_message(NULL, NULL, tmp, 1);
                 ball_status.by_team = user->team;
                 strcpy(ball_status.name, user->name);
                 sprintf(tmp, " vx = %f, vy = %f, ax = %f, ay = %f\n",ball_status.v.x, ball_status.v.y, ball_status.a.x, ball_status.a.y);
-                show_message(NULL, NULL, tmp, 1);          
+               // show_message(NULL, NULL, tmp, 1);          
             }
         } else if (chat_msg.ctl.action & ACTION_STOP) {
-            carry_flag = 0;
+            user->carry_flag = 0;
             show_data_stream('s');
             if (can_access(&user->loc)) {
                 bzero(&ball_status.v, sizeof(ball_status.v));
@@ -109,15 +109,9 @@ void do_work(struct User *user) {
         } else  if (chat_msg.ctl.action & ACTION_CARRY){
             show_data_stream('c');
             sprintf(tmp, "Try Carry The Ball!");
-            carry_flag = 1;
+            if (can_access(&user->loc)) user->carry_flag = 1;
             show_message(NULL, user, tmp, 0);
         }
-        char map[1024] = {0};
-        sprintf(map, "%s", create_spirit());
-        bzero(&chat_msg, sizeof(chat_msg));
-        chat_msg.type = FT_MAP;
-        strcpy(chat_msg.msg, map);
-        send_all(&chat_msg);
     }
 }
 

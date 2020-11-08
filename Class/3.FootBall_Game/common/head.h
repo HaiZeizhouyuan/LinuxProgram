@@ -58,6 +58,9 @@
 #include "server_re_draw.h"
 #include "create_spirit.h"
 #include "show_data_stream.h"
+#include "parse_spirit.h"
+#include "client_re_draw.h"
+#include "get_map_value.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

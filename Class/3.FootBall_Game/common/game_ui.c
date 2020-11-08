@@ -8,7 +8,7 @@
 #include "head.h"
 
 struct Map court;//球场大小
-extern WINDOW *Football, *Football_t, *Message, *Message_t,  *Help, *Help_t,  *Score, *Write;//窗体
+extern WINDOW *Football, *Football_t, *Message, *Message_t,  *Help, *Score, *Write;//窗体
 extern struct Bpoint ball;//球的位置
 extern struct BallStatus ball_status;
 extern int msg_num;
@@ -120,14 +120,11 @@ void initfootball() {
     Message = subwin(Message_t, 5, court.width + 2, court.start.y + court.height + 2 , court.start.x - 1);
     scrollok(Message, 1);
     Help = create_newwin(20, court.height + 2,  court.start.x + court.width + 2, court.start.y - 1);
-    Help_t = subwin(Help, 4, 18, court.start.y + court.height - 4, court.start.x  + court.width + 3);
     Score = create_newwin(20, 7,  court.start.x + court.width + 2 , court.start.y + court.height + 1);
     Write = create_newwin(court.width + 4 + 20, 5,  court.start.x - 2, court.start.y + 1 + court.height + 7);
-
- wattron(Football_t, COLOR_PAIR(2));
+    wattron(Football, COLOR_PAIR(2));
     box(Football, 0, 0);
     box(Football_t, 0, 0);
-    //wattroff(Football_t, COLOR_PAIR(2));
     box(Message_t, 0, 0);
     box(Help, 0, 0);
     box(Score, 0, 0);
@@ -142,16 +139,9 @@ void initfootball() {
         wattron(Football, COLOR_PAIR(6));
         w_gotoxy_puts(Football, court.width - 2,  (court.height + 2) / 2 - 3 + i, "xx");
     }
+    
     show_help();
     show_score();
-}
-
-
-void *draw(void *arg) {
-    initfootball();
-    while(1) {
-        sleep(10);
-    }
 }
 
 
@@ -163,7 +153,7 @@ void show_message(WINDOW *win,struct User *user, char *msg, int type) {
     char msgname[30] = {0};
     wattron(win, COLOR_PAIR(6));
     sprintf(timestr, "%02d:%02d:%02d ", tm->tm_hour, tm->tm_min, tm->tm_sec);
-    if (msg_num >  4) {
+    if (msg_num >= 4) {
         msg_num = 3;
         scroll(win);//将窗口向上卷一行
             
@@ -186,4 +176,43 @@ void show_message(WINDOW *win,struct User *user, char *msg, int type) {
     msg_num++;
     wrefresh(win);
 }
+/*
 
+void show_message(WINDOW *win, struct User *user, char *msg, int type) {
+	if (win == NULL) win = Message;
+    time_t time_now = time(NULL);
+    struct tm* tm = localtime(&time_now);
+    char timestr[20] = {0};
+    char username[80] = {0};
+    sprintf(timestr, "%02d:%02d:%02d ", tm->tm_hour, tm->tm_min, tm->tm_sec);
+    if (type) {
+        wattron(win, COLOR_PAIR(4));
+        strcpy(username, "Server Info : ");
+    } else {
+        if (user->team) 
+            wattron(win, COLOR_PAIR(6));
+        else 
+            wattron(win, COLOR_PAIR(2));
+        sprintf(username, "%s : ", user->name);
+    }
+
+    if (msg_num <= 4) {
+        w_gotoxy_puts(win, 10, msg_num, username);
+        wattron(win, COLOR_PAIR(3));
+        w_gotoxy_puts(win, 10 + strlen(username), msg_num, msg);
+        wattron(win, COLOR_PAIR(5));
+        w_gotoxy_puts(win, 1, msg_num, timestr);
+        msg_num++;
+    } else {
+        msg_num = 4;
+        scroll(win);
+        w_gotoxy_puts(win, 10, msg_num, username);
+        wattron(win, COLOR_PAIR(3));
+        w_gotoxy_puts(win, 10 + strlen(username), msg_num, msg);
+        wattron(win, COLOR_PAIR(5));
+        w_gotoxy_puts(win, 1, msg_num, timestr);
+        msg_num++;
+    }
+    wrefresh(win);
+}
+*/

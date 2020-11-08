@@ -28,7 +28,7 @@ void show_strength() {
         mvwaddch(Write, 2, i, ' ');
     }
     wattron(Write, COLOR_PAIR(3));
-    int tmp[5] = {1, 2, 3, 2, 1};
+    int tmp[5] = {2, 3, 6, 3, 2};
     int offset = 1;
     int tmp_x = 2;
     setnonblocking(0);
@@ -42,7 +42,7 @@ void show_strength() {
                 break;
             }
         }
-        usleep(5000);
+        usleep(10000);
         mvwaddch(Write, 1, tmp_x, ' ');
         mvwaddch(Write, 3, tmp_x, ' ');
         tmp_x += offset;

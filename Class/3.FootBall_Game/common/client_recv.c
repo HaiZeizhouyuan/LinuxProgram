@@ -13,11 +13,17 @@ void *client_recv(void *arg) {
     while(1) {
         bzero(&chat_msg, sizeof(chat_msg));
         bzero(&user, sizeof(user));
+        
+       // sigset_t origmask, sigmask;
+       // sigemptyset(&sigmask);//清空sigmask信号集
+       // sigaddset(&sigmask, SIGALRM);//把SIGALRM加入到sigmask的信号集中, 即该位设为１,阻塞
+       // pthread_sigmask(SIG_SETMASK, &sigmask, &origmask);
+
         int ret = recv(sockfd, (void *)&chat_msg, sizeof(chat_msg), 0);
-        if (ret != sizeof(chat_msg)) {
-            perror("client_recv()");
-            exit(1);
+        if (ret <= 0) {
+            return 0;
         }
+       // pthread_sigmask(SIG_SETMASK, &origmask, NULL);
         user.team = chat_msg.team;
         strcpy(user.name, chat_msg.name);
         DBG(BLUE"Have msg recv!, type = %d\n"NONE, chat_msg.type);
@@ -40,8 +46,8 @@ void *client_recv(void *arg) {
             show_message(NULL, &user, chat_msg.msg, 0);
         } else if (chat_msg.type & FT_MAP) {
             show_message(NULL, NULL, "FootBall Game refresh", 1);
-         //  parse_spirit(chat_msg.msg, chat_msg.size);
-
+            parse_spirit(chat_msg.msg, chat_msg.size);
+            client_re_draw();
         } 
     }
 }

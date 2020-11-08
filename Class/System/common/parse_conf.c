@@ -29,7 +29,7 @@ cJSON *get_cjson(const char *file) {
         if (err_ptr != NULL) {
             fprintf(stderr, "Error Before : %s\n", err_ptr);
             return NULL;
-        }
+        
     }
     //printf("%s\n", buff);
     fclose(f);

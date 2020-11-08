@@ -24,6 +24,7 @@ struct User {
     char name[20];//姓名
     int online;// 1 在线 0 不在线
     int flag;//未响应次数
+    int carry_flag;
     struct Point loc;//用户坐标
 };
 

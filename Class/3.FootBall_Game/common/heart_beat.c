@@ -9,7 +9,7 @@
 extern int repollfd, bepollfd;
 void *heart_beat(void *arg) {
     while(1) {
-        sleep(5);
+        sleep(10);
         DBG(BLUE"Start Heart Beart!\n"NONE);
         heart_beat_team(red_team);
         heart_beat_team(blue_team);

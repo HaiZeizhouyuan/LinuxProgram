@@ -7,11 +7,11 @@
 
 #include "head.h"
 #define MAX_TEAM 11
-int red_sockfd, blue_sockfd, sockfd = -1, team = -1, server_port = 0, msg_num = 0;
-char server_ip[20] = {0},  name[20] = {0}, log_msg[20] = {0}, data_stream[20];
+int red_sockfd, blue_sockfd, sockfd = -1, team = -1, server_port = 0, msg_num = 0, red_num = 0, blue_num = 0;
+char server_ip[20] = {0},  name[20] = {0}, log_msg[512] = {0}, data_stream[20];
 char *conf = "./football.json";
 
-WINDOW *Write, *Message, *Message_t,  *Help, *Help_t, *Score, *Football, *Football_t;
+WINDOW *Write, *Message, *Message_t,  *Help, *Score, *Football, *Football_t;
 
 struct User *blue_team, *red_team;
 struct Score score;
@@ -63,8 +63,8 @@ int main(int argc, char **argv) {
     if (team == - 1) team = atoi(get_cjson_value(conf, "TEAM"));
     if (strlen(log_msg) == 0) strcpy(log_msg, get_cjson_value(conf, "LOGMSG"));
 
-   // court.width = atoi(get_cjson_value(conf, "COLS"));
-   //court.height = atoi(get_cjson_value(conf, "LINES"));
+    court.width = atoi(get_cjson_value(conf, "COLS"));
+    court.height = atoi(get_cjson_value(conf, "LINES"));
     DBG(GREEN"Get server_port = %d, server_ip = %s, name = %s, team = %d, LOGMSG = %s  success!\n"NONE, server_port, server_ip, name, team, log_msg);
     
     ctl_msg.type = FT_CTL;
@@ -74,13 +74,13 @@ int main(int argc, char **argv) {
 
     strcpy(user.name, name);
     struct winsize size;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) < 0) {
+   /* if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) < 0) {
         perror("ioctl()");
         exit(1);           
     }
 
     court.width = 4 * size.ws_col / 5 - 4;
-    court.height = 4 * size.ws_row / 7 - 2;
+    court.height = 4 * size.ws_row / 7 - 2;*/
     
     court.start.x = 3;
     court.start.y = 3;
@@ -90,6 +90,7 @@ int main(int argc, char **argv) {
     bzero(&ball_status, sizeof(ball_status));
 
     signal(SIGINT, client_exit);
+    
     red_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
     blue_team = (struct User *)calloc(MAX_TEAM, sizeof(struct User));
 
@@ -148,7 +149,7 @@ int main(int argc, char **argv) {
     itimer.it_interval.tv_sec = 0;
     itimer.it_interval.tv_usec = 100000;
     itimer.it_value.tv_sec = 0;
-    itimer.it_value.tv_usec = 100000;
+    itimer.it_value.tv_usec = 10000;
     setitimer(ITIMER_REAL, &itimer, NULL );
 
     noecho();
@@ -157,7 +158,7 @@ int main(int argc, char **argv) {
 
     while(1) {
         int c = getchar();
-        switch(c) { 
+        switch(c) {
             case 'a':
                 ctl_msg.ctl.dirx -= 1;
                 break;
@@ -176,7 +177,7 @@ int main(int argc, char **argv) {
             case ' ':
                 show_strength();
                 break;
-            case 'j': {
+            case 'j':
                 show_data_stream('s');
                 show_message(NULL, &user, "stop football", 0);
                 bzero(&ctl_msg, sizeof(ctl_msg));
@@ -184,8 +185,8 @@ int main(int argc, char **argv) {
                 ctl_msg.ctl.action = ACTION_STOP;
                 send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
-            }
-            case 'k': {
+        
+            case 'k':
                 show_data_stream('k');
                 show_message(NULL, &user, "kick football", 0);
                 bzero(&ctl_msg, sizeof(ctl_msg));
@@ -194,18 +195,15 @@ int main(int argc, char **argv) {
                 ctl_msg.ctl.strength = 1;
                 send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
-            }
-            case 'l': {
+            case 'l':
                 show_data_stream('c');
                 show_message(NULL, &user, "carry football", 0);
                 bzero(&ctl_msg, sizeof(ctl_msg));
                 ctl_msg.type = FT_CTL;
                 ctl_msg.ctl.action = ACTION_CARRY;
-                ctl_msg.ctl.strength = 1;
                 send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
-            }
-            default:
+            default :
                 break;
         }
     }

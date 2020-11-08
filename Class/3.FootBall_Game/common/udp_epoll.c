@@ -14,6 +14,7 @@ extern pthread_mutex_t red_mutex, blue_mutex;
 extern struct Bpoint ball;
 extern WINDOW *Football;
 extern struct Map court;
+extern WINDOW *Football_t;
 //将user添加到epollfd中, 监控user发生events事件
 void add_event_ptr(int epollfd, int fd, int events, struct User *user) {
     struct epoll_event ev;
@@ -101,8 +102,11 @@ int udp_accept(int fd, struct User *user) {
     }
     strcpy(user->name, request.name);
     user->team = request.team;
-    user->fd = new_fd;  
+    user->fd = new_fd;
     add_new_loc(user);
+    wattron(Football_t, user->team ? COLOR_PAIR(2) : COLOR_PAIR(6));
+    w_gotoxy_putc(Football_t, user->loc.x, user->loc.y, 'k');
+    wattroff(Football_t, user->team ? COLOR_PAIR(2) : COLOR_PAIR(6));
     response.type = 0;
     strcpy(response.msg, log_success);
     sendto(user->fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
