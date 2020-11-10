@@ -104,9 +104,9 @@ int udp_accept(int fd, struct User *user) {
     user->team = request.team;
     user->fd = new_fd;
     add_new_loc(user);
-    wattron(Football_t, user->team ? COLOR_PAIR(2) : COLOR_PAIR(6));
+    wattron(Football_t, user->team ? COLOR_PAIR(6) : COLOR_PAIR(2));
     w_gotoxy_putc(Football_t, user->loc.x, user->loc.y, 'k');
-    wattroff(Football_t, user->team ? COLOR_PAIR(2) : COLOR_PAIR(6));
+    wattroff(Football_t, user->team ? COLOR_PAIR(6) : COLOR_PAIR(2));
     response.type = 0;
     strcpy(response.msg, log_success);
     sendto(user->fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);

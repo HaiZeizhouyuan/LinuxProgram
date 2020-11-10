@@ -17,9 +17,5 @@ void send_ctl() {
         send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
         ctl_msg.ctl.dirx = ctl_msg.ctl.diry = 0;
         show_data_stream('n');
-        //char tmp[100] = {0};
-        //sprintf(tmp, "%s[%d, %d],BALL[%d, %d]", chat_msg.name,  ctl_msg.ctl.dirx, ctl_msg.ctl.diry, (int)ball.x, (int)ball.y );
-        //show_message(NULL, NULL, tmp, 1);
-     //   client_re_draw();
     }
 }

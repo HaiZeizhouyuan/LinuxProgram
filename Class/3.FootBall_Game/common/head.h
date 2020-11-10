@@ -61,6 +61,7 @@
 #include "parse_spirit.h"
 #include "client_re_draw.h"
 #include "get_map_value.h"
+#include "court_draw.h"
 #ifdef _D
 #define DBG(fmt, args...) printf(fmt, ##args);
 #else 

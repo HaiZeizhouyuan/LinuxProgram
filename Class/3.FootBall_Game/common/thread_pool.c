@@ -12,7 +12,19 @@ extern struct Map court;
 extern struct BallStatus ball_status;
 extern int blue_num,  red_num;
 extern struct Bpoint ball;
+extern struct User *red_team, *blue_team;
 char user_logout[512];
+
+void map_change() {
+    char map[1024] = {0};
+    struct FootBallMsg chat_msg;
+    sprintf(map, "%s", create_spirit());
+    bzero(&chat_msg, sizeof(chat_msg));
+    chat_msg.type = FT_MAP;
+    strcpy(chat_msg.msg, map);
+    chat_msg.size = sizeof(chat_msg.msg);
+    send_all(&chat_msg);
+}
 
 void do_work(struct User *user) {
     struct FootBallMsg chat_msg;
@@ -32,11 +44,17 @@ void do_work(struct User *user) {
         } else {
             DBG(L_RED" %s "NONE"❤\n", user->name);
         }
-    } else if (chat_msg.type & (FT_WALL | FT_MSG)) {//聊天
-        DBG(BLUE"[ WALL ]"NONE" : %s say %s, type = %d\n", chat_msg.name, chat_msg.msg, chat_msg.type);
+    } else if (chat_msg.type & FT_MSG) {//聊天
         show_message(NULL, user, chat_msg.msg, 0);
         send_all(&chat_msg); 
-    } else if (chat_msg.type & FT_FIN) {
+    } else if (chat_msg.type & FT_PRI) {
+        if (user->team) {
+            send_team(blue_team, &chat_msg);
+        } else {
+            send_team(red_team, &chat_msg);
+        }
+        show_message(NULL, user, chat_msg.msg, 2);
+    }else if (chat_msg.type & FT_FIN) {
         show_data_stream('e');
         chat_msg.type = FT_WALL;
         memset(chat_msg.msg, 0, sizeof(chat_msg.msg));
@@ -56,6 +74,7 @@ void do_work(struct User *user) {
         show_message(NULL, NULL, tmp, 1);
         if (user->team == 1) pthread_mutex_unlock(&blue_mutex);
         else pthread_mutex_unlock(&red_mutex);
+        map_change();
     } else if (chat_msg.type & FT_CTL) {//玩家的移动
         char tmp[512] = {0};
         show_message(NULL, user, tmp, 0);
@@ -78,13 +97,7 @@ void do_work(struct User *user) {
             if (user->loc.x >= court.width + 3) user->loc.x = court.width + 3;
             if (user->loc.y <= 0) user->loc.y = 0;
             if (user->loc.y >= court.height + 1) user->loc.y = court.height + 1;
-            char map[1024] = {0};
-            sprintf(map, "%s", create_spirit());
-            bzero(&chat_msg, sizeof(chat_msg));
-            chat_msg.type = FT_MAP;
-            strcpy(chat_msg.msg, map);
-            chat_msg.size = sizeof(chat_msg.msg);
-            send_all(&chat_msg);
+            map_change();
         } else if (chat_msg.ctl.action & ACTION_KICK) {//踢球
             sprintf(tmp, "%s kicks ball with %d Newtons of force!", user->name, chat_msg.ctl.strength);
             show_data_stream('k');

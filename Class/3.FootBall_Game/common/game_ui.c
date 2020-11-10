@@ -55,12 +55,6 @@ void w_gotoxy_puts(WINDOW *win, int x, int y, char *s) {
     wrefresh(win);
 }
 
-void show_football() {
-    for (int i = 1; i < court.height - 1; i++) {
-        wattron(Football, COLOR_PAIR(3));
-        w_gotoxy_puts(Football,court.width / 2, i, "|");
-    }
-}
 
 void show_help() {
     //wattron(Help, COLOR_PAIR(2));
@@ -129,16 +123,10 @@ void initfootball() {
     box(Help, 0, 0);
     box(Score, 0, 0);
     box(Write, 0, 0);
-    show_football();
-    wattron(Football, COLOR_PAIR(6));//设置足球端口的颜色
+    court_draw();
+    wattron(Football, COLOR_PAIR(3));//设置足球端口的颜色
     w_gotoxy_putc(Football, ball.x, ball.y, 'o');//设置足球的位置
-    wattroff(Football, COLOR_PAIR(6));
-    for (int i = 0; i < 6; i++) {
-        wattron(Football, COLOR_PAIR(2));
-        w_gotoxy_puts(Football, 0, (court.height + 2 ) / 2 - 3 + i, "xx");
-        wattron(Football, COLOR_PAIR(6));
-        w_gotoxy_puts(Football, court.width - 2,  (court.height + 2) / 2 - 3 + i, "xx");
-    }
+    wattroff(Football, COLOR_PAIR(3));  
     
     show_help();
     show_score();
@@ -153,15 +141,13 @@ void show_message(WINDOW *win,struct User *user, char *msg, int type) {
     char msgname[30] = {0};
     wattron(win, COLOR_PAIR(6));
     sprintf(timestr, "%02d:%02d:%02d ", tm->tm_hour, tm->tm_min, tm->tm_sec);
-    if (msg_num >= 4) {
-        msg_num = 3;
-        scroll(win);//将窗口向上卷一行
-            
-    }
     w_gotoxy_puts(win, 1, msg_num, timestr);
-    if(type) {
+    if(type == 1) {
         wattron(win, COLOR_PAIR(4));
         strcpy(msgname, "Sys Info : ");
+    } else if (type == 2) {
+        wattron(win, user->team ? COLOR_PAIR(6) : COLOR_PAIR(2));
+        sprintf(msgname, "[Team] %s", user->name);
     } else {
         if (user->team) {
             wattron(win, COLOR_PAIR(6));
@@ -170,49 +156,26 @@ void show_message(WINDOW *win,struct User *user, char *msg, int type) {
         }
         sprintf(msgname,"%s :", user->name );
     } 
-    w_gotoxy_puts(win, 10, msg_num, msgname);
-    wattron(win, COLOR_PAIR(3));
-    w_gotoxy_puts(win, 2 + strlen(msgname) + 10, msg_num, msg);
-    msg_num++;
-    wrefresh(win);
-}
-/*
-
-void show_message(WINDOW *win, struct User *user, char *msg, int type) {
-	if (win == NULL) win = Message;
-    time_t time_now = time(NULL);
-    struct tm* tm = localtime(&time_now);
-    char timestr[20] = {0};
-    char username[80] = {0};
-    sprintf(timestr, "%02d:%02d:%02d ", tm->tm_hour, tm->tm_min, tm->tm_sec);
-    if (type) {
-        wattron(win, COLOR_PAIR(4));
-        strcpy(username, "Server Info : ");
-    } else {
-        if (user->team) 
-            wattron(win, COLOR_PAIR(6));
-        else 
-            wattron(win, COLOR_PAIR(2));
-        sprintf(username, "%s : ", user->name);
-    }
-
     if (msg_num <= 4) {
-        w_gotoxy_puts(win, 10, msg_num, username);
+        w_gotoxy_puts(win, 10, msg_num, msgname);
         wattron(win, COLOR_PAIR(3));
-        w_gotoxy_puts(win, 10 + strlen(username), msg_num, msg);
+        w_gotoxy_puts(win, 10 + strlen(msgname), msg_num, msg);
         wattron(win, COLOR_PAIR(5));
         w_gotoxy_puts(win, 1, msg_num, timestr);
         msg_num++;
+            
     } else {
         msg_num = 4;
         scroll(win);
-        w_gotoxy_puts(win, 10, msg_num, username);
+        w_gotoxy_puts(win, 10, msg_num, msgname);
         wattron(win, COLOR_PAIR(3));
-        w_gotoxy_puts(win, 10 + strlen(username), msg_num, msg);
+        w_gotoxy_puts(win, 10 + strlen(msgname), msg_num, msg);
         wattron(win, COLOR_PAIR(5));
         w_gotoxy_puts(win, 1, msg_num, timestr);
         msg_num++;
+            
     }
     wrefresh(win);
+
 }
-*/
+

@@ -27,6 +27,7 @@ struct User user;
 
 int main(int argc, char **argv) {
     setlocale(LC_ALL,"");
+
     int opt;
     bzero(&request, sizeof(request));
     bzero(&response, sizeof(response));
@@ -73,14 +74,6 @@ int main(int argc, char **argv) {
     chat_msg.type = FT_MSG;
 
     strcpy(user.name, name);
-    struct winsize size;
-   /* if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) < 0) {
-        perror("ioctl()");
-        exit(1);           
-    }
-
-    court.width = 4 * size.ws_col / 5 - 4;
-    court.height = 4 * size.ws_row / 7 - 2;*/
     
     court.start.x = 3;
     court.start.y = 3;
@@ -147,7 +140,7 @@ int main(int argc, char **argv) {
     signal(SIGALRM, send_ctl);//由setitimer触发的信号
     struct itimerval itimer;
     itimer.it_interval.tv_sec = 0;
-    itimer.it_interval.tv_usec = 100000;
+    itimer.it_interval.tv_usec = 900000;
     itimer.it_value.tv_sec = 0;
     itimer.it_value.tv_usec = 10000;
     setitimer(ITIMER_REAL, &itimer, NULL );
@@ -172,6 +165,11 @@ int main(int argc, char **argv) {
                 ctl_msg.ctl.diry += 1;
                 break;
             case 13:
+                chat_msg.type = FT_MSG;
+                send_chat();
+                break;
+            case 64:
+                chat_msg.type = FT_PRI;
                 send_chat();
                 break;
             case ' ':

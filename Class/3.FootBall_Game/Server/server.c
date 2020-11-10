@@ -49,13 +49,7 @@ int main(int argc, char **argv) {
     if (!port) port = atoi(get_cjson_value(conf, "SERVERPORT"));
     court.width = atoi(get_cjson_value(conf, "COLS"));
     court.height = atoi(get_cjson_value(conf, "LINES"));
-   /* struct winsize size;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) < 0) {
-        perror("ioctl()");
-        exit(1);
-    }
-    court.width = 4 * size.ws_col / 5 - 4;
-    court.height = 4 * size.ws_row / 7 - 2;*/
+    struct winsize size;
 
     court.start.x = 3;
     court.start.y = 3;
@@ -127,7 +121,7 @@ int main(int argc, char **argv) {
 
     struct itimerval itimer;
     itimer.it_interval.tv_sec = 0;
-    itimer.it_interval.tv_usec = 100000;//以后每一次执行的间隔时间
+    itimer.it_interval.tv_usec = 900000;//以后每一次执行的间隔时间
     itimer.it_value.tv_sec = 5;//第一次执行的时间
     itimer.it_value.tv_usec = 0;
     setitimer(ITIMER_REAL, &itimer, NULL);
@@ -161,7 +155,15 @@ int main(int argc, char **argv) {
                     sprintf(buff, "Welcome %s Join Our Game, Team is %s\n", user.name, user.team ? "red" : "blue");
                     add_to_sub_reactor(&user);
                     show_message(NULL, NULL, buff, 1);
-                  //  show_data_stream('l');
+                    show_data_stream('l');
+                    char map[1024] = {0};
+                    struct FootBallMsg chat_msg;
+                    sprintf(map, "%s", create_spirit());
+                    bzero(&chat_msg, sizeof(chat_msg));
+                    chat_msg.type = FT_MAP;
+                    strcpy(chat_msg.msg, map);
+                    chat_msg.size = sizeof(chat_msg.msg);
+                    send_all(&chat_msg);
                     DBG(BLUE"Add %s to %s success!\n"NONE, user.name, user.team ? "Blue Team" : "Red Team");
                 }
             } 

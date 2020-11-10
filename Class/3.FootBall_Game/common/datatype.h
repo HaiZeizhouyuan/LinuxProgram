@@ -87,8 +87,7 @@ struct Ctl{
 #define FT_CTL 0x10//控制信息
 #define FT_MAP 0x20//场地数据
 #define FT_FIN 0x40//离场
-#define FT_FIN_T 0x200
-#define FT_SCORE 0x80//比分变化
+#define FT_PRI 0x80//对内
 #define FT_GAMEOVER 0x100//gameover
 
 #define MAX_MSG 1024

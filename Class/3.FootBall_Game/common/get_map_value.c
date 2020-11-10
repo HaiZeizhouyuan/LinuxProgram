@@ -16,9 +16,6 @@ extern int red_num, blue_num;
 void get_map_value(cJSON *conf) {
     ball.x =  get_json_valueint(conf, "ball", "x");
     ball.y =  get_json_valueint(conf, "ball", "y");
-    char tmp[30] = {0};
-    sprintf(tmp, "map_ball(%d, %d)", (int)ball.x, (int)ball.y);
-    show_message(NULL, NULL, tmp, 1);
     ball_status.by_team = get_json_valueint(conf, "ball", "who");
     strcpy(ball_status.name, get_json_valuestring(conf, "ball", "name"));
     score.red = get_json_valueint(conf, "score", "red");
