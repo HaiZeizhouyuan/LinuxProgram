@@ -1,0 +1,2 @@
+#!/bin/bash
+gcc server.c ../ServerManager/*.c ../common/common.c -I ../common/ -lpthread -o server

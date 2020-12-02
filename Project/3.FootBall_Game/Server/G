@@ -1,0 +1,2 @@
+#!/bin/bash
+gcc server.c ../common/common.c ../common/cJSON.c ../common/get_cjson_value.c ../common/udp_epoll.c ../common/sub_reactor.c ../common/thread_pool.c ../common/heart_beat.c ../common/game_ui.c ../common/server_exit.c ../common/server_send_all.c ../common/ball_status.c ../common/can_access.c ../common/server_re_draw.c ../common/create_spirit.c ../common/show_data_stream.c ../common/court_draw.c -I ../common/ -lpthread -lncursesw  -lm -o SERVER

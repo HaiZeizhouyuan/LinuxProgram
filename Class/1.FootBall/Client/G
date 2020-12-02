@@ -1,1 +1,0 @@
-gcc client.c ../common/cJSON.c ../common/get_cjson_value.c  ../common/common.c ../common/client_recver.c ../common/game_ui.c ../common/send_chat.c ../common/send_ctl.c ../common/show_data_stream.c ../common/show_strength.c -lpthread -lcurses -o client
