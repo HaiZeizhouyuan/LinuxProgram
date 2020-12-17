@@ -15,6 +15,7 @@ void send_chat() {
     DBG(GREEN"Start scanf!\n"NONE);
     echo();
     nocbreak();
+    curs_set(true);
     bzero(chat_msg.msg, sizeof(chat_msg.msg));
     w_gotoxy_puts(Write, 1, 1, "Input Message : ");
     mvwscanw(Write, 2, 1, "%[^\n]s", chat_msg.msg);

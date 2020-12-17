@@ -27,7 +27,6 @@ struct User user;
 
 int main(int argc, char **argv) {
     setlocale(LC_ALL,"");
-
     int opt;
     bzero(&request, sizeof(request));
     bzero(&response, sizeof(response));
@@ -140,14 +139,15 @@ int main(int argc, char **argv) {
     signal(SIGALRM, send_ctl);//由setitimer触发的信号
     struct itimerval itimer;
     itimer.it_interval.tv_sec = 0;
-    itimer.it_interval.tv_usec = 700000;
+    itimer.it_interval.tv_usec = 1000;
     itimer.it_value.tv_sec = 0;
-    itimer.it_value.tv_usec = 10000;
+    itimer.it_value.tv_usec = 1000;
     setitimer(ITIMER_REAL, &itimer, NULL );
 
     noecho();
     cbreak();
     keypad(stdscr, TRUE);
+    FILE *p_file = NULL;  
     while(1) {
         int c = getchar();
         switch(c) {
@@ -176,7 +176,6 @@ int main(int argc, char **argv) {
                 break;
             case 'j':
                 show_data_stream('s');
-                show_message(NULL, &user, "stop football", 0);
                 bzero(&ctl_msg, sizeof(ctl_msg));
                 ctl_msg.type = FT_CTL;
                 ctl_msg.ctl.action = ACTION_STOP;
@@ -185,7 +184,6 @@ int main(int argc, char **argv) {
         
             case 'k':
                 show_data_stream('k');
-                show_message(NULL, &user, "kick football", 0);
                 bzero(&ctl_msg, sizeof(ctl_msg));
                 ctl_msg.type = FT_CTL;
                 ctl_msg.ctl.action = ACTION_KICK;
@@ -194,7 +192,6 @@ int main(int argc, char **argv) {
                 break;
             case 'l':
                 show_data_stream('c');
-                show_message(NULL, &user, "carry football", 0);
                 bzero(&ctl_msg, sizeof(ctl_msg));
                 ctl_msg.type = FT_CTL;
                 ctl_msg.ctl.action = ACTION_CARRY;

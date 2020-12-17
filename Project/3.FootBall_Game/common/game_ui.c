@@ -90,6 +90,7 @@ void show_score() {
 void initfootball() {
     initscr();//初始化屏幕
     clear();//清空屏幕
+    curs_set(FALSE);
     if (!has_colors() || start_color() == ERR) {
         endwin();
         fprintf(stderr, "终端不支持颜色!\n");
@@ -108,7 +109,6 @@ void initfootball() {
     init_pair(11, COLOR_BLACK, COLOR_BLUE);
     init_pair(12, COLOR_BLACK, COLOR_YELLOW);
     
-
 
     Football_t = create_newwin(court.width + 4, court.height + 2, court.start.x - 2, court.start.y - 1);
     Football = subwin(Football_t, court.height, court.width, court.start.y, court.start.x);

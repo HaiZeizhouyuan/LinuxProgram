@@ -11,7 +11,6 @@
 extern struct User *red_team, *blue_team;
 
 void server_exit(int signum) {
-    DBG(BLUE"LOGOUT"NONE" : Server logout!\n");
     struct FootBallMsg msg;
     msg.type = FT_FIN;
     for (int i = 0; i < MAX_TEAM; i++) {
@@ -19,5 +18,6 @@ void server_exit(int signum) {
         if (blue_team[i].online) send(blue_team[i].fd, (void *)&msg, sizeof(msg), 0);
     }
     endwin();
+    refresh();
     exit(0);
 }
