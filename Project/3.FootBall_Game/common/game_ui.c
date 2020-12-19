@@ -87,6 +87,46 @@ void show_score() {
     wattroff(Score, COLOR_PAIR(6));
 }
 
+void count_down() {
+    int t = 3;
+    while(t) {
+        if (t == 3) {
+            int l = 4, tmp = l;
+            while(tmp--) w_gotoxy_putc(Football, court.width / 2 - tmp, court.height / 2 - 3, '_');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 - 2, '|');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 - 1, '|');
+            tmp = l;
+            while(tmp--) w_gotoxy_putc(Football, court.width / 2 - tmp, court.height / 2 - 1, '_');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2, '|');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 + 1, '|');
+            tmp = l;
+            while(tmp--) w_gotoxy_putc(Football, court.width / 2 - tmp, court.height / 2 + 1, '_');
+
+        } else if (t == 2) {
+            int l =4, tmp = l;
+            while(tmp--) w_gotoxy_putc(Football, court.width / 2 - tmp, court.height / 2 - 3, '_');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 - 2, '|');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 - 1, '|');
+            tmp = l;
+            while(tmp--) w_gotoxy_putc(Football, court.width / 2 - tmp, court.height / 2 - 1, '_');
+            w_gotoxy_putc(Football, court.width / 2 - l, court.height / 2, '|');
+            w_gotoxy_putc(Football, court.width / 2 - l, court.height / 2 + 1, '|');
+            tmp = l;
+            while(tmp--) w_gotoxy_putc(Football, court.width / 2 - tmp, court.height / 2 + 1, '_');
+        } else if (t == 1) {
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 - 2, '|');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 - 1, '|');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2, '|');
+            w_gotoxy_putc(Football, court.width / 2 + 1, court.height / 2 + 1, '|');
+        }
+
+        sleep(t--);
+        wclear(Football);
+        box(Football, 0, 0);
+        wrefresh(Football);
+    }
+}
+
 void initfootball() {
     initscr();//初始化屏幕
     clear();//清空屏幕
@@ -125,13 +165,15 @@ void initfootball() {
     box(Help, 0, 0);
     box(Score, 0, 0);
     box(Write, 0, 0);
+    show_help();
+    show_score();
+    mvwprintw(Football_t, 0, (court.width + 4) / 2 - 4, "多人足球小游戏");
+    wrefresh(Football_t); 
+    count_down();
     court_draw();
     wattron(Football, COLOR_PAIR(3));//设置足球端口的颜色
     w_gotoxy_putc(Football, ball.x, ball.y, 'o');//设置足球的位置
     wattroff(Football, COLOR_PAIR(3));  
-    
-    show_help();
-    show_score();
 }
 
 
@@ -164,8 +206,7 @@ void show_message(WINDOW *win,struct User *user, char *msg, int type) {
         w_gotoxy_puts(win, 10 + strlen(msgname), msg_num, msg);
         wattron(win, COLOR_PAIR(5));
         w_gotoxy_puts(win, 1, msg_num, timestr);
-        msg_num++;
-            
+        msg_num++;          
     } else {
         msg_num = 4;
         scroll(win);

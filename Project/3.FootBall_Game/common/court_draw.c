@@ -7,9 +7,11 @@
 
 #include "head.h"
 
-extern WINDOW *Football;
+extern WINDOW *Football, *Football_t;
 extern struct Map court;
 void court_draw () {
+    mvwprintw(Football_t, 0, (court.width + 4) / 2, "多人足球小游戏");
+    wrefresh(Football_t); 
     wattron(Football, COLOR_PAIR(3));
     for (int i = 1; i < court.height - 1; i++) {
         w_gotoxy_puts(Football,court.width / 2, i, "|");    
@@ -61,13 +63,5 @@ void court_draw () {
     w_gotoxy_puts(Football, 3, court.height / 2, "|");
     wattron(Football, COLOR_PAIR(6));
     w_gotoxy_puts(Football, court.width - 4, court.height / 2, "|");
-
-    /*for (int i = 0; i < 6; i++) {
-        wattron(Football, COLOR_PAIR(2));
-        w_gotoxy_puts(Football, 0, (court.height + 2 ) / 2 - 3 + i, "xx");
-        wattron(Football, COLOR_PAIR(6));
-        w_gotoxy_puts(Football, court.width - 2,  (court.height + 2) / 2- 3 + i, "xx");
-    }*/
-
     return ;
 }
