@@ -28,7 +28,7 @@ void show_strength() {
         mvwaddch(Write, 2, i, ' ');
     }
     wattron(Write, COLOR_PAIR(3));
-    int tmp[5] = {2, 3, 6, 3, 2};
+    int tmp[5] = {1, 2, 3, 2, 1};
     int offset = 1;
     int tmp_x = 2;
     setnonblocking(0);
@@ -40,10 +40,13 @@ void show_strength() {
                 mvwaddch(Write, 3, tmp_x , ' ');
                 mvwaddch(Write, 3, tmp_x, ' ');
                 setblocking(0);
+                wclear(Write);
+                box(Write, 0, 0);
+                wrefresh(Write);
                 break;
             }
         }
-        usleep(10000);
+        usleep(100000000);
         mvwaddch(Write, 1, tmp_x, ' ');
         mvwaddch(Write, 3, tmp_x, ' ');
         tmp_x += offset;
@@ -61,4 +64,5 @@ void show_strength() {
     msg.ctl.action = ACTION_KICK;
     msg.ctl.strength = tmp[tmp_x / unit];
     send(sockfd, (void *)&msg, sizeof(msg), 0);
+
 }

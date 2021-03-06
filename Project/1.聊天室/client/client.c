@@ -97,27 +97,6 @@ int main(int argc, char **argv) {
         if (msg.msg[0] == '#') {
             msg.type = CHAT_FUNC;
         }
-        //send file sb; send file
-        /*char filename[30];
-        char recv_name[30];
-        memset(filename, 0, sizeof(filename));
-        memset(send_name, 0, sizeof(send_name));
-        if (strncmp(msg.msg, "send", 4) == 0) {
-            if (msg.msg[4] != " ") continue;
-            int file_loc = 0;
-            for (int i = 5; i < strlen(msg.msg); i++) {
-                if (msg.msg[i] == " ") break;
-                file_loc += 1;
-            }
-            strncpy(filename, msg.msg + 5, file_loc - 5);
-            if (strlen(msg.msg) > file_loc) {
-                msg.type = SEND_FILE_PR;
-                strcpy(recv_name, msg.msg + file_loc + 1);
-            } else {
-                msg.msg = SEND_FILE_PU;
-            }
-        }
-        */
         int retval = send(sockfd, (void *)&msg, sizeof(msg), 0);  
         wclear(input_win);
         box(input_win, 0, 0);

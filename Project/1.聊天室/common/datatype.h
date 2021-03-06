@@ -35,7 +35,7 @@ struct User{
 };
 
 struct FileMsg {
-    char filename[512];
+    char name[512];
     long size;
     char buff[4096];
     char recv_name[20];

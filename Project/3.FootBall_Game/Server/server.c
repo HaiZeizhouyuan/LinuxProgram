@@ -49,7 +49,6 @@ int main(int argc, char **argv) {
     if (!port) port = atoi(get_cjson_value(conf, "SERVERPORT"));
     court.width = atoi(get_cjson_value(conf, "COLS"));
     court.height = atoi(get_cjson_value(conf, "LINES"));
-    struct winsize size;
 
     court.start.x = 3;
     court.start.y = 3;

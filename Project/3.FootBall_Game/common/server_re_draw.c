@@ -16,55 +16,80 @@ extern struct Map court;
 extern struct Score score;
 
 void re_drew_ball() {
-    if (ball_status.v.x || ball_status.v.y) {
-        double flay_time = sqrt(pow(ball_status.v.x, 2) + pow(ball_status.v.y, 2)) / sqrt(pow(ball_status.a.x, 2) + pow(ball_status.a.y, 2));
-        char tmp[512] = {0};
-        sprintf(tmp, "time out = %lf, ax = %lf, ay = %lf\n", flay_time, ball_status.a.x, ball_status.a.y);
-        double t = 0.10;
-        if (t >= flay_time) {
-            show_message(NULL, NULL, tmp, 1);
-            bzero(&ball_status.v, sizeof(ball_status.v));
-            bzero(&ball_status.a, sizeof(ball_status.a));
-        } else {
-            ball.x += (ball_status.v.x * t + (ball_status.a.x * pow(t, 2)) / 2);
-            ball_status.v.x += ball_status.a.x * t;
-            ball.y += (ball_status.v.y * t + (ball_status.a.y * pow(t, 2)) / 2);
-            ball_status.v.y += ball_status.a.y * t;
-            if ((ball.x <= 6) && ( ball.y > (court.height / 2 - 3)) && (ball.y < court.height / 2 + 3)) {
-                score.blue += 1;
-                srand(time(0));
-                double rd = rand() % (court.width / 3);
-                ball.x = court.width / 3 + rd;
-                ball.y = court.height / 2;
-                struct FootBallMsg msg;
-                msg.type = FT_WALL;
-                sprintf(msg.msg, "%s of %s team, get 1 score", ball_status.name, ball_status.by_team ? "blue" : "red");
-                send_all(&msg);
-            } else if ((ball.x >= court.width - 7) && (ball.y > (court.height / 2 - 3)) && (ball.y < (court.height / 2 + 3))) {
-                score.red += 1;
-                srand(time(0));
-                double rd = rand() % (court.width / 3);
-                ball.x = 2 * court.width / 3 - rd;
-                ball.y = court.height / 2;
-                struct FootBallMsg msg;
-                msg.type = FT_WALL;
-                sprintf(msg.msg, "%s of %s team , get 1 score", ball_status.name, ball_status.by_team ? "blue" : "red");
-            }
-            if (ball.y >= court.height - 1) ball.y = court.height - 1;
-            if (ball.y <= 0) ball.y = 0;
-            bzero(&ball_status.v, sizeof(ball_status.v));
-            bzero(&ball_status.a, sizeof(ball_status.a));
-        }
-        map_change();
-
-    }
-    court_draw();
-
     if (ball_status.by_team) {
         wattron(Football, COLOR_PAIR(6));
     } else {
         wattron(Football, COLOR_PAIR(2));
     }
+
+    if (ball_status.v.x || ball_status.v.y) {
+        double flay_time = 0.1 * sqrt(pow(ball_status.v.x, 2) + pow(ball_status.v.y, 2)) / sqrt(pow(ball_status.a.x, 2) + pow(ball_status.a.y, 2));
+        double t = 0.10;
+        while(t < flay_time) {
+            w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, ' ');
+            ball.x += (ball_status.v.x * t + (ball_status.a.x * pow(t, 2)) / 2);
+            ball_status.v.x += ball_status.a.x * t;
+            ball.y += (ball_status.v.y * t + (ball_status.a.y * pow(t, 2)) / 2);
+            ball_status.v.y += ball_status.a.y * t;
+            if ((ball.x <= 6) && ( ball.y > (court.height / 2 - 3)) && (ball.y < court.height / 2 + 3)) {
+                bzero(&ball_status.v, sizeof(ball_status.v));
+                bzero(&ball_status.a, sizeof(ball_status.a));
+                map_change();
+                court_draw();
+                w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, 'o');
+                w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, ' ');
+                score.blue += 1;
+                sleep(1);
+                srand(time(0));
+                double rd = rand() % (court.width / 8);
+                ball.x = court.width / 2 + rd;
+                ball.y = court.height / 2;
+                
+                struct FootBallMsg msg;
+                msg.type = FT_WALL;
+                sprintf(msg.msg, "%s of %s team, get 1 score", ball_status.name, ball_status.by_team ? "blue" : "red");
+                send_all(&msg);
+                t = flay_time;
+            } else if ((ball.x >= court.width - 7) && (ball.y > (court.height / 2 - 3)) && (ball.y < (court.height / 2 + 3))) {
+                bzero(&ball_status.v, sizeof(ball_status.v));
+                bzero(&ball_status.a, sizeof(ball_status.a));
+                map_change();
+                court_draw();
+                w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, 'o');
+                w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, ' ');
+                score.red += 1;
+                sleep(1);
+                srand(time(0));
+                double rd = rand() % (court.width / 8);
+                
+                ball.x = court.width / 2;
+                ball.y = court.height / 2;
+                struct FootBallMsg msg;
+                msg.type = FT_WALL;
+                sprintf(msg.msg, "%s of %s team , get 1 score", ball_status.name, ball_status.by_team ? "blue" : "red");
+                t = flay_time;
+            }
+            if  (ball.y >= court.height - 1) {
+                ball.y = court.height - 1;
+                t = flay_time;
+            }
+            if (ball.y <= 0) {
+                ball.y = 0;
+                t = flay_time;
+            }
+            t += 0.10;
+            court_draw();
+            w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, 'o');
+            map_change();
+            usleep(100000);
+        }
+        char tmp[512] = {0};
+        sprintf(tmp, "time out = %lf, ax = %lf, ay = %lf\n", flay_time, ball_status.a.x, ball_status.a.y);
+        bzero(&ball_status.v, sizeof(ball_status.v));
+        bzero(&ball_status.a, sizeof(ball_status.a));
+        show_message(NULL, NULL, tmp, 1);
+    }
+    court_draw();
     w_gotoxy_putc(Football, (int)ball.x, (int)ball.y, 'o');
 }
 
@@ -109,6 +134,10 @@ void re_drew_score(struct Score *score) {
 }
 
 void re_drew() {
+    if (score.red == 5 || score.blue == 5) {
+        sleep(11);
+        exit(0);
+    }
     werase(Football_t);
     werase(Score);
     box(Football_t, 0, 0);

@@ -22,7 +22,7 @@ void send_file(const char *filename, int sockfd) {
     fseek(fp, 0L, SEEK_END);//将指针移到文件末尾
     filemsg.size = ftell(fp);//获取当前文件指针,得到文件的大小
     fseek(fp, 0L, SEEK_SET);//将指针移到文件起始位置
-    strcpy(filemsg.name, (p = strrchr(filename, '/')) ? p + 1 : filename);// ./
+    strcpy(filemsg.name, (p = strrchr(filename, '/')) ? p + 1 : filename);
     while((size = fread(filemsg.buff, 1, sizeof(filemsg.buff), fp))) {
         send(sockfd, (void *)&filemsg, sizeof(filemsg), 0);
         usleep(100);

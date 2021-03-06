@@ -24,7 +24,7 @@ struct FootBallMsg ctl_msg;
 struct LogRequest request;
 struct LogResponse response;
 struct User user;
-
+//./CLIENT -h 47.94.34.228 -p 6666  -t 1 -m "hi" -n name
 int main(int argc, char **argv) {
     setlocale(LC_ALL,"");
     int opt;
@@ -151,30 +151,30 @@ int main(int argc, char **argv) {
     while(1) {
         int c = getchar();
         switch(c) {
-            case 'a':
+            case 'a'://向左移动
                 ctl_msg.ctl.dirx -= 1;
                 break;
-            case 'd':
+            case 'd'://向右移动
                 ctl_msg.ctl.dirx += 1;
                 break;
-            case 'w':
+            case 'w'://向上移动
                 ctl_msg.ctl.diry -= 1;
                 break;
-            case 's':
+            case 's'://向下移动
                 ctl_msg.ctl.diry += 1;
                 break;
-            case 13:
+            case 13://公聊
                 chat_msg.type = FT_MSG;
                 send_chat();
                 break;
-            case 64:
+            case 64://队内私聊
                 chat_msg.type = FT_PRI;
                 send_chat();
                 break;
-            case ' ':
+            case ' '://设置踢球力度
                 show_strength();
                 break;
-            case 'j':
+            case 'j'://停球
                 show_data_stream('s');
                 bzero(&ctl_msg, sizeof(ctl_msg));
                 ctl_msg.type = FT_CTL;
@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
                 send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
         
-            case 'k':
+            case 'k'://踢球
                 show_data_stream('k');
                 bzero(&ctl_msg, sizeof(ctl_msg));
                 ctl_msg.type = FT_CTL;
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
                 ctl_msg.ctl.strength = 1;
                 send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
-            case 'l':
+            case 'l'://带球
                 show_data_stream('c');
                 bzero(&ctl_msg, sizeof(ctl_msg));
                 ctl_msg.type = FT_CTL;

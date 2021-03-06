@@ -1,0 +1,427 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ACTION_CARRY	datatype.h	71;"	d
+ACTION_DFL	datatype.h	73;"	d
+ACTION_KICK	datatype.h	70;"	d
+ACTION_STOP	datatype.h	72;"	d
+Aspeed	datatype.h	/^struct Aspeed{$/;"	s
+BLACK	color.h	12;"	d
+BLINK	color.h	30;"	d
+BLUE	color.h	20;"	d
+BOLD	color.h	28;"	d
+BROWN	color.h	18;"	d
+BallStatus	datatype.h	/^struct BallStatus {$/;"	s
+Bpoint	datatype.h	/^struct Bpoint {$/;"	s
+CJSON_CDECL	cJSON.h	55;"	d
+CJSON_CDECL	cJSON.h	71;"	d
+CJSON_EXPORT_SYMBOLS	cJSON.h	60;"	d
+CJSON_NESTING_LIMIT	cJSON.h	137;"	d
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_AddItemReferenceToArray(cJSON *array, cJSON *item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_AddItemReferenceToObject(cJSON *object, const char *string, cJSON *item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_AddItemToArray(cJSON *array, cJSON *item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_AddItemToObject(cJSON *object, const char *string, cJSON *item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_AddItemToObjectCS(cJSON *object, const char *string, cJSON *item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_Compare(const cJSON * const a, const cJSON * const b, const cJSON_bool case_sensitive)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_HasObjectItem(const cJSON *object, const char *string)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_InsertItemInArray(cJSON *array, int which, cJSON *newitem)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsArray(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsBool(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsFalse(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsInvalid(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsNull(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsNumber(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsObject(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsRaw(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsString(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsTrue(const cJSON * const item)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_PrintPreallocated(cJSON *item, char *buffer, const int length, const cJSON_bool format)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInArray(cJSON *array, int which, cJSON *newitem)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInObject(cJSON *object, const char *string, cJSON *newitem)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemInObjectCaseSensitive(cJSON *object, const char *string, cJSON *newitem)$/;"	f
+CJSON_PUBLIC	cJSON.c	/^CJSON_PUBLIC(cJSON_bool) cJSON_ReplaceItemViaPointer(cJSON * const parent, cJSON * const item, cJSON * replacement)$/;"	f
+CJSON_PUBLIC	cJSON.h	64;"	d
+CJSON_PUBLIC	cJSON.h	66;"	d
+CJSON_PUBLIC	cJSON.h	68;"	d
+CJSON_PUBLIC	cJSON.h	75;"	d
+CJSON_PUBLIC	cJSON.h	77;"	d
+CJSON_STDCALL	cJSON.h	56;"	d
+CJSON_STDCALL	cJSON.h	72;"	d
+CJSON_VERSION_MAJOR	cJSON.h	82;"	d
+CJSON_VERSION_MINOR	cJSON.h	83;"	d
+CJSON_VERSION_PATCH	cJSON.h	84;"	d
+CLEAR	color.h	33;"	d
+CLRLINE	color.h	34;"	d
+CYAN	color.h	24;"	d
+Ctl	datatype.h	/^struct Ctl{$/;"	s
+DBG	head.h	62;"	d
+DBG	head.h	64;"	d
+FT_ACK	datatype.h	83;"	d
+FT_CTL	datatype.h	86;"	d
+FT_FIN	datatype.h	88;"	d
+FT_FIN_T	datatype.h	89;"	d
+FT_GAMEOVER	datatype.h	91;"	d
+FT_HEART	datatype.h	82;"	d
+FT_MAP	datatype.h	87;"	d
+FT_MSG	datatype.h	84;"	d
+FT_SCORE	datatype.h	90;"	d
+FT_WALL	datatype.h	85;"	d
+FootBallMsg	datatype.h	/^struct FootBallMsg {$/;"	s
+GRAY	color.h	26;"	d
+GREEN	color.h	16;"	d
+HIDE	color.h	32;"	d
+L_BLACK	color.h	13;"	d
+L_BLUE	color.h	21;"	d
+L_CYAN	color.h	25;"	d
+L_GREEN	color.h	17;"	d
+L_PINK	color.h	23;"	d
+L_RED	color.h	15;"	d
+LogRequest	datatype.h	/^struct  LogRequest {$/;"	s
+LogResponse	datatype.h	/^struct LogResponse{$/;"	s
+MAX_MSG	datatype.h	93;"	d
+MAX_TEAM	create_spirit.c	9;"	d	file:
+MAX_TEAM	heart_beat.h	10;"	d
+MAX_TEAM	server_exit.c	9;"	d	file:
+MAX_TEAM	server_re_draw.c	9;"	d	file:
+MAX_TEAM	server_send_all.c	8;"	d	file:
+MAX_TEAM	sub_reactor.c	9;"	d	file:
+Map	datatype.h	/^struct Map {$/;"	s
+NAN	cJSON.c	82;"	d	file:
+NAN	cJSON.c	84;"	d	file:
+NONE	color.h	11;"	d
+NTHREAD	sub_reactor.c	8;"	d	file:
+PI	ball_status.c	10;"	d	file:
+PINK	color.h	22;"	d
+Point	datatype.h	/^struct Point {$/;"	s
+RED	color.h	14;"	d
+REVERSE	color.h	31;"	d
+Score	datatype.h	/^struct Score{$/;"	s
+Speed	datatype.h	/^struct Speed{$/;"	s
+UNDERLINE	color.h	29;"	d
+User	datatype.h	/^struct User {$/;"	s
+WHITE	color.h	27;"	d
+YELLOW	color.h	19;"	d
+_BALL_STATUS_H	ball_status.h	9;"	d
+_CAN_ACCESS_H	can_access.h	9;"	d
+_CLIENT_EXIT_H	client_exit.h	9;"	d
+_CLIENT_RECV_H	client_recv.h	9;"	d
+_COLOR_H	color.h	9;"	d
+_COMMON_H	common.h	9;"	d
+_CREATE_SPIRIT_H	create_spirit.h	9;"	d
+_CRT_SECURE_NO_DEPRECATE	cJSON.c	28;"	d	file:
+_DATATYPE_H	datatype.h	9;"	d
+_GAME_UI_H	game_ui.h	9;"	d
+_GET_CJSON_VALUE_H	get_cjson_value.h	9;"	d
+_HEAD_H	head.h	9;"	d
+_HEART_BEAT_H	heart_beat.h	9;"	d
+_PARSE_SPIRIT_H	parse_spirit.h	9;"	d
+_SEND_CHAT_H	send_chat.h	9;"	d
+_SEND_CTL_H	send_ctl.h	9;"	d
+_SERVER_EXIT_H	server_exit.h	9;"	d
+_SERVER_RE_DRAW_H	server_re_draw.h	9;"	d
+_SERVER_SEND_ALL_H	server_send_all.h	9;"	d
+_SHOW_DATA_STREAM_H	show_data_stream.h	9;"	d
+_SHOW_STRENGTH_H	show_strength.h	9;"	d
+_SUB_REACTOR_H	sub_reactor.h	9;"	d
+_THREAD_POOL_H	thread_pool.h	9;"	d
+_UDP_EPOLL_	udp_epoll.h	9;"	d
+__WINDOWS__	cJSON.h	32;"	d
+a	datatype.h	/^    struct Aspeed a;\/\/加速度$/;"	m	struct:BallStatus	typeref:struct:BallStatus::Aspeed
+action	datatype.h	/^    int action;$/;"	m	struct:Ctl
+add_event_ptr	udp_epoll.c	/^void add_event_ptr(int epollfd, int fd, int events, struct User *user) {$/;"	f
+add_item_to_array	cJSON.c	/^static cJSON_bool add_item_to_array(cJSON *array, cJSON *item)$/;"	f	file:
+add_item_to_object	cJSON.c	/^static cJSON_bool add_item_to_object(cJSON * const object, const char * const string, cJSON * const item, const internal_hooks * const hooks, const cJSON_bool constant_key)$/;"	f	file:
+add_player_to_team	create_spirit.c	/^int add_player_to_team(cJSON *team, struct User *user) {$/;"	f
+add_to_sub_reactor	udp_epoll.c	/^void add_to_sub_reactor(struct User *user) {$/;"	f
+allocate	cJSON.c	/^    void *(CJSON_CDECL *allocate)(size_t size);$/;"	m	struct:internal_hooks	file:
+array	cJSON.h	/^CJSON_PUBLIC(int) cJSON_GetArraySize(const cJSON *array);$/;"	v
+ball_spirit	create_spirit.c	/^cJSON *ball_spirit = NULL;$/;"	v
+blue	create_spirit.c	/^cJSON *blue = NULL;$/;"	v
+blue	datatype.h	/^    int blue;$/;"	m	struct:Score
+boolean	cJSON.h	/^CJSON_PUBLIC(cJSON *) cJSON_CreateBool(cJSON_bool boolean);$/;"	v
+buffer	cJSON.c	/^    unsigned char *buffer;$/;"	m	struct:__anon3	file:
+buffer_at_offset	cJSON.c	302;"	d	file:
+buffer_skip_whitespace	cJSON.c	/^static parse_buffer *buffer_skip_whitespace(parse_buffer * const buffer)$/;"	f	file:
+by_team	datatype.h	/^    int by_team; \/\/which team$/;"	m	struct:BallStatus
+cJSON	cJSON.h	/^typedef struct cJSON$/;"	s
+cJSON	cJSON.h	/^} cJSON;$/;"	t	typeref:struct:cJSON
+cJSON_AddArrayToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddArrayToObject(cJSON * const object, const char * const name)$/;"	f
+cJSON_AddBoolToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddBoolToObject(cJSON * const object, const char * const name, const cJSON_bool boolean)$/;"	f
+cJSON_AddFalseToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddFalseToObject(cJSON * const object, const char * const name)$/;"	f
+cJSON_AddNullToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddNullToObject(cJSON * const object, const char * const name)$/;"	f
+cJSON_AddNumberToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddNumberToObject(cJSON * const object, const char * const name, const double number)$/;"	f
+cJSON_AddObjectToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddObjectToObject(cJSON * const object, const char * const name)$/;"	f
+cJSON_AddRawToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddRawToObject(cJSON * const object, const char * const name, const char * const raw)$/;"	f
+cJSON_AddStringToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddStringToObject(cJSON * const object, const char * const name, const char * const string)$/;"	f
+cJSON_AddTrueToObject	cJSON.c	/^CJSON_PUBLIC(cJSON*) cJSON_AddTrueToObject(cJSON * const object, const char * const name)$/;"	f
+cJSON_Array	cJSON.h	95;"	d
+cJSON_ArrayForEach	cJSON.h	283;"	d
+cJSON_CreateArray	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateArray(void)$/;"	f
+cJSON_CreateArrayReference	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateArrayReference(const cJSON *child) {$/;"	f
+cJSON_CreateBool	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateBool(cJSON_bool boolean)$/;"	f
+cJSON_CreateDoubleArray	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateDoubleArray(const double *numbers, int count)$/;"	f
+cJSON_CreateFalse	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateFalse(void)$/;"	f
+cJSON_CreateFloatArray	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateFloatArray(const float *numbers, int count)$/;"	f
+cJSON_CreateIntArray	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateIntArray(const int *numbers, int count)$/;"	f
+cJSON_CreateNull	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateNull(void)$/;"	f
+cJSON_CreateNumber	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateNumber(double num)$/;"	f
+cJSON_CreateObject	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateObject(void)$/;"	f
+cJSON_CreateObjectReference	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateObjectReference(const cJSON *child)$/;"	f
+cJSON_CreateRaw	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateRaw(const char *raw)$/;"	f
+cJSON_CreateString	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateString(const char *string)$/;"	f
+cJSON_CreateStringArray	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateStringArray(const char *const *strings, int count)$/;"	f
+cJSON_CreateStringReference	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateStringReference(const char *string)$/;"	f
+cJSON_CreateTrue	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_CreateTrue(void)$/;"	f
+cJSON_Delete	cJSON.c	/^CJSON_PUBLIC(void) cJSON_Delete(cJSON *item)$/;"	f
+cJSON_DeleteItemFromArray	cJSON.c	/^CJSON_PUBLIC(void) cJSON_DeleteItemFromArray(cJSON *array, int which)$/;"	f
+cJSON_DeleteItemFromObject	cJSON.c	/^CJSON_PUBLIC(void) cJSON_DeleteItemFromObject(cJSON *object, const char *string)$/;"	f
+cJSON_DeleteItemFromObjectCaseSensitive	cJSON.c	/^CJSON_PUBLIC(void) cJSON_DeleteItemFromObjectCaseSensitive(cJSON *object, const char *string)$/;"	f
+cJSON_DetachItemFromArray	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_DetachItemFromArray(cJSON *array, int which)$/;"	f
+cJSON_DetachItemFromObject	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_DetachItemFromObject(cJSON *object, const char *string)$/;"	f
+cJSON_DetachItemFromObjectCaseSensitive	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_DetachItemFromObjectCaseSensitive(cJSON *object, const char *string)$/;"	f
+cJSON_DetachItemViaPointer	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_DetachItemViaPointer(cJSON *parent, cJSON * const item)$/;"	f
+cJSON_Duplicate	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_Duplicate(const cJSON *item, cJSON_bool recurse)$/;"	f
+cJSON_False	cJSON.h	90;"	d
+cJSON_GetArrayItem	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_GetArrayItem(const cJSON *array, int index)$/;"	f
+cJSON_GetArraySize	cJSON.c	/^CJSON_PUBLIC(int) cJSON_GetArraySize(const cJSON *array)$/;"	f
+cJSON_GetErrorPtr	cJSON.c	/^CJSON_PUBLIC(const char *) cJSON_GetErrorPtr(void)$/;"	f
+cJSON_GetNumberValue	cJSON.c	/^CJSON_PUBLIC(double) cJSON_GetNumberValue(const cJSON * const item) $/;"	f
+cJSON_GetObjectItem	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_GetObjectItem(const cJSON * const object, const char * const string)$/;"	f
+cJSON_GetObjectItemCaseSensitive	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_GetObjectItemCaseSensitive(const cJSON * const object, const char * const string)$/;"	f
+cJSON_GetStringValue	cJSON.c	/^CJSON_PUBLIC(char *) cJSON_GetStringValue(const cJSON * const item) $/;"	f
+cJSON_Hooks	cJSON.h	/^typedef struct cJSON_Hooks$/;"	s
+cJSON_Hooks	cJSON.h	/^} cJSON_Hooks;$/;"	t	typeref:struct:cJSON_Hooks
+cJSON_InitHooks	cJSON.c	/^CJSON_PUBLIC(void) cJSON_InitHooks(cJSON_Hooks* hooks)$/;"	f
+cJSON_Invalid	cJSON.h	89;"	d
+cJSON_IsReference	cJSON.h	99;"	d
+cJSON_Minify	cJSON.c	/^CJSON_PUBLIC(void) cJSON_Minify(char *json)$/;"	f
+cJSON_NULL	cJSON.h	92;"	d
+cJSON_New_Item	cJSON.c	/^static cJSON *cJSON_New_Item(const internal_hooks * const hooks)$/;"	f	file:
+cJSON_Number	cJSON.h	93;"	d
+cJSON_Object	cJSON.h	96;"	d
+cJSON_Parse	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_Parse(const char *value)$/;"	f
+cJSON_ParseWithLength	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_ParseWithLength(const char *value, size_t buffer_length)$/;"	f
+cJSON_ParseWithLengthOpts	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_ParseWithLengthOpts(const char *value, size_t buffer_length, const char **return_parse_end, cJSON_bool require_null_terminated)$/;"	f
+cJSON_ParseWithOpts	cJSON.c	/^CJSON_PUBLIC(cJSON *) cJSON_ParseWithOpts(const char *value, const char **return_parse_end, cJSON_bool require_null_terminated)$/;"	f
+cJSON_Print	cJSON.c	/^CJSON_PUBLIC(char *) cJSON_Print(const cJSON *item)$/;"	f
+cJSON_PrintBuffered	cJSON.c	/^CJSON_PUBLIC(char *) cJSON_PrintBuffered(const cJSON *item, int prebuffer, cJSON_bool fmt)$/;"	f
+cJSON_PrintUnformatted	cJSON.c	/^CJSON_PUBLIC(char *) cJSON_PrintUnformatted(const cJSON *item)$/;"	f
+cJSON_Raw	cJSON.h	97;"	d
+cJSON_SetIntValue	cJSON.h	275;"	d
+cJSON_SetNumberHelper	cJSON.c	/^CJSON_PUBLIC(double) cJSON_SetNumberHelper(cJSON *object, double number)$/;"	f
+cJSON_SetNumberValue	cJSON.h	278;"	d
+cJSON_SetValuestring	cJSON.c	/^CJSON_PUBLIC(char*) cJSON_SetValuestring(cJSON *object, const char *valuestring)$/;"	f
+cJSON_String	cJSON.h	94;"	d
+cJSON_StringIsConst	cJSON.h	100;"	d
+cJSON_True	cJSON.h	91;"	d
+cJSON_Version	cJSON.c	/^CJSON_PUBLIC(const char*) cJSON_Version(void)$/;"	f
+cJSON__h	cJSON.h	24;"	d
+cJSON_bool	cJSON.h	/^typedef int cJSON_bool;$/;"	t
+cJSON_free	cJSON.c	/^CJSON_PUBLIC(void) cJSON_free(void *object)$/;"	f
+cJSON_malloc	cJSON.c	/^CJSON_PUBLIC(void *) cJSON_malloc(size_t size)$/;"	f
+cJSON_strdup	cJSON.c	/^static unsigned char* cJSON_strdup(const unsigned char* string, const internal_hooks * const hooks)$/;"	f	file:
+can_access	can_access.c	/^int can_access(struct Point *loc) {$/;"	f
+can_access_at_index	cJSON.c	299;"	d	file:
+can_kick	ball_status.c	/^int can_kick(struct Point *loc, int strength) {\/\/\/?????$/;"	f
+can_read	cJSON.c	297;"	d	file:
+cannot_access_at_index	cJSON.c	300;"	d	file:
+case_insensitive_strcmp	cJSON.c	/^static int case_insensitive_strcmp(const unsigned char *string1, const unsigned char *string2)$/;"	f	file:
+cast_away_const	cJSON.c	/^static void* cast_away_const(const void* string)$/;"	f	file:
+chat_msg	client_exit.c	/^struct FootBallMsg chat_msg;$/;"	v	typeref:struct:FootBallMsg
+check_online	udp_epoll.c	/^int check_online(struct LogRequest *request) {$/;"	f
+child	cJSON.h	/^    struct cJSON *child;$/;"	m	struct:cJSON	typeref:struct:cJSON::cJSON
+child	cJSON.h	/^CJSON_PUBLIC(cJSON *) cJSON_CreateArrayReference(const cJSON *child);$/;"	v
+child	cJSON.h	/^CJSON_PUBLIC(cJSON *) cJSON_CreateObjectReference(const cJSON *child);$/;"	v
+cjson_min	cJSON.c	1183;"	d	file:
+client	server_send_all.c	/^struct sockaddr_in client;$/;"	v	typeref:struct:sockaddr_in
+client_exit	client_exit.c	/^void client_exit(int signum) {$/;"	f
+client_recv	client_recv.c	/^void *client_recv(void *arg) {$/;"	f
+compare_double	cJSON.c	/^static cJSON_bool compare_double(double a, double b)$/;"	f	file:
+cond	thread_pool.h	/^    pthread_cond_t cond;$/;"	m	struct:task_queue
+content	cJSON.c	/^    const unsigned char *content;$/;"	m	struct:__anon2	file:
+court	game_ui.c	/^struct Map court;\/\/球场大小$/;"	v	typeref:struct:Map
+create_newwin	game_ui.c	/^WINDOW *create_newwin(int width, int height, int startx, int starty) {$/;"	f
+create_reference	cJSON.c	/^static cJSON *create_reference(const cJSON *item, const internal_hooks * const hooks)$/;"	f	file:
+create_spirit	create_spirit.c	/^char  *create_spirit() {$/;"	f
+ctl	datatype.h	/^    struct Ctl ctl;$/;"	m	struct:FootBallMsg	typeref:struct:FootBallMsg::Ctl
+deallocate	cJSON.c	/^    void (CJSON_CDECL *deallocate)(void *pointer);$/;"	m	struct:internal_hooks	file:
+del_event	udp_epoll.c	/^void del_event(int epollfd, int fd) {$/;"	f
+depth	cJSON.c	/^    size_t depth; \/* How deeply nested (in arrays\/objects) is the input at the current offset. *\/$/;"	m	struct:__anon2	file:
+depth	cJSON.c	/^    size_t depth; \/* current nesting depth (for formatted printing) *\/$/;"	m	struct:__anon3	file:
+destroy_win	game_ui.c	/^void destroy_win(WINDOW *win) {$/;"	f
+dirx	datatype.h	/^    int dirx;$/;"	m	struct:Ctl
+diry	datatype.h	/^    int diry;$/;"	m	struct:Ctl
+do_work	thread_pool.c	/^void do_work(struct User *user) {$/;"	f
+draw	game_ui.c	/^void *draw(void *arg) {$/;"	f
+empty	thread_pool.c	/^int empty(struct task_queue *taskQueue) {$/;"	f
+ensure	cJSON.c	/^static unsigned char* ensure(printbuffer * const p, size_t needed)$/;"	f	file:
+epollfd	thread_pool.h	/^    int epollfd; \/\/从反应堆$/;"	m	struct:task_queue
+error	cJSON.c	/^} error;$/;"	t	typeref:struct:__anon1	file:
+false	cJSON.c	68;"	d	file:
+false	cJSON.c	70;"	d	file:
+fd	datatype.h	/^    int fd;\/\/该玩家对应的连接$/;"	m	struct:User
+flag	datatype.h	/^    int flag;\/\/未响应次数$/;"	m	struct:User
+format	cJSON.c	/^    cJSON_bool format; \/* is this print a formatted print *\/$/;"	m	struct:__anon3	file:
+free_fn	cJSON.h	/^      void (CJSON_CDECL *free_fn)(void *ptr);$/;"	m	struct:cJSON_Hooks
+front	thread_pool.c	/^struct User *front (struct task_queue *taskQueue) {$/;"	f
+gate_height	datatype.h	/^    int gate_height;$/;"	m	struct:Map
+gate_width	datatype.h	/^    int gate_width;$/;"	m	struct:Map
+get_array_item	cJSON.c	/^static cJSON* get_array_item(const cJSON *array, size_t index)$/;"	f	file:
+get_cjson_value	get_cjson_value.c	/^char *get_cjson_value(const char *path, const char *key) {$/;"	f
+get_decimal_point	cJSON.c	/^static unsigned char get_decimal_point(void)$/;"	f	file:
+get_object_item	cJSON.c	/^static cJSON *get_object_item(const cJSON * const object, const char * const name, const cJSON_bool case_sensitive)$/;"	f	file:
+global_error	cJSON.c	/^static error global_error = { NULL, 0 };$/;"	v	file:
+global_hooks	cJSON.c	/^static internal_hooks global_hooks = { internal_malloc, internal_free, internal_realloc };$/;"	v	file:
+gotoxy	game_ui.c	/^void gotoxy(int x, int y) {$/;"	f
+gotoxy_putc	game_ui.c	/^void gotoxy_putc(int x, int y, char c) {$/;"	f
+gotoxy_puts	game_ui.c	/^void gotoxy_puts(int x, int y, char* s) {$/;"	f
+head	thread_pool.h	/^    int head;$/;"	m	struct:task_queue
+heart_beat	heart_beat.c	/^void *heart_beat(void *arg) {$/;"	f
+heart_beat_team	heart_beat.c	/^void heart_beat_team(struct User *team) {$/;"	f
+height	datatype.h	/^    int height;$/;"	m	struct:Map
+hooks	cJSON.c	/^    internal_hooks hooks;$/;"	m	struct:__anon2	file:
+hooks	cJSON.c	/^    internal_hooks hooks;$/;"	m	struct:__anon3	file:
+hooks	cJSON.h	/^CJSON_PUBLIC(void) cJSON_InitHooks(cJSON_Hooks* hooks);$/;"	v
+initfootball	game_ui.c	/^void initfootball() {$/;"	f
+internal_free	cJSON.c	/^static void CJSON_CDECL internal_free(void *pointer)$/;"	f	file:
+internal_free	cJSON.c	179;"	d	file:
+internal_hooks	cJSON.c	/^typedef struct internal_hooks$/;"	s	file:
+internal_hooks	cJSON.c	/^} internal_hooks;$/;"	t	typeref:struct:internal_hooks	file:
+internal_malloc	cJSON.c	/^static void * CJSON_CDECL internal_malloc(size_t size)$/;"	f	file:
+internal_malloc	cJSON.c	178;"	d	file:
+internal_realloc	cJSON.c	/^static void * CJSON_CDECL internal_realloc(void *pointer, size_t size)$/;"	f	file:
+internal_realloc	cJSON.c	180;"	d	file:
+isinf	cJSON.c	74;"	d	file:
+isnan	cJSON.c	77;"	d	file:
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsArray(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsBool(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsFalse(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsInvalid(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsNull(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsNumber(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsObject(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsRaw(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsString(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(cJSON_bool) cJSON_IsTrue(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(char *) cJSON_GetStringValue(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(char *) cJSON_Print(const cJSON *item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(char *) cJSON_PrintUnformatted(const cJSON *item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(double) cJSON_GetNumberValue(const cJSON * const item);$/;"	v
+item	cJSON.h	/^CJSON_PUBLIC(void) cJSON_Delete(cJSON *item);$/;"	v
+json	cJSON.c	/^    const unsigned char *json;$/;"	m	struct:__anon1	file:
+len	server_send_all.c	/^socklen_t len = sizeof(client);$/;"	v
+length	cJSON.c	/^    size_t length;$/;"	m	struct:__anon2	file:
+length	cJSON.c	/^    size_t length;$/;"	m	struct:__anon3	file:
+loc	datatype.h	/^    struct Point loc;\/\/用户坐标$/;"	m	struct:User	typeref:struct:User::Point
+main	test.c	/^int main() {$/;"	f
+malloc_fn	cJSON.h	/^      void *(CJSON_CDECL *malloc_fn)(size_t sz);$/;"	m	struct:cJSON_Hooks
+minify_string	cJSON.c	/^static void minify_string(char **input, char **output) {$/;"	f	file:
+msg	datatype.h	/^    char msg[512];$/;"	m	struct:LogRequest
+msg	datatype.h	/^    char msg[512];$/;"	m	struct:LogResponse
+msg	datatype.h	/^    char msg[MAX_MSG];$/;"	m	struct:FootBallMsg
+mutex	thread_pool.h	/^    pthread_mutex_t mutex;$/;"	m	struct:task_queue
+name	create_spirit.c	/^cJSON *name = NULL;$/;"	v
+name	datatype.h	/^    char name[20]; \/\/by who$/;"	m	struct:BallStatus
+name	datatype.h	/^    char name[20];$/;"	m	struct:FootBallMsg
+name	datatype.h	/^    char name[20];$/;"	m	struct:LogRequest
+name	datatype.h	/^    char name[20];\/\/姓名$/;"	m	struct:User
+next	cJSON.h	/^    struct cJSON *next;$/;"	m	struct:cJSON	typeref:struct:cJSON::cJSON
+noalloc	cJSON.c	/^    cJSON_bool noalloc;$/;"	m	struct:__anon3	file:
+offset	cJSON.c	/^    size_t offset;$/;"	m	struct:__anon2	file:
+offset	cJSON.c	/^    size_t offset;$/;"	m	struct:__anon3	file:
+online	datatype.h	/^    int online;\/\/ 1 在线 0 不在线$/;"	m	struct:User
+parse_array	cJSON.c	/^static cJSON_bool parse_array(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
+parse_buffer	cJSON.c	/^} parse_buffer;$/;"	t	typeref:struct:__anon2	file:
+parse_hex4	cJSON.c	/^static unsigned parse_hex4(const unsigned char * const input)$/;"	f	file:
+parse_number	cJSON.c	/^static cJSON_bool parse_number(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
+parse_object	cJSON.c	/^static cJSON_bool parse_object(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
+parse_string	cJSON.c	/^static cJSON_bool parse_string(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
+parse_value	cJSON.c	/^static cJSON_bool parse_value(cJSON * const item, parse_buffer * const input_buffer)$/;"	f	file:
+player	create_spirit.c	/^cJSON *player = NULL;$/;"	v
+position	cJSON.c	/^    size_t position;$/;"	m	struct:__anon1	file:
+prev	cJSON.h	/^    struct cJSON *prev;$/;"	m	struct:cJSON	typeref:struct:cJSON::cJSON
+print	cJSON.c	/^static unsigned char *print(const cJSON * const item, cJSON_bool format, const internal_hooks * const hooks)$/;"	f	file:
+print_array	cJSON.c	/^static cJSON_bool print_array(const cJSON * const item, printbuffer * const output_buffer)$/;"	f	file:
+print_number	cJSON.c	/^static cJSON_bool print_number(const cJSON * const item, printbuffer * const output_buffer)$/;"	f	file:
+print_object	cJSON.c	/^static cJSON_bool print_object(const cJSON * const item, printbuffer * const output_buffer)$/;"	f	file:
+print_string	cJSON.c	/^static cJSON_bool print_string(const cJSON * const item, printbuffer * const p)$/;"	f	file:
+print_string_ptr	cJSON.c	/^static cJSON_bool print_string_ptr(const unsigned char * const input, printbuffer * const output_buffer)$/;"	f	file:
+print_value	cJSON.c	/^static cJSON_bool print_value(const cJSON * const item, printbuffer * const output_buffer)$/;"	f	file:
+printbuffer	cJSON.c	/^} printbuffer;$/;"	t	typeref:struct:__anon3	file:
+re_draw_player	server_re_draw.c	/^void re_draw_player(int team, char *name, struct Point *loc) {$/;"	f
+re_drew	server_re_draw.c	/^void re_drew() {$/;"	f
+re_drew_ball	server_re_draw.c	/^void re_drew_ball() {$/;"	f
+re_drew_team	server_re_draw.c	/^void re_drew_team(struct User *team) {$/;"	f
+reallocate	cJSON.c	/^    void *(CJSON_CDECL *reallocate)(void *pointer, size_t size);$/;"	m	struct:internal_hooks	file:
+red	create_spirit.c	/^cJSON *red = NULL;$/;"	v
+red	datatype.h	/^    int red;$/;"	m	struct:Score
+replace_item_in_object	cJSON.c	/^static cJSON_bool replace_item_in_object(cJSON *object, const char *string, cJSON *replacement, cJSON_bool case_sensitive)$/;"	f	file:
+send_all	server_send_all.c	/^void send_all(struct FootBallMsg *msg) {$/;"	f
+send_chat	send_chat.c	/^void send_chat() {$/;"	f
+send_ctl	send_ctl.c	/^void send_ctl() {$/;"	f
+send_team	server_send_all.c	/^void send_team(struct User *team, struct FootBallMsg *chat_msg) {$/;"	f
+server_exit	server_exit.c	/^void server_exit(int signum) {$/;"	f
+setblocking	common.c	/^void setblocking(int fd) {$/;"	f
+setnonblocking	common.c	/^void setnonblocking(int fd) {$/;"	f
+show_data_stream	show_data_stream.c	/^void show_data_stream(int type) {$/;"	f
+show_help	game_ui.c	/^void show_help() {$/;"	f
+show_message	game_ui.c	/^void show_message(WINDOW *win,struct User *user, char *msg, int type) {$/;"	f
+show_strength	show_strength.c	/^void show_strength() {$/;"	f
+size	cJSON.h	/^CJSON_PUBLIC(void *) cJSON_malloc(size_t size);$/;"	v
+size	datatype.h	/^    int size;$/;"	m	struct:FootBallMsg
+size	thread_pool.h	/^    int size;$/;"	m	struct:task_queue
+skip_multiline_comment	cJSON.c	/^static void skip_multiline_comment(char **input)$/;"	f	file:
+skip_oneline_comment	cJSON.c	/^static void skip_oneline_comment(char **input)$/;"	f	file:
+skip_utf8_bom	cJSON.c	/^static parse_buffer *skip_utf8_bom(parse_buffer * const buffer)$/;"	f	file:
+socket_create_udp	common.c	/^int socket_create_udp(int port) {$/;"	f
+socket_udp	common.c	/^int socket_udp() {$/;"	f
+spirit	create_spirit.c	/^cJSON *spirit = NULL;$/;"	v
+start	datatype.h	/^    struct Point start;$/;"	m	struct:Map	typeref:struct:Map::Point
+static_strlen	cJSON.c	184;"	d	file:
+strength	datatype.h	/^    int strength;\/\/踢球力度$/;"	m	struct:Ctl
+string	cJSON.h	/^    char *string;$/;"	m	struct:cJSON
+string	create_spirit.c	/^char *string = NULL;$/;"	v
+sub_reactor	sub_reactor.c	/^void *sub_reactor(void *arg) {$/;"	f
+suffix_object	cJSON.c	/^static void suffix_object(cJSON *prev, cJSON *item)$/;"	f	file:
+tail	thread_pool.h	/^    int tail;$/;"	m	struct:task_queue
+task_queue	thread_pool.h	/^struct task_queue {$/;"	s
+task_queue_init	thread_pool.c	/^void task_queue_init(struct task_queue *taskQueue, int size, int epollfd) {$/;"	f
+task_queue_pop	thread_pool.c	/^struct User *task_queue_pop(struct task_queue *taskQueue) {$/;"	f
+task_queue_push	thread_pool.c	/^void task_queue_push(struct task_queue *taskQueue,struct User *user) {$/;"	f
+team	datatype.h	/^    int team;$/;"	m	struct:FootBallMsg
+team	datatype.h	/^    int team;$/;"	m	struct:LogRequest
+team	datatype.h	/^    int team;\/\/ 0 RED  1 BLUE$/;"	m	struct:User
+team	thread_pool.h	/^    struct User **team;$/;"	m	struct:task_queue	typeref:struct:task_queue::User
+thread_run	thread_pool.c	/^void *thread_run (void *arg) {$/;"	f
+total	thread_pool.h	/^    int total;$/;"	m	struct:task_queue
+true	cJSON.c	63;"	d	file:
+true	cJSON.c	65;"	d	file:
+type	cJSON.h	/^    int type;$/;"	m	struct:cJSON
+type	datatype.h	/^    int type; \/\/ 0 OK 1 NO$/;"	m	struct:LogResponse
+type	datatype.h	/^    int type;$/;"	m	struct:FootBallMsg
+udp_accept	udp_epoll.c	/^int udp_accept(int fd, struct User *user) {$/;"	f
+udp_connect	udp_epoll.c	/^int udp_connect(struct sockaddr_in *client) {$/;"	f
+update_offset	cJSON.c	/^static void update_offset(printbuffer * const buffer)$/;"	f	file:
+user_logout	thread_pool.c	/^char user_logout[512];$/;"	v
+utf16_literal_to_utf8	cJSON.c	/^static unsigned char utf16_literal_to_utf8(const unsigned char * const input_pointer, const unsigned char * const input_end, unsigned char **output_pointer)$/;"	f	file:
+v	datatype.h	/^    struct Speed v;\/\/速度$/;"	m	struct:BallStatus	typeref:struct:BallStatus::Speed
+valuedouble	cJSON.h	/^    double valuedouble;$/;"	m	struct:cJSON
+valueint	cJSON.h	/^    int valueint;$/;"	m	struct:cJSON
+valuestring	cJSON.h	/^    char *valuestring;$/;"	m	struct:cJSON
+w_gotoxy_putc	game_ui.c	/^void w_gotoxy_putc(WINDOW *win, int x, int y, char c) {$/;"	f
+w_gotoxy_puts	game_ui.c	/^void w_gotoxy_puts(WINDOW *win, int x, int y, char *s) {$/;"	f
+who	create_spirit.c	/^cJSON *who = NULL;$/;"	v
+width	datatype.h	/^    int width;$/;"	m	struct:Map
+x	create_spirit.c	/^cJSON *x = NULL;$/;"	v
+x	datatype.h	/^    double x;$/;"	m	struct:Aspeed
+x	datatype.h	/^    double x;$/;"	m	struct:Bpoint
+x	datatype.h	/^    double x;$/;"	m	struct:Speed
+x	datatype.h	/^    int x;$/;"	m	struct:Point
+y	create_spirit.c	/^cJSON *y = NULL;$/;"	v
+y	datatype.h	/^    double y;$/;"	m	struct:Aspeed
+y	datatype.h	/^    double y;$/;"	m	struct:Bpoint
+y	datatype.h	/^    double y;$/;"	m	struct:Speed
+y	datatype.h	/^    int y;$/;"	m	struct:Point
